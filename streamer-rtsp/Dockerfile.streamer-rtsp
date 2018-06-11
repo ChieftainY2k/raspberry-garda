@@ -1,0 +1,28 @@
+FROM arm32v7/debian
+#FROM resin/rpi-raspbian
+
+MAINTAINER "ChieftainY2k@gmail.com"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get install -y mc joe multitail vlc
+RUN apt-get install -y git cmake make sudo g++
+
+RUN git clone http://github.com/raspberrypi/userland
+RUN cd ./userland && ./buildme && cp build/bin/* /bin/
+
+ENV LD_LIBRARY_PATH /opt/vc/lib
+RUN useradd -ms /bin/bash streamer
+
+ADD ./run-wrapper.sh /run-wrapper.sh
+RUN chmod a+x /run-wrapper.sh
+
+ADD ./run.sh /run.sh
+RUN chmod a+x /run.sh
+
+#CMD chmod 777 /dev/vchiq
+
+#USER streamer
+CMD chmod 777 /dev/vchiq && /run-wrapper.sh
+
