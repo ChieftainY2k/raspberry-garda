@@ -1,0 +1,1 @@
+su - streamer /run.sh

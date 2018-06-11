@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<clouds>
+
+    <S3>
+        <bucket type="text"></bucket>
+        <folder type="text"></folder>
+        <publicKey type="text"></publicKey>
+        <privateKey type="text"></privateKey>
+    </S3>
+    
+</clouds>
