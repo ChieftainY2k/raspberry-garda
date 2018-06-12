@@ -49,20 +49,20 @@ services:
 #    restart: always
 
 
-#  kerberos:
-#    build:
-#      context: ./kerberos
-#      dockerfile: Dockerfile.kerberos
-#    ports:
-#      - "80:80"
-#      - "8889:8889"
-#    volumes:
-#      - "./data/config:/etc/opt/kerberosio/config"
-#      - "./data/logs:/etc/opt/kerberosio/logs"
-#      - "./data/capture:/etc/opt/kerberosio/capture"
-#      - "./data/h264:/etc/opt/kerberosio/h264"
+  kerberos:
+    build:
+      context: ./kerberos
+      dockerfile: Dockerfile.kerberos
+    ports:
+      - "80:80"
+      - "8889:8889"
+    volumes:
+      - "./data/config:/etc/opt/kerberosio/config"
+      - "./data/logs:/etc/opt/kerberosio/logs"
+      - "./data/capture:/etc/opt/kerberosio/capture"
+      - "./data/h264:/etc/opt/kerberosio/h264"
 #    links:
 #      - streamer-mjpg
-##    restart: always
-#
-#
+#    restart: always
+
+
