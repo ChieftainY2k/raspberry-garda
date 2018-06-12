@@ -7,7 +7,7 @@ service nginx restart
 chmod -R 777 /etc/opt/kerberosio/config
 
 while sleep 3; do
-    echo "Starting kerberos-io mechinery..."
+    echo "Starting kerberos-io machinery..."
     kerberosio
 done
 
