@@ -32,7 +32,13 @@ docker-compose exec kerberos-deb bash -c "tail -f /var/log/nginx/*"
 `````
 
 
-**Run bash inside container**
+**Run bash inside machinery container**
 `````
 docker-compose exec kerberos-deb bash
 `````
+
+**Event listener logs**
+`````
+docker-compose exec listener bash -c "tail -f /router.log"
+`````
+
