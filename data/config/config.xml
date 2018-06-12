@@ -5,7 +5,7 @@
         <name type="text">frontDoorDockerized</name>
         <logging type="bool">false</logging>
         <timezone type="timezone">Europe-Jersey</timezone>
-        <capture file="capture.xml">IPCamera</capture>
+        <capture file="capture.xml">RaspiCamera</capture>
         <stream file="stream.xml">Mjpg</stream>
         <condition file="condition.xml" type="multiple">Enabled</condition>
         <algorithm file="algorithm.xml">DifferentialCollins</algorithm>

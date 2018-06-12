@@ -8,17 +8,21 @@ RUN echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib 
 RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail g++ make cmake make sudo g++ libav-tools libssl-dev wget curl rpi-update
 
-RUN git clone http://github.com/raspberrypi/userland
-RUN cd ./userland && ./buildme && cp build/bin/* /bin/
+#RUN git clone http://github.com/raspberrypi/userland
+#RUN cd ./userland && ./buildme && cp build/bin/* /bin/
 
 RUN rpi-update
-RUN cp /opt/vc/lib/* /usr/lib/
+RUN cp -r /opt/vc/lib/* /usr/lib/
+
+#Install MACHINERY
 
 RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi3-machinery-kerberosio-armhf-2.6.1.deb
 RUN cd /tmp && dpkg -i rpi3-machinery-kerberosio-armhf-2.6.1.deb
 RUN systemctl enable kerberosio
 RUN chmod go-rw /etc/systemd/system/kerberosio.service
 RUN chmod a-x /etc/systemd/system/kerberosio.service
+
+#Install WEB
 
 RUN apt-get install -y -t stretch nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 RUN rm -f /etc/nginx/sites-enabled/default
@@ -37,6 +41,7 @@ RUN mkdir /run/php
 RUN touch /run/php/php7.0-fpm.sock
 RUN chmod a+rwx /run/php/php7.0-fpm.sock
 
+# Add Startup scripts
 
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
