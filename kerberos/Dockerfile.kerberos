@@ -1,3 +1,16 @@
 FROM kerberos/kerberos
 
+RUN apt-get update && apt-get -y upgrade
+
+RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail g++ make cmake make sudo g++ libav-tools libssl-dev wget curl kmod
+
+RUN git clone http://github.com/raspberrypi/userland
+
+RUN cd ./userland && ./buildme && cp build/bin/* /bin/
+
+RUN curl -L --output /usr/bin/rpi-update https://raw.githubusercontent.com/Hexxeh/rpi-update/master/rpi-update && chmod +x /usr/bin/rpi-update
+
+RUN rpi-update
+
+RUN cp -r /opt/vc/lib/* /usr/lib/
 
