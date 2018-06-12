@@ -16,25 +16,25 @@ services:
 #      - "/opt/vc:/opt/vc"
 #    privileged: true
 
-  streamer-mjpg:
-    build:
-      context: ./streamer-mjpeg
-      dockerfile: Dockerfile.streamer-mjpg
-    ports:
-      - "9000:9000"
-    privileged: true
-    environment:
-      - STREAM_PORT=9000
-      - STREAM_WIDTH=1280
-      - STREAM_HEIGHT=720
-      - STREAM_FPS=10
+#  streamer-mjpg:
+#    build:
+#      context: ./streamer-mjpeg
+#      dockerfile: Dockerfile.streamer-mjpg
+#    ports:
+#      - "9000:9000"
+#    privileged: true
+#    environment:
+#      - STREAM_PORT=9000
+#      - STREAM_WIDTH=1280
+#      - STREAM_HEIGHT=720
+#      - STREAM_FPS=10
 #    restart: always
 
 
-  kerberos:
+  kerberos-deb:
     build:
-      context: ./kerberos
-      dockerfile: Dockerfile.kerberos
+      context: ./kerberos-deb
+      dockerfile: Dockerfile.kerberos-deb
     ports:
       - "80:80"
       - "8889:8889"
@@ -43,8 +43,26 @@ services:
       - "./data/logs:/etc/opt/kerberosio/logs"
       - "./data/capture:/etc/opt/kerberosio/capture"
       - "./data/h264:/etc/opt/kerberosio/h264"
-    links:
-      - streamer-mjpg
+#    links:
+#      - streamer-mjpg
+    privileged: true
 #    restart: always
 
 
+#  kerberos:
+#    build:
+#      context: ./kerberos
+#      dockerfile: Dockerfile.kerberos
+#    ports:
+#      - "80:80"
+#      - "8889:8889"
+#    volumes:
+#      - "./data/config:/etc/opt/kerberosio/config"
+#      - "./data/logs:/etc/opt/kerberosio/logs"
+#      - "./data/capture:/etc/opt/kerberosio/capture"
+#      - "./data/h264:/etc/opt/kerberosio/h264"
+#    links:
+#      - streamer-mjpg
+##    restart: always
+#
+#
