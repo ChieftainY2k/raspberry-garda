@@ -1,5 +1,6 @@
 **Intro**
-Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream
+
+Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream (with RaspiCam)
 
 **Fire up the whole system**
 `````
