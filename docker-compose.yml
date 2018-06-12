@@ -48,6 +48,13 @@ services:
     privileged: true
 #    restart: always
 
+  listener:
+    build:
+      context: ./listener
+      dockerfile: Dockerfile.listener
+    ports:
+      - "80:80"
+
 
 #  kerberos:
 #    build:
