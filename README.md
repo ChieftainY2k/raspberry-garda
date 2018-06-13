@@ -29,6 +29,11 @@ docker-compose stop
 docker-compose logs -f 
 `````
 
+**Show containers statistics/usage (cadvisor)**
+`````
+http://RASPBERRY_IP:8090/ 
+`````
+
 **Show kerberos machinery logs**
 `````
 docker-compose exec kerberos-deb tail -f /etc/opt/kerberosio/logs/log.stash
