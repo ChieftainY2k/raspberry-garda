@@ -12,6 +12,9 @@ Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream 
 
 
 **Start up the system (in daemon mode)**
+
+Note: The containers will automatically restart on reboot/failure unless explicitly stopped 
+
 `````
 docker-compose up -d 
 `````
@@ -21,19 +24,9 @@ docker-compose up -d
 docker-compose stop 
 `````
 
-**Run only kerberos container from image**
+**Show containers output**
 `````
-docker-compose up kerberos-deb
-`````
-
-**Rebuild kerberos image**
-`````
-docker-compose build kerberos-deb
-`````
-
-**Remove kerberos image**
-`````
-docker-compose rm -f  kerberos-deb
+docker-compose logs -f 
 `````
 
 **Show kerberos machinery logs**
@@ -51,14 +44,28 @@ docker-compose logs -f kerberos-deb
 docker-compose exec kerberos-deb bash -c "tail -f /var/log/nginx/*"
 `````
 
+**Show webhook event listener logs**
+`````
+docker-compose exec webhook-php bash -c "tail -f /listener.log"
+`````
+
+**Run only kerberos container from image**
+`````
+docker-compose up kerberos-deb
+`````
+
+**Rebuild kerberos image**
+`````
+docker-compose build kerberos-deb
+`````
+
+**Remove kerberos image**
+`````
+docker-compose rm -f  kerberos-deb
+`````
 
 **Run bash inside machinery container**
 `````
 docker-compose exec kerberos-deb bash
-`````
-
-**Event listener logs**
-`````
-docker-compose exec webhook-php bash -c "tail -f /listener.log"
 `````
 
