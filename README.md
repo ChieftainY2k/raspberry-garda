@@ -1,6 +1,6 @@
 **Intro**
 
-Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream (with RaspiCam)
+Kerberos-io (https://github.com/kerberos-io) in a dockerized Raspberry Pi 3 environment with local camera stream (with RaspiCam)
 
 
 **Installation**
