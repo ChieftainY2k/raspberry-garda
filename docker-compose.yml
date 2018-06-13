@@ -70,8 +70,9 @@ services:
 #      - "./data/logs:/etc/opt/kerberosio/logs"
 #      - "./data/capture:/etc/opt/kerberosio/capture"
 #      - "./data/h264:/etc/opt/kerberosio/h264"
+#    privileged: true
 ##    links:
 ##      - streamer-mjpg
 ##    restart: always
-#
+
 
