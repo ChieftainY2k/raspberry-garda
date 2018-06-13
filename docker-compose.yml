@@ -44,14 +44,14 @@ services:
       - "./data/capture:/etc/opt/kerberosio/capture"
       - "./data/h264:/etc/opt/kerberosio/h264"
     links:
-      - listener
+      - webhook-php
     privileged: true
 #    restart: always
 
-  listener:
+  webhook-php:
     build:
-      context: ./listener
-      dockerfile: Dockerfile.listener
+      context: ./webhook-php
+      dockerfile: Dockerfile.webhook-php
     ports:
       - "8080:8080"
     privileged: true

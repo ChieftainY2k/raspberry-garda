@@ -7,4 +7,4 @@ $msg = "[" . date("Y-m-d H:i:s") . "] Listener: REQUEST = " . json_encode($_REQU
 echo $msg;
 
 //log it
-file_put_contents("router.log", $msg, FILE_APPEND);
+file_put_contents("listener.log", $msg, FILE_APPEND);

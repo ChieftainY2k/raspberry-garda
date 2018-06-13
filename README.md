@@ -11,9 +11,14 @@ Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream 
 * Clone this repo (git clone)
 
 
-**Fire up the whole system**
+**Start up the system**
 `````
-docker-compose up 
+docker-compose -d up 
+`````
+
+**Stop the system**
+`````
+docker-compose stop 
 `````
 
 **Run only kerberos container from image**
@@ -54,6 +59,6 @@ docker-compose exec kerberos-deb bash
 
 **Event listener logs**
 `````
-docker-compose exec listener bash -c "tail -f /router.log"
+docker-compose exec listener bash -c "tail -f /listener.log"
 `````
 
