@@ -5,7 +5,7 @@ Kerberos-io (https://github.com/kerberos-io) in a dockerized Raspberry Pi 3 envi
 
 **Installation**
 
-* Grab the newest Raspbian from https://www.raspberrypi.org/downloads/ , install it on a SD card.
+* Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card.
 * Fire up your RPI device, enable the camera support (raspi-config)
 * Install docker  (https://raw.githubusercontent.com/ChieftainY2k/raspberrypi-docker-box/master/install-docker.sh | bash)
 * Clone this repo (git clone)
