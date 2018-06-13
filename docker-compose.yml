@@ -46,7 +46,7 @@ services:
     links:
       - webhook-php
     privileged: true
-#    restart: always
+    restart: always
 
   webhook-php:
     build:
@@ -54,7 +54,8 @@ services:
       dockerfile: Dockerfile.webhook-php
     ports:
       - "8080:8080"
-    privileged: true
+#    privileged: true
+    restart: always
 
 
 #  kerberos:

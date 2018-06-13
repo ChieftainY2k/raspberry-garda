@@ -11,6 +11,8 @@ RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail g++ make c
 #RUN git clone http://github.com/raspberrypi/userland
 #RUN cd ./userland && ./buildme && cp build/bin/* /bin/
 
+#Install VideoCore libraries etc.
+
 RUN rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 

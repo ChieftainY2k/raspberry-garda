@@ -11,9 +11,9 @@ Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream 
 * Clone this repo (git clone)
 
 
-**Start up the system**
+**Start up the system (in daemon mode)**
 `````
-docker-compose -d up 
+docker-compose up -d 
 `````
 
 **Stop the system**
