@@ -59,6 +59,6 @@ docker-compose exec kerberos-deb bash
 
 **Event listener logs**
 `````
-docker-compose exec listener bash -c "tail -f /listener.log"
+docker-compose exec webhook-php bash -c "tail -f /listener.log"
 `````
 
