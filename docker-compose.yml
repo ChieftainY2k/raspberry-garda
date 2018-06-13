@@ -55,6 +55,21 @@ services:
     ports:
       - "8080:8080"
 #    privileged: true
+#    links:
+#      - kerberos-deb
+    restart: always
+
+  cadvisor:
+    image: unibaktr/cadvisor
+    ports:
+      - "8090:8080"
+    privileged: true
+    volumes:
+     - /:/rootfs:ro
+     - /var/run:/var/run:rw
+     - /sys:/sys:ro
+     - /var/lib/docker/:/var/lib/docker:ro
+     - /dev/disk/:/dev/disk:ro
     restart: always
 
 
