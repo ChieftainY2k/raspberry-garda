@@ -22,7 +22,7 @@ The application will be automatically restarted on reboot, unless you explicitel
 docker-compose stop 
 `````
 
-**Start up the system again (in daemon mode)**
+**Start up the system again**
 
 Note: The containers will automatically restart on reboot/failure unless explicitly stopped 
 
