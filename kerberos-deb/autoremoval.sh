@@ -15,7 +15,7 @@ echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent
 
 if [[ $usedPercent -gt 90 ]];
 then
-    echo "[$DATE] The disk space is LOW. Cleaning up older files in $imagedir ..."
+    echo "[$DATE] The disk space is LOW. Removing some of the oldest files in $imagedir ..."
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
 
     usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
@@ -25,8 +25,6 @@ then
 else
     echo "[$DATE] The disk space is OK"
 fi;
-
-
 
 
 
