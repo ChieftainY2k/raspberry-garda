@@ -9,9 +9,12 @@ Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream 
 * Fire up your RPI device, enable the camera support (raspi-config)
 * Clone this repo (git clone)
 * Run "**bash ./install.sh**"
+
 * Kerberos installation page is at http://_YOUR_RASPBERRY_PI_ADDRESS_    
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
 * The docker statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:8090   
+
+The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
 
 **Stop the system**
