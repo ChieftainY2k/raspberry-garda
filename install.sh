@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#check if the exit code is zero
+#check for errors
 check_errors()
 {
     EXITCODE=$1
@@ -11,7 +11,7 @@ check_errors()
         echo "Press ENTER to continue or Ctrl-C to abort."
         read
     else
-        echo "OK, operation successfully completed"
+        echo "OK, operation successfully completed."
     fi
 }
 
