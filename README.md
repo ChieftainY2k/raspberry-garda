@@ -1,6 +1,9 @@
 **Intro**
 
-Kerberos-io (https://github.com/kerberos-io/) in a dockerized Raspberry Pi 3 environment with local camera stream (with RaspiCam)
+This project goal is to run a Kerberos-io (https://github.com/kerberos-io/) instance  
+in a dockerized environment on Raspberry Pi 3 hardware and use native Raspberry Camera Module.
+
+This project is a proof-of-concept.  
 
 
 **Installation**
@@ -24,13 +27,14 @@ docker-compose stop
 
 **Start up the system again**
 
-Note: The containers will automatically restart on reboot/failure unless explicitly stopped 
-
 `````
 docker-compose up -d 
 `````
 
-**Show containers output**
+The containers will automatically restart on reboot/failure unless explicitly stopped 
+
+
+**Show containers output/logs**
 `````
 docker-compose logs -f 
 `````
@@ -43,11 +47,6 @@ tail -f data/logs/log.stash
 **Show kerberos machinery cron autoremove logs**
 `````
 tail -f data/logs/autoremoval.log
-`````
-
-**Show kerberos container logs**
-`````
-docker-compose logs -f kerberos-deb
 `````
 
 **Show kerberos Web Nginx logs**
