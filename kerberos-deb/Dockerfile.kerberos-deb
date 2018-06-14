@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi" | tee --append /etc/apt/sources.list
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail g++ make cmake make sudo g++ libav-tools libssl-dev wget curl rpi-update
+RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail g++ make cmake make sudo g++ libav-tools libssl-dev wget curl rpi-update cron
 
 #RUN git clone http://github.com/raspberrypi/userland
 #RUN cd ./userland && ./buildme && cp build/bin/* /bin/
@@ -48,6 +48,10 @@ RUN chmod a+rwx /run/php/php7.0-fpm.sock
 
 ADD ./autoremoval.sh /autoremoval.sh
 RUN chmod a+x /autoremoval.sh
+
+# Configure cron
+ADD ./crontab.txt /etc/cron.d/kerberoscrontab
+RUN chmod 0644 /etc/cron.d/kerberoscrontab
 
 # Add startup script
 

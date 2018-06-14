@@ -1,0 +1,1 @@
+* * * * * root /autoremoval.sh >> /etc/opt/kerberosio/logs/autoremoval.log 2>&1
