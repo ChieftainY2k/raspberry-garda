@@ -27,8 +27,15 @@ sudo apt install -y \
      apt-transport-https \
      ca-certificates \
      curl \
+     wget \
+     telnet \
      gnupg2 \
-     software-properties-common
+     software-properties-common \
+     git \
+     mc \
+     multitail \
+     htop \
+     jnettop
 check_errors $?
 
 # Get the Docker signing key for packages

@@ -10,11 +10,11 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card.
-* Fire up your RPI device, enable the camera support (raspi-config)
-* Clone this repo (git clone)
-* Run "**bash ./install.sh**"
-
-* Kerberos installation page is at http://_YOUR_RASPBERRY_PI_ADDRESS_    
+* Enable the camera module support (raspi-config)
+* Clone this repo (git clone REPO_URL)
+* Run "**bash ./install.sh**" inside the repo directory you've just cloned.
+* See the installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
+    
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
 * The docker statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:8090   
 
@@ -35,9 +35,9 @@ docker-compose up -d
 The containers will automatically restart on reboot/failure unless explicitly stopped 
 
 
-**Show containers output/logs**
+**Show containers output/logs (last 10 lines, then follow the output)**
 `````
-docker-compose logs -f 
+docker-compose logs -f --tail=10
 `````
 
 **Show kerberos Web Nginx logs**
