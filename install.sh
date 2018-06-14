@@ -71,6 +71,7 @@ check_errors $?
 
 # start the containers
 docker-compose up -d
+check_errors $?
 
 echo "OK, docker containers successfully started."
 
