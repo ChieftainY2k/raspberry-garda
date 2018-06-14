@@ -80,10 +80,10 @@ services:
     restart: always
 
 
-#  kerberos:
+#  kerberos-dist:
 #    build:
-#      context: ./kerberos
-#      dockerfile: Dockerfile.kerberos
+#      context: ./kerberos-dist
+#      dockerfile: Dockerfile.kerberos-dist
 #    ports:
 #      - "80:80"
 #      - "8889:8889"
