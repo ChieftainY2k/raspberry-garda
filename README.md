@@ -35,14 +35,14 @@ docker-compose up -d
 docker-compose logs -f 
 `````
 
-**Show containers statistics/usage (cadvisor)**
-`````
-http://RASPBERRY_IP:8090/ 
-`````
-
 **Show kerberos machinery logs**
 `````
-docker-compose exec kerberos-deb tail -f /etc/opt/kerberosio/logs/log.stash
+tail -f data/logs/log.stash
+`````
+
+**Show kerberos machinery cron autoremove logs**
+`````
+tail -f data/logs/autoremoval.log
 `````
 
 **Show kerberos container logs**
