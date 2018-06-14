@@ -7,21 +7,24 @@ Kerberos-io in a dockerized Raspberry Pi 3 environment with local camera stream 
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card.
 * Fire up your RPI device, enable the camera support (raspi-config)
-* Install docker  (https://raw.githubusercontent.com/ChieftainY2k/raspberrypi-docker-box/master/install-docker.sh | bash)
 * Clone this repo (git clone)
+* Run "bash ./install.sh"
+* Go to http://YOUR_RASPBERRY_PI_ADDRESS to see the Kerberos installation page  
+* Go to http://YOUR_RASPBERRY_PI_ADDRESS:8889 to see the video stream  
+* Go to http://YOUR_RASPBERRY_PI_ADDRESS:8090 to see the docker statistics  
 
 
-**Start up the system (in daemon mode)**
+**Stop the system**
+`````
+docker-compose stop 
+`````
+
+**Start up the system again (in daemon mode)**
 
 Note: The containers will automatically restart on reboot/failure unless explicitly stopped 
 
 `````
 docker-compose up -d 
-`````
-
-**Stop the system**
-`````
-docker-compose stop 
 `````
 
 **Show containers output**

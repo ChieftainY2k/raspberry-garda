@@ -1,0 +1,74 @@
+#!/bin/bash
+
+#check if the exit code is zero
+check_errors()
+{
+    EXITCODE=$1
+    if [ $EXITCODE -ne 0 ]; then
+        echo "---------------------------------------------------------------"
+        echo "ERROR: there were some errors, check the ouput for details."
+        echo "---------------------------------------------------------------"
+        echo "Press ENTER to continue or Ctrl-C to abort."
+        read
+    else
+        echo "OK, operation successfully completed"
+    fi
+}
+
+echo "Checking if camera module is enabled and taking sample picture..."
+rm -rf /tmp/testimage.jpg
+raspistill -o /tmp/testimage.jpg
+check_errors $?
+
+# Install some required packages first
+sudo apt update
+check_errors $?
+sudo apt install -y \
+     apt-transport-https \
+     ca-certificates \
+     curl \
+     gnupg2 \
+     software-properties-common
+check_errors $?
+
+# Get the Docker signing key for packages
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+check_errors $?
+
+# Add the Docker official repos
+echo "deb [arch=armhf] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+     $(lsb_release -cs) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list
+check_errors $?
+
+# Install Docker
+sudo apt update
+check_errors $?
+
+sudo apt install -y docker-ce
+check_errors $?
+
+sudo systemctl enable docker
+check_errors $?
+
+sudo systemctl start docker
+check_errors $?
+
+# Install required packages
+apt install -y python python-pip
+check_errors $?
+
+# Install Docker Compose from pip
+pip install docker-compose
+check_errors $?
+
+# start the containers
+docker-compose up -d
+
+echo "OK, docker containers successfully started."
+
+MYIP_WLAN0=$(ifconfig wlan0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+MYIP_ETH0=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+echo "----------------------------------------------------------------"
+echo "Installation complete. My IP address is: $MYIP_WLAN0 $MYIP_ETH0"
+echo "----------------------------------------------------------------"
