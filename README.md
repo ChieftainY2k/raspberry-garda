@@ -40,16 +40,6 @@ The containers will automatically restart on reboot/failure unless explicitly st
 docker-compose logs -f 
 `````
 
-**Show kerberos machinery logs**
-`````
-tail -f data/logs/log.stash
-`````
-
-**Show kerberos machinery cron autoremove logs**
-`````
-tail -f data/logs/autoremoval.log
-`````
-
 **Show kerberos Web Nginx logs**
 `````
 docker-compose exec kerberos-deb bash -c "tail -f /var/log/nginx/*"
@@ -60,22 +50,7 @@ docker-compose exec kerberos-deb bash -c "tail -f /var/log/nginx/*"
 docker-compose logs -f | grep webhook
 `````
 
-**Run only kerberos container from image**
-`````
-docker-compose up kerberos-deb
-`````
-
-**Rebuild kerberos image**
-`````
-docker-compose build kerberos-deb
-`````
-
-**Remove kerberos image**
-`````
-docker-compose rm -f  kerberos-deb
-`````
-
-**Run bash inside machinery container**
+**Run bash inside kerberos container**
 `````
 docker-compose exec kerberos-deb bash
 `````

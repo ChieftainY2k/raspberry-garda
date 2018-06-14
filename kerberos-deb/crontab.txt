@@ -1,2 +1,5 @@
-*/10 * * * * /autoremoval.sh 2>&1 >> /etc/opt/kerberosio/logs/autoremoval.log
+
+# automatically remove old files if disk space is low, log to docker container output
+
+*/10 * * * * /autoremoval.sh 2>&1 > /proc/1/fd/2
 
