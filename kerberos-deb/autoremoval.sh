@@ -11,7 +11,8 @@ partition=$(df $imagedir | awk '/^\/dev/ {print $1}')
 
 usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
 filesCount=$(find $imagedir| wc -l)
-echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent, has $filesCount images"
+filesSize=$(du -h $imagedir | tail -1 | awk '{print $1}')
+echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent, has $filesCount files ($filesSize total)"
 
 if [[ $usedPercent -gt 90 ]];
 then
@@ -20,7 +21,8 @@ then
 
     usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
     filesCount=$(find $imagedir| wc -l)
-    echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent, has $filesCount images"
+    filesSize=$(du -h $imagedir | tail -1 | awk '{print $1}')
+    echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent, has $filesCount files ($filesSize total)"
 
 else
     echo "[$DATE] The disk space is OK"
