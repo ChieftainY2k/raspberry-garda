@@ -1,6 +1,6 @@
 
 # init the log file
-touch /listener.log
+#touch /listener.log
 
 # run  the listener forever
 while sleep 3; do

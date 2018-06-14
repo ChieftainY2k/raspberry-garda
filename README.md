@@ -57,7 +57,7 @@ docker-compose exec kerberos-deb bash -c "tail -f /var/log/nginx/*"
 
 **Show webhook event listener logs**
 `````
-docker-compose exec webhook-php bash -c "tail -f /listener.log"
+docker-compose logs -f | grep webhook
 `````
 
 **Run only kerberos container from image**
