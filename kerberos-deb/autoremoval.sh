@@ -29,5 +29,6 @@ else
 fi;
 
 
-#@TODO remove old temporary h264 files from /etc/opt/kerberosio/h264/
+echo "[$DATE] Removing old h264 files..."
+tmpreaper -v 2h /etc/opt/kerberosio/h264/
 
