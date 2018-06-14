@@ -67,8 +67,7 @@ docker-compose up -d
 
 echo "OK, docker containers successfully started."
 
-MYIP_WLAN0=$(ifconfig wlan0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
-MYIP_ETH0=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+MYIP=$(ip route get 1 | awk '{print $NF;exit}')
 echo "----------------------------------------------------------------"
-echo "Installation complete. My IP address is: $MYIP_WLAN0 $MYIP_ETH0"
+echo "Installation complete. My IP address is: $MYIP"
 echo "----------------------------------------------------------------"
