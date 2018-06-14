@@ -2,7 +2,7 @@
 
 This project is an attempt at running Kerberos-io (https://github.com/kerberos-io/) instance in a docker container on Raspberry Pi 2/3 hardware and use the native Raspberry Camera Module.
 
-The kerberos container is managed by the docker-compose along with other helper containers (like simple webhooks listener in a separate container).
+The kerberos container is managed by the docker-compose and runs along with other "helper" apps in containers (like simple webhooks listener).
 
 Enjoy! :-)
  
