@@ -39,10 +39,12 @@ services:
       - "80:80"
       - "8889:8889"
     volumes:
-      - "./data/config:/etc/opt/kerberosio/config"
-      - "./data/logs:/etc/opt/kerberosio/logs"
-      - "./data/capture:/etc/opt/kerberosio/capture"
-      - "./data/h264:/etc/opt/kerberosio/h264"
+      - ./data/config:/etc/opt/kerberosio/config
+      - ./data/logs:/etc/opt/kerberosio/logs
+      - ./data/capture:/etc/opt/kerberosio/capture
+      - ./data/h264:/etc/opt/kerberosio/h264
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     links:
       - webhook-php
     privileged: true
@@ -54,6 +56,9 @@ services:
       dockerfile: Dockerfile.webhook-php
     ports:
       - "8080:8080"
+    volumes:
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
 #    privileged: true
 #    links:
 #      - kerberos-deb
@@ -70,6 +75,8 @@ services:
      - /sys:/sys:ro
      - /var/lib/docker/:/var/lib/docker:ro
      - /dev/disk/:/dev/disk:ro
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
     restart: always
 
 

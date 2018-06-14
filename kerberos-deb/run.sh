@@ -4,8 +4,10 @@ service nginx restart
 # Fix permissions
 chmod -R 777 /etc/opt/kerberosio/config
 
-# Init cron
+# Init crontab and cron process
+rsyslogd &
 cron &
+#crontab /crontab.txt
 
 # Init machinery
 while sleep 3; do
