@@ -44,7 +44,12 @@ RUN mkdir /run/php
 RUN touch /run/php/php7.0-fpm.sock
 RUN chmod a+rwx /run/php/php7.0-fpm.sock
 
-# Add Startup scripts
+# Add helper scripts
+
+ADD ./autoremoval.sh /autoremoval.sh
+RUN chmod a+x /autoremoval.sh
+
+# Add startup script
 
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
