@@ -16,7 +16,7 @@ Enjoy! :-)
 * See the installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
     
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
-* The docker statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:8090   
+* (optional) The docker statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:8090   
 
 The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
