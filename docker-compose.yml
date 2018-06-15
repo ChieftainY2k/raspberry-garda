@@ -79,6 +79,14 @@ services:
      - /etc/localtime:/etc/localtime:ro
     restart: always
 
+  mqtt-server:
+    build:
+      context: ./mqtt-server
+      dockerfile: Dockerfile.mqtt-server
+    ports:
+      - "1883:1883"
+    restart: always
+
 
 #  kerberos-dist:
 #    build:
@@ -96,5 +104,4 @@ services:
 ##    links:
 ##      - streamer-mjpg
 ##    restart: always
-
 

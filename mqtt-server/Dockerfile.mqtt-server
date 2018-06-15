@@ -1,0 +1,20 @@
+FROM resin/rpi-raspbian:stretch
+
+MAINTAINER "ChieftainY2k@gmail.com"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Common stuff
+
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get install -y mc joe multitail curl wget telnet
+
+# Install mqtt server
+
+RUN apt-get install -y mosquitto mosquitto-clients
+
+ADD ./run.sh /run.sh
+RUN chmod a+x /run.sh
+CMD /run.sh
+
+
