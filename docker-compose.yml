@@ -87,6 +87,13 @@ services:
       - "1883:1883"
     restart: always
 
+  health-reporter:
+    build:
+      context: ./health-reporter
+      dockerfile: Dockerfile.health-reporter
+    privileged: true
+    restart: always
+
 
 #  kerberos-dist:
 #    build:

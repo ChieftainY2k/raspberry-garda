@@ -2,7 +2,7 @@
 <kerberos>
 
     <instance>
-        <name type="text">frontDoorDockerized</name>
+        <name type="text">kerberosInDocker</name>
         <logging type="bool">false</logging>
         <timezone type="timezone">Europe-Warsaw</timezone>
         <capture file="capture.xml">RaspiCamera</capture>
@@ -11,7 +11,7 @@
         <algorithm file="algorithm.xml">DifferentialCollins</algorithm>
         <expositor file="expositor.xml">Hull</expositor>
         <heuristic file="heuristic.xml">Sequence</heuristic>
-        <io file="io.xml" type="multiple">Disk,Video,Webhook</io>
+        <io file="io.xml" type="multiple">Disk,Video,Webhook,MQTT</io>
         <cloud file="cloud.xml">S3</cloud>
     </instance>
 
