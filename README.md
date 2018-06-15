@@ -27,7 +27,6 @@ docker-compose stop
 `````
 
 **Start up the system again**
-
 `````
 docker-compose up -d 
 `````
@@ -43,6 +42,11 @@ docker-compose logs -f --tail=10
 **Show kerberos Web Nginx logs**
 `````
 docker-compose exec kerberos-deb bash -c "tail -f /var/log/nginx/*"
+`````
+
+**Show Laravel logs**
+`````
+docker-compose exec kerberos-deb bash -c "tail -f /var/www/web/storage/logs/laravel.log"
 `````
 
 **Show webhook event listener logs**

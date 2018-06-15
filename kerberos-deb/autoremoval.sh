@@ -30,6 +30,6 @@ fi;
 
 
 echo "[$DATE] Removing old h264 files..."
-tmpreaper -v 2h /etc/opt/kerberosio/h264/
+tmpreaper -v 24h /etc/opt/kerberosio/h264/
 echo "[$DATE] Old h264 files removed."
 
