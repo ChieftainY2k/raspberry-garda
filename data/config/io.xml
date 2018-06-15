@@ -47,12 +47,12 @@
     <MQTT>
         <secure type="bool">false</secure>
         <verifycn type="bool">false</verifycn>
-        <server type="number">m23.cloudmqtt.com</server>
-        <port type="number">10187</port>
+        <server type="number">mqtt-server</server>
+        <port type="number">1883</port>
         <topic type="text">kios/mqtt</topic>
-        <username type="text">xndxsbqn</username>
-        <password type="text">Df0_9GBvGyNj</password>
-        <throttler type="number">10</throttler>
+        <username type="text"></username>
+        <password type="text"></password>
+        <throttler type="number">5</throttler>
     </MQTT>
     <Pushbullet>
         <url type="text">https://api.pushbullet.com</url>
