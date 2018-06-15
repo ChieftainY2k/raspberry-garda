@@ -9,7 +9,6 @@
 # The temperature is reported in degrees Celsius (C) while
 # the CPU speed is calculated in megahertz (MHz).
 
-DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
 function convert_to_MHz {
     let value=$1/1000
@@ -46,6 +45,8 @@ freq=$(convert_to_MHz $freq)
 
 governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
+DATE=`date '+%Y-%m-%d %H:%M:%S'`
+
 echo -n "[$DATE] Hardware health report: "
 echo -n "Temperature: $temp C"
 echo -n ", voltage: $volts V"
@@ -57,9 +58,9 @@ echo -n ", governor: $governor"
 
 availableDiskSpace=$(df | grep /dev/root | awk '{print $4/1}')
 
-echo -n ", available disk space: $availableDiskSpace kb"
+echo ", available disk space: $availableDiskSpace kb"
 
 # publish it
 
 mosquitto_pub -h mqtt-server -t "hardware/stat" -m "{\"cpu_temp\":\"$temp\",\"cpu_voltage\":\"$volts\",\"disk_space_available\":\"$availableDiskSpace\"}"
-echo "Published MQTT topic."
+echo "[$DATE] published MQTT topic."
