@@ -13,6 +13,7 @@ cron &
 while sleep 3; do
     echo "Starting kerberos-io machinery..."
     kerberosio
+    echo "Kerberio process terminated."
 done
 
 #sleep infinity
