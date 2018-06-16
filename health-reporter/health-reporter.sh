@@ -74,8 +74,8 @@ messageTopic="healthcheck/report"
 mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
 EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then
-    echo "[$DATE] ERROR: there was an error publishing the topic."
+    echo "[$DATE] ERROR: there was an error publishing the MQTT topic."
 else
-    echo "[$DATE] success, published topic $messageTopic with message $messageJson"
+    echo "[$DATE] success, published MQTT topic $messageTopic with message $messageJson"
 fi
 

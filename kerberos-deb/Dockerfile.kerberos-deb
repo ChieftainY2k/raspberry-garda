@@ -44,6 +44,10 @@ RUN mkdir /run/php
 RUN touch /run/php/php7.0-fpm.sock
 RUN chmod a+rwx /run/php/php7.0-fpm.sock
 
+# Install mqtt client
+
+RUN apt-get install -y mosquitto-clients
+
 # Add helper scripts
 
 ADD ./autoremoval.sh /autoremoval.sh

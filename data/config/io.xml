@@ -49,7 +49,7 @@
         <verifycn type="bool">false</verifycn>
         <server type="number">mqtt-server</server>
         <port type="number">1883</port>
-        <topic type="text">kios/motiondetected</topic>
+        <topic type="text">kios/detection/motion</topic>
         <username type="text"></username>
         <password type="text"></password>
         <throttler type="number">5</throttler>
