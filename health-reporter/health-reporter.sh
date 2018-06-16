@@ -58,15 +58,16 @@ uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
-  "cpu_temp": "$temp",
-  "cpu_voltage": "$volts",
-  "uptime_seconds": "$uptimeSeconds",
-  "disk_space_available": "$availableDiskSpace"
+    "cpu_temp":"$temp",
+    "cpu_voltage":"$volts",
+    "uptime_seconds":"$uptimeSeconds",
+    "disk_space_available":"$availableDiskSpace"
 }
 EOF
 )
 
-messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
+#messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
+messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 
 #publish it
 mosquitto_pub -h mqtt-server -t "healthreporter/report" -m "$messageJson"

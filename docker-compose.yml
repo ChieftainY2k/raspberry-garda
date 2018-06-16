@@ -85,18 +85,28 @@ services:
       dockerfile: Dockerfile.mqtt-server
     ports:
       - "1883:1883"
+    volumes:
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
     restart: always
 
   mqtt-listener-php:
     build:
       context: ./mqtt-listener-php
       dockerfile: Dockerfile.mqtt-listener-php
+    volumes:
+     - ./mqtt-listener-php/code:/code
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
     restart: always
 
   health-reporter:
     build:
       context: ./health-reporter
       dockerfile: Dockerfile.health-reporter
+    volumes:
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
     privileged: true
     restart: always
 

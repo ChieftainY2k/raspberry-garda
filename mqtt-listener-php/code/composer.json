@@ -1,0 +1,7 @@
+{
+  "minimum-stability": "dev",
+  "require": {
+    "bluerhinos/phpmqtt": "dev-master"
+  }
+}
+
