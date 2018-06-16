@@ -3,12 +3,12 @@
 DATE=`date '+%Y-%m-%d %H:%M:%S'`
 imagedir=/etc/opt/kerberosio/capture/
 partition=$(df $imagedir | awk '/^\/dev/ {print $1}')
-minimumAcceptableSpaceKb=500000
+minimumAcceptableSpaceKb=700000
 
 #TODO optimize this
 
 usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
-kbytesAvailable=$(df $imagedir | tail -1 | awk '{print $4}')
+kbytesAvailable=$(df --sync $imagedir | tail -1 | awk '{print $4}')
 filesCount=$(find $imagedir| wc -l)
 filesSize=$(du -h $imagedir | tail -1 | awk '{print $1}')
 echo "[$DATE] partition $partition for $imagedir is used in $usedPercent percent ($kbytesAvailable kb available), capture dir has $filesCount files (using $filesSize in total)"
@@ -20,7 +20,7 @@ do
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
 
     usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
-    bytesAvailable=$(df $imagedir | tail -1 | awk '{print $4}')
+    bytesAvailable=$(df --sync $imagedir | tail -1 | awk '{print $4}')
     filesCount=$(find $imagedir| wc -l)
     filesSize=$(du -h $imagedir | tail -1 | awk '{print $1}')
     echo "[$DATE] partition $partition for $imagedir is used in $usedPercent percent ($kbytesAvailable kb available), capture dir has $filesCount files (using $filesSize in total)"
