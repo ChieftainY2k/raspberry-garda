@@ -1,3 +1,5 @@
+![alt text](data/images/kerberos-flow.png "Dockerized KerberosIO flow")
+
 **Intro**
 
 This project is an attempt at running Kerberos-io (https://github.com/kerberos-io/) instance in a docker container on Raspberry Pi 2/3 hardware and use the native Raspberry Camera Module.
