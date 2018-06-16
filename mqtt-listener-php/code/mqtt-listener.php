@@ -28,7 +28,7 @@ if (!$mqtt->connect(true, NULL, $username, $password)) {
     throw new \Exception("Cannot connect to the MQTT server.");
 }
 
-//subscript to all topics
+//subscribe to all topics
 $topics['#'] = [
     "qos" => 0,
     "function" => "procmsg"
