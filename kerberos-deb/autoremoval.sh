@@ -2,32 +2,29 @@
 
 DATE=`date '+%Y-%m-%d %H:%M:%S'`
 imagedir=/etc/opt/kerberosio/capture/
-#partition=/dev/root
 partition=$(df $imagedir | awk '/^\/dev/ {print $1}')
+minimumAcceptableSpaceKb=500000
 
-#echo "Checking the free disk space:"
-#echo "Image dir = $imagedir"
-#echo "Partition = $partition"
+#TODO optimize this
 
 usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
+kbytesAvailable=$(df $imagedir | tail -1 | awk '{print $4}')
 filesCount=$(find $imagedir| wc -l)
 filesSize=$(du -h $imagedir | tail -1 | awk '{print $1}')
-echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent, has $filesCount files ($filesSize total)"
+echo "[$DATE] partition $partition for $imagedir is used in $usedPercent percent ($kbytesAvailable kb available), capture dir has $filesCount files (using $filesSize in total)"
 
-if [[ $usedPercent -gt 90 ]];
-then
-    echo "[$DATE] The disk space is LOW. Removing some of the oldest files in $imagedir ..."
+#while [ $usedPercent -gt 90 ]
+while [ $kbytesAvailable -lt $minimumAcceptableSpaceKb ]
+do
+    echo "[$DATE] running low on disk space, removing some of the oldest files in $imagedir ..."
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
 
     usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
+    bytesAvailable=$(df $imagedir | tail -1 | awk '{print $4}')
     filesCount=$(find $imagedir| wc -l)
     filesSize=$(du -h $imagedir | tail -1 | awk '{print $1}')
-    echo "[$DATE] Partition $partition for $imagedir is used in $usedPercent percent, has $filesCount files ($filesSize total)"
-
-else
-    echo "[$DATE] The disk space is OK"
-fi;
-
+    echo "[$DATE] partition $partition for $imagedir is used in $usedPercent percent ($kbytesAvailable kb available), capture dir has $filesCount files (using $filesSize in total)"
+done
 
 echo "[$DATE] Removing old h264 files..."
 tmpreaper -v 24h /etc/opt/kerberosio/h264/
