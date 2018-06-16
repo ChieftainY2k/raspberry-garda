@@ -12,7 +12,7 @@ require('vendor/autoload.php');
  */
 function procmsg($topic, $message)
 {
-    echo "[" . date("Y-m-d H:i:s") . "] topic recieved: " . $topic . " , message = " . $message . "\n";
+    echo "[" . date("Y-m-d H:i:s") . "] received topic: " . $topic . " , message: " . $message . "\n";
 }
 
 echo "[" . date("Y-m-d H:i:s") . "] starting mqtt php listener\n";

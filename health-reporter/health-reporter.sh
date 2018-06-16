@@ -40,7 +40,7 @@ governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
 DATE=`date '+%Y-%m-%d %H:%M:%S'`
 
-echo -n "[$DATE] Hardware health report: "
+echo -n "[$DATE] current hardware stats: "
 echo -n "Temperature: $temp C"
 echo -n ", voltage: $volts V"
 [ $overvolts ] && echo -n " (+0.$overvolts overvolt)"
@@ -68,13 +68,14 @@ EOF
 
 #messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
 messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
+messageTopic="healthcheck/report"
 
 #publish it
-mosquitto_pub -h mqtt-server -t "healthreporter/report" -m "$messageJson"
+mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
 EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then
     echo "[$DATE] ERROR: there was an error publishing the topic."
 else
-    echo "[$DATE] Success, published MQTT topic."
+    echo "[$DATE] success, published topic $messageTopic with message $messageJson"
 fi
 
