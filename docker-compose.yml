@@ -87,6 +87,12 @@ services:
       - "1883:1883"
     restart: always
 
+  mqtt-listener-php:
+    build:
+      context: ./mqtt-listener-php
+      dockerfile: Dockerfile.mqtt-listener-php
+    restart: always
+
   health-reporter:
     build:
       context: ./health-reporter

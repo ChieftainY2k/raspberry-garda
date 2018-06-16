@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Common stuff
 
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y mc joe multitail curl wget telnet libraspberrypi-bin
+RUN apt-get install -y mc joe multitail curl wget telnet libraspberrypi-bin bc
 
 # Install mqtt client
 

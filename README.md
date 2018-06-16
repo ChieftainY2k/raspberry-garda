@@ -10,7 +10,8 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card.
-* Enable the camera module support (raspi-config)
+* Enable the camera module support (raspi-config -> interfacing -> camera)
+* Set video memory do 256MB (raspi-config -> advanced -> memory split)
 * Clone this repo (git clone REPO_URL)
 * Run "**bash ./install.sh**" inside the repo directory you've just cloned.
 * See the installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_

@@ -1,14 +1,7 @@
 #!/bin/bash
 
 
-# Taken from https://gist.githubusercontent.com/ecampidoglio/5009512/raw/2efdb8535b30c2f8f9a391f055216c2a7f37e28b/cpustatus.sh
-
-# cpustatus
-#
-# Prints the current state of the CPU like temperature, voltage and speed.
-# The temperature is reported in degrees Celsius (C) while
-# the CPU speed is calculated in megahertz (MHz).
-
+# Parts taken from https://gist.githubusercontent.com/ecampidoglio/5009512/raw/2efdb8535b30c2f8f9a391f055216c2a7f37e28b/cpustatus.sh
 
 function convert_to_MHz {
     let value=$1/1000
@@ -60,7 +53,27 @@ availableDiskSpace=$(df | grep /dev/root | awk '{print $4/1}')
 
 echo ", available disk space: $availableDiskSpace kb"
 
-# publish it
+uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 
-mosquitto_pub -h mqtt-server -t "hardware/stat" -m "{\"cpu_temp\":\"$temp\",\"cpu_voltage\":\"$volts\",\"disk_space_available\":\"$availableDiskSpace\"}"
-echo "[$DATE] published MQTT topic."
+# prepare JSON message
+messageJson=$(cat <<EOF
+{
+  "cpu_temp": "$temp",
+  "cpu_voltage": "$volts",
+  "uptime_seconds": "$uptimeSeconds",
+  "disk_space_available": "$availableDiskSpace"
+}
+EOF
+)
+
+messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
+
+#publish it
+mosquitto_pub -h mqtt-server -t "healthreporter/report" -m "$messageJson"
+EXITCODE=$?
+if [ $EXITCODE -ne 0 ]; then
+    echo "[$DATE] ERROR: there was an error publishing the topic."
+else
+    echo "[$DATE] Success, published MQTT topic."
+fi
+
