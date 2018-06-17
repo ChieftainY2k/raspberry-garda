@@ -70,7 +70,7 @@ pip install docker-compose
 check_errors $?
 
 # start the containers
-docker-compose up -d
+docker-compose up -d --remove-orphans
 check_errors $?
 
 echo "OK, docker containers successfully started."

@@ -4,15 +4,31 @@
  *
  */
 
-use PHPMailer\PHPMailer\PHPMailer;
+//@TODO this is just MVP/PoC, refactor it !
 
-//use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 require('vendor/autoload.php');
 
 echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 
-$queueDirName = "/mqtt-topics-queue";
+//check environment params
+if (
+    empty(getenv("KD_REMOTE_SMTP_HOST"))
+    or empty(getenv("KD_REMOTE_SMTP_USERNAME"))
+    or empty(getenv("KD_REMOTE_SMTP_PASSWORD"))
+    or empty(getenv("KD_REMOTE_SMTP_SECURE_METHOD"))
+    or empty(getenv("KD_REMOTE_SMTP_PORT"))
+    or empty(getenv("KD_REMOTE_SMTP_FROM"))
+    or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
+    or empty(getenv("KD_SYSTEM_NAME"))
+) {
+    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the environment params are empty, exiting.\n";
+    exit;
+}
+
+
+$localQueueDirName = "/mqtt-topics-queue";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
 $queueProcessedFilesList = [];
@@ -21,9 +37,9 @@ $htmlBody = "";
 $fileListToAttach = [];
 
 //process the queue
-$dirHandle = opendir($queueDirName);
+$dirHandle = opendir($localQueueDirName);
 if (!$dirHandle) {
-    throw new \Exception("Cannot open directory $queueDirName");
+    throw new \Exception("Cannot open directory $localQueueDirName");
 }
 
 //scan all files in queue directory
@@ -35,9 +51,9 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
 
     echo "[" . date("Y-m-d H:i:s") . "] processing $queueItemFileName \n";
 
-    $queueItemData = file_get_contents($queueDirName . "/" . $queueItemFileName);
+    $queueItemData = file_get_contents($localQueueDirName . "/" . $queueItemFileName);
     if (empty($queueItemData)) {
-        throw new \Exception("Cannot get content of file " . $queueDirName . "/" . $queueItemFileName);
+        throw new \Exception("Cannot get content of file " . $localQueueDirName . "/" . $queueItemFileName);
     }
     echo "[" . date("Y-m-d H:i:s") . "] content =  " . $queueItemData . "\n";
     $queueItemData = json_decode($queueItemData);
@@ -100,8 +116,8 @@ if (!empty($queueProcessedFilesList)) {
 
     foreach ($queueProcessedFilesList as $queueItemFileName) {
         //remote the file
-        if (!unlink($queueDirName . "/" . $queueItemFileName)) {
-            throw new \Exception("Cannot remove file " . $queueDirName . "/" . $queueItemFileName . "");
+        if (!unlink($localQueueDirName . "/" . $queueItemFileName)) {
+            throw new \Exception("Cannot remove file " . $localQueueDirName . "/" . $queueItemFileName . "");
         }
     }
 }

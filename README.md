@@ -17,9 +17,10 @@ Enjoy! :-)
 * Set video memory do 256MB (raspi-config -> advanced -> memory split)
 * (optional) Enable WiFi networking (raspi-config)
 * Clone this repo (git clone REPO_URL)
+* Rename the file **.env.template** to **.env** then edit it and update with your configuration (like SMTP host/password etc.)
 * Run "**bash ./install.sh**" inside the repo directory you've just cloned.
+
 * See the installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
-    
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
 * The docker containers statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:82   
 
