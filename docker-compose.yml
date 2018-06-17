@@ -153,8 +153,10 @@ services:
   # See https://blog.hypriot.com/post/new-docker-ui-portainer/
   #######################################
   docker-ui:
-    image: hypriot/rpi-dockerui
+#    image: hypriot/rpi-dockerui
+    image: portainer/portainer
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/portainer:/data
     ports:
       - 82:9000
