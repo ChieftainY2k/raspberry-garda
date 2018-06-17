@@ -59,18 +59,19 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
     $queueItemData = json_decode($queueItemData);
     //@TODO add data validation here
     $imageFileName = $queueItemData->payload->pathToImage;
-    $imageFullPath = $pathToCapturedImages . "/" . $imageFileName;
+    if (!empty($imageFileName)) {
 
-    $htmlBody .= "
-        <li>" . $imageFileName . "
-    ";
+        $imageFullPath = $pathToCapturedImages . "/" . $imageFileName;
 
-    //@TODO resize images to cut the email size
-    //@TODO do not include images that are created shortly one after other
+        $htmlBody .= "<li>" . $imageFileName . "";
 
-    //register an attachment for inclusion
-    $fileListToAttach[] = $imageFullPath;
+        //@TODO resize images to cut the email size
+        //@TODO do not include images that are created shortly one after other
 
+        //register an attachment for inclusion
+        $fileListToAttach[] = $imageFullPath;
+
+    }
     //remember that this queue item was processed
     $queueProcessedFilesList[] = $queueItemFileName;
 
