@@ -68,11 +68,14 @@ $res = $client->connect("mqtt-server", 1883, 60);
 $client->subscribe('kerberos/machinery/detection/motion', 2);
 //$client->subscribe('#', 2);
 
-while (true) {
-    $client->loop();
-    sleep(2);
-}
+$client->loopForever();
 
-$client->disconnect();
-unset($client);
+//while (true) {
+//    $client->loop();
+//    sleep(2);
+//}
+//
+//$client->disconnect();
+//unset($client);
 
+echo "[" . date("Y-m-d H:i:s") . "] finished.\n";

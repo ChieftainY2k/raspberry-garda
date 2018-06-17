@@ -11,4 +11,6 @@ while sleep 3; do
     php -f /code/mqtt-collector.php
 done
 
+echo "MQTT events listener finished."
+
 

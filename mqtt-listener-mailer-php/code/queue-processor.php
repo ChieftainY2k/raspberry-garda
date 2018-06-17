@@ -57,6 +57,7 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
     }
     echo "[" . date("Y-m-d H:i:s") . "] content =  " . $queueItemData . "\n";
     $queueItemData = json_decode($queueItemData);
+    //@TODO add data validation here
     $imageFileName = $queueItemData->payload->pathToImage;
     $imageFullPath = $pathToCapturedImages . "/" . $imageFileName;
 
@@ -67,10 +68,10 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
     //register an attachment for inclusion
     $fileListToAttach[] = $imageFullPath;
 
+    //remember that this queue item was processed
     $queueProcessedFilesList[] = $queueItemFileName;
 
-    break;
-    //unlink($fileName);
+    //break;
 };
 
 
