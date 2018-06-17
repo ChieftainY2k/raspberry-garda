@@ -147,3 +147,14 @@ services:
 ##      - streamer-mjpg
 ##    restart: always
 
+
+  #######################################
+  # UI for containers
+  # See https://blog.hypriot.com/post/new-docker-ui-portainer/
+  #######################################
+  docker-ui:
+    image: hypriot/rpi-dockerui
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    ports:
+      - 82:9000
