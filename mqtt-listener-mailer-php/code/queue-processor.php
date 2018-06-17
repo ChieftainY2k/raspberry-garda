@@ -1,6 +1,10 @@
 <?php
 /**
- * Queue processor to clear up the queue and send email.
+ * Queue processor to clear up the queue and send aggregated email.
+ *
+ * This cript takes all messages from the queue (collected by the mqtt events collector) since
+ * the last run, aggregates the content and sends email to designated recipients.
+ *
  *
  */
 

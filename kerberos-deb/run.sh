@@ -1,4 +1,5 @@
 
+echo "Starting kerberos-io container..."
 
 service php7.0-fpm restart
 service nginx restart
@@ -9,7 +10,6 @@ chmod -R 777 /etc/opt/kerberosio/config
 # Init crontab and cron process
 rsyslogd &
 cron &
-#crontab /crontab.txt
 
 # Init machinery
 while sleep 3; do

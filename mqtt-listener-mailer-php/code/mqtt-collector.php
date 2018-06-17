@@ -2,9 +2,7 @@
 /**
  * MQTT listener to watch for "motion detected" kerbaros alerts
  *
- * This script takes incoming messages and saves them in a simple queue for further processing.
- *
- * Queued events are then processed, all events are grouped together and mailed to a given email address.
+ * This script takes incoming messages and saves them in a simple queue for further processing (by the queue processor).
  *
  */
 

@@ -76,6 +76,6 @@ EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then
     echo "[$DATE] ERROR: there was an error publishing the MQTT topic."
 else
-    echo "[$DATE] success, published MQTT topic $messageTopic with message $messageJson"
+    echo "[$DATE] published MQTT topic $messageTopic with message $messageJson"
 fi
 

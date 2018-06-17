@@ -1,3 +1,6 @@
+# Init crontab and cron process
+rsyslogd &
+cron &
 
 # Install external libraries
 cd /code
@@ -7,10 +10,8 @@ composer install
 
 # run  the listener forever
 while sleep 3; do
-    echo "Starting the MQTT events listener..."
+    echo "Starting the MQTT events collector."
     php -f /code/mqtt-collector.php
 done
 
-echo "MQTT events listener finished."
-
-
+#echo "MQTT events listener finished."
