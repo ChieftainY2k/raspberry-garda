@@ -1,0 +1,89 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "fda541779d8f1ae21560b0515b245187",
+    "content-hash": "4e706be1caa15a6651ac3b603399c26f",
+    "packages": [
+        {
+            "name": "bluerhinos/phpmqtt",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bluerhinos/phpMQTT.git",
+                "reference": "6c15cef0b1b2cb4c438e526c78d805b69a733f9d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bluerhinos/phpMQTT/zipball/6c15cef0b1b2cb4c438e526c78d805b69a733f9d",
+                "reference": "6c15cef0b1b2cb4c438e526c78d805b69a733f9d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bluerhinos\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Milsted",
+                    "email": "andrew@bluerhinos.co.uk"
+                }
+            ],
+            "description": "Simple MQTT Class",
+            "time": "2017-10-16 21:14:36"
+        },
+        {
+            "name": "nakard/mosquitto-php-stub",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nakard/mosquitto-stub.git",
+                "reference": "042ffd2c70c7d0cf49d07edc1fe47269599fea4f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nakard/mosquitto-stub/zipball/042ffd2c70c7d0cf49d07edc1fe47269599fea4f",
+                "reference": "042ffd2c70c7d0cf49d07edc1fe47269599fea4f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache v2"
+            ],
+            "authors": [
+                {
+                    "name": "Arkadiusz Moskwa",
+                    "email": "a.moskwa@gmail.com"
+                }
+            ],
+            "description": "PHPStorm stubs for Mosquitto-PHP extension",
+            "time": "2014-07-11 09:02:27"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "bluerhinos/phpmqtt": 20,
+        "nakard/mosquitto-php-stub": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
