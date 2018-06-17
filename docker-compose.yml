@@ -47,24 +47,21 @@ services:
       - ./data/h264:/etc/opt/kerberosio/h264
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    links:
-      - webhook-php
+#    links:
+#      - webhook-php
     privileged: true
     restart: always
 
-  webhook-php:
-    build:
-      context: ./webhook-php
-      dockerfile: Dockerfile.webhook-php
-    ports:
-      - "8080:8080"
-    volumes:
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-#    privileged: true
-#    links:
-#      - kerberos-deb
-    restart: always
+#  webhook-php:
+#    build:
+#      context: ./webhook-php
+#      dockerfile: Dockerfile.webhook-php
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#     - /etc/timezone:/etc/timezone:ro
+#     - /etc/localtime:/etc/localtime:ro
+#    restart: always
 
 #  cadvisor:
 #    image: unibaktr/cadvisor
