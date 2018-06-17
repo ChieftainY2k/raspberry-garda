@@ -1,6 +1,11 @@
 <?php
 /**
- * A simple MQTT subscriber
+ * MQTT listener to watch for "motion detected" kerbaros alerts
+ *
+ * This script takes incoming messages and saves them in a simple queue for further processing.
+ *
+ * Queued events are then processed, all events are grouped together and mailed to a given email address.
+ *
  */
 
 require('vendor/autoload.php');
@@ -12,7 +17,7 @@ $client->onDisconnect('disconnect');
 $client->onSubscribe('subscribe');
 $client->onMessage('message');
 $client->connect("mqtt-server", 1883, 60);
-$client->subscribe('#', 2);
+$client->subscribe('kerberos/machinery/detection/motion', 2);
 
 
 while (true) {
