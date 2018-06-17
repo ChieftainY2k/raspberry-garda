@@ -12,6 +12,7 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card.
+* Enable the SSH (raspi-config -> interfacing -> SSH)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
 * Set video memory do 256MB (raspi-config -> advanced -> memory split)
 * (optional) Enable WiFi networking (raspi-config)
