@@ -10,12 +10,26 @@
 
 require('vendor/autoload.php');
 
+$clientId = "mqtt-listener-mailer-php-" . uniqid("");
+//create queue dir
+//$queueDirName = "/tmp/" . $clientId;
+$queueDirName = "/tmp/mqtt-topics-queue";
+if (!file_exists($queueDirName)) {
+    if (!mkdir($queueDirName)) {
+        throw new \Exception("Cannot create dir $queueDirName");
+    }
+}
+
+
+echo "[" . date("Y-m-d H:i:s") . "] clientId = $clientId.\n";
+
+
 echo "[" . date("Y-m-d H:i:s") . "] starting the listener.\n";
-$client = new Mosquitto\Client("mqtt-listener-mailer-php-" . uniqid(""));
+$client = new Mosquitto\Client($clientId);
 $client->onConnect('connect');
 $client->onDisconnect('disconnect');
 $client->onSubscribe('subscribe');
-$client->onMessage('message');
+$client->onMessage('handleMessage');
 $client->connect("mqtt-server", 1883, 60);
 $client->subscribe('kerberos/machinery/detection/motion', 2);
 
@@ -38,9 +52,23 @@ function subscribe()
     echo "[" . date("Y-m-d H:i:s") . "] subscribed to a topic\n";
 }
 
-function message(Mosquitto\Message $message)
+function handleMessage(Mosquitto\Message $message)
 {
+    global $queueDirName;
+
     echo "[" . date("Y-m-d H:i:s") . "] received topic " . $message->topic . " with payload: " . $message->payload . "\n";
+
+    //save message to local queue, repack it
+    $filePath = $queueDirName . "/" . time() . ".json";
+    if (!file_put_contents($filePath, json_encode([
+        "timestamp" => time(),
+        "topic" => $message->topic,
+        "payload" => json_decode($message->payload),
+    ]), LOCK_EX)) {
+        throw new \Exception("Cannot save data to file " . $filePath);
+    }
+    echo "[" . date("Y-m-d H:i:s") . "] saved to queue file $filePath\n";
+
 }
 
 function disconnect()
