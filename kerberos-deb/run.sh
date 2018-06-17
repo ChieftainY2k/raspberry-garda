@@ -8,6 +8,7 @@ service nginx restart
 chmod -R 777 /etc/opt/kerberosio/config
 
 # Init crontab and cron process
+printenv | grep -v "no_proxy" >> /etc/environment  # preserve environment for cron process
 rsyslogd &
 cron &
 
@@ -15,7 +16,7 @@ cron &
 while sleep 3; do
     echo "Starting kerberos-io machinery..."
     kerberosio
-    echo "Kerberio process terminated."
+    echo "Kerberos-io process terminated."
 done
 
 #sleep infinity
