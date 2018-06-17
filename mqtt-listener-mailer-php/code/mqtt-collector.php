@@ -53,14 +53,14 @@ function subscribe()
 
 function handleMessage(Mosquitto\Message $message)
 {
-    global $localQueueDirName;
+    global $queueDirName;
 
     echo "[" . date("Y-m-d H:i:s") . "] received topic " . $message->topic . " with payload: " . $message->payload . "\n";
 
     //@FIXME save queue files in a 1-2 level deep dir structure for faster processing ?
 
     //save message to local queue, repack it
-    $filePath = $localQueueDirName . "/" . time() . ".json";
+    $filePath = $queueDirName . "/" . time() . ".json";
     if (!file_put_contents($filePath, json_encode([
         "timestamp" => time(),
         "topic" => $message->topic,
