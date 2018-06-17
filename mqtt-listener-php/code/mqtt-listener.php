@@ -21,7 +21,7 @@ $server = "mqtt-server";     // change if necessary
 $port = 1883;                     // change if necessary
 $username = "";                   // set your username
 $password = "";                   // set your password
-$client_id = "phpMQTT-subscriber"; // make sure this is unique for connecting to sever - you could use uniqid()
+$client_id = "listener-php-".uniqid(""); // make sure this is unique for connecting to sever - you could use uniqid()
 
 $mqtt = new \Bluerhinos\phpMQTT($server, $port, $client_id);
 if (!$mqtt->connect(true, NULL, $username, $password)) {
@@ -30,7 +30,7 @@ if (!$mqtt->connect(true, NULL, $username, $password)) {
 
 //subscribe to all topics
 $topics['#'] = [
-    "qos" => 0,
+    "qos" => 2,
     "function" => "procmsg"
 ];
 $mqtt->subscribe($topics, 0);

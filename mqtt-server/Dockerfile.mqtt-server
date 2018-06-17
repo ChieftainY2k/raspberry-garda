@@ -13,7 +13,7 @@ RUN apt-get install -y mc joe multitail curl wget telnet
 
 RUN apt-get install -y mosquitto mosquitto-clients
 
-ADD ./docker.conf /etc/mosquitto/conf.d/docker.conf
+ADD ./mqtt-server.conf /etc/mosquitto/conf.d/docker.conf
 
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh

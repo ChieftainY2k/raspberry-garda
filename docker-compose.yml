@@ -100,6 +100,16 @@ services:
      - /etc/localtime:/etc/localtime:ro
     restart: always
 
+  mqtt-listener-mailer-php:
+    build:
+      context: ./mqtt-listener-mailer-php
+      dockerfile: Dockerfile.mqtt-listener-mailer-php
+    volumes:
+     - ./mqtt-listener-mailer-php/code:/code
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
+    restart: always
+
   health-reporter:
     build:
       context: ./health-reporter
