@@ -1,0 +1,4 @@
+
+# automatically remove old files if disk space is low, log to docker container output
+
+*/5 * * * * php /code/queue-processor.php 2>&1 > /proc/1/fd/2

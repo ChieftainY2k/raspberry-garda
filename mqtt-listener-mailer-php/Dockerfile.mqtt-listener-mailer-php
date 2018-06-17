@@ -8,7 +8,7 @@ RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y mc joe multitail curl wget \
     php7.0-cli php-zip composer telnet mosquitto-clients \
     git libmosquitto-dev mosquitto-dev php-pear php-dev libcurl3-openssl-dev \
-    make
+    make cron
 
 RUN echo "" | pecl install Mosquitto-alpha
 RUN echo "extension=mosquitto.so" > /etc/php/7.0/mods-available/mosquitto.ini
@@ -21,10 +21,16 @@ RUN mkdir /mqtt-topics-queue
 #RUN mkdir /code
 #ADD ./code /code
 
+# Configure cron
+
+ADD ./crontab.txt /crontab.txt
+RUN crontab /crontab.txt
+
 # Add Startup scripts
 
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
 CMD /run.sh
+
 
 
