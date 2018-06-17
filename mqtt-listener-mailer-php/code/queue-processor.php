@@ -65,6 +65,9 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
         <li>" . $imageFileName . "
     ";
 
+    //@TODO resize images to cut the email size
+    //@TODO do not include images that are created shortly one after other
+
     //register an attachment for inclusion
     $fileListToAttach[] = $imageFullPath;
 
