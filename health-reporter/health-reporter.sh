@@ -49,9 +49,9 @@ echo -n ", max speed: $maxFreq MHz"
 echo -n ", current speed: $freq MHz"
 echo -n ", governor: $governor"
 
-availableDiskSpace=$(df | grep /dev/root | awk '{print $4/1}')
+availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
 
-echo ", available disk space: $availableDiskSpace kb"
+echo ", available disk space: $availableDiskSpaceKb kb"
 
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 
@@ -61,7 +61,7 @@ messageJson=$(cat <<EOF
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",
     "uptime_seconds":"$uptimeSeconds",
-    "disk_space_available":"$availableDiskSpace"
+    "disk_space_available_kb":"$availableDiskSpaceKb"
 }
 EOF
 )
