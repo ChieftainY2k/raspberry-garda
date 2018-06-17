@@ -106,6 +106,7 @@ services:
       dockerfile: Dockerfile.mqtt-listener-mailer-php
     volumes:
      - ./mqtt-listener-mailer-php/code:/code
+     - ./data/capture:/etc/opt/kerberosio/capture
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
     restart: always

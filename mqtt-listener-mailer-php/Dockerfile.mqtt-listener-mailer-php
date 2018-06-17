@@ -16,6 +16,8 @@ RUN echo "extension=mosquitto.so" > /etc/php/7.0/cli/conf.d/20-mosquitto.ini
 
 #ADD ./mqtt-listener.php /mqtt-listener.php
 
+RUN mkdir /mqtt-topics-queue
+
 #RUN mkdir /code
 #ADD ./code /code
 

@@ -12,11 +12,10 @@ require('vendor/autoload.php');
 
 $clientId = "mqtt-listener-mailer-php-" . uniqid("");
 //create queue dir
-//$queueDirName = "/tmp/" . $clientId;
-$queueDirName = "/tmp/mqtt-topics-queue";
-if (!file_exists($queueDirName)) {
-    if (!mkdir($queueDirName)) {
-        throw new \Exception("Cannot create dir $queueDirName");
+$localQueueDirName = "/mqtt-topics-queue";
+if (!file_exists($localQueueDirName)) {
+    if (!mkdir($localQueueDirName)) {
+        throw new \Exception("Cannot create dir $localQueueDirName");
     }
 }
 
@@ -54,12 +53,14 @@ function subscribe()
 
 function handleMessage(Mosquitto\Message $message)
 {
-    global $queueDirName;
+    global $localQueueDirName;
 
     echo "[" . date("Y-m-d H:i:s") . "] received topic " . $message->topic . " with payload: " . $message->payload . "\n";
 
+    //@FIXME save queue files in a 1-2 level deep dir structure for faster processing ?
+
     //save message to local queue, repack it
-    $filePath = $queueDirName . "/" . time() . ".json";
+    $filePath = $localQueueDirName . "/" . time() . ".json";
     if (!file_put_contents($filePath, json_encode([
         "timestamp" => time(),
         "topic" => $message->topic,
