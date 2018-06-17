@@ -3,6 +3,8 @@
  * A simple MQTT subscriber
  */
 
+//@FIXME need to switch to the native Mosquitto-alpha PHP library, phpMQTT is BUGGY!
+
 require('vendor/autoload.php');
 
 /**
