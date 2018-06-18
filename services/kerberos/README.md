@@ -4,7 +4,7 @@ This core service is based on the Kerberos-IO (https://github.com/kerberos-io/) 
 
 This service is the heart of motion detection.
 
-**Overwiew**
+**Overwiev**
 
 * Uses Raspberry Pi camera to record video
 * Saves image/video files to shared volume on motion detection
