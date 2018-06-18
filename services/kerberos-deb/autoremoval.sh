@@ -2,7 +2,7 @@
 
 #TODO optimize this script
 
-#check for errors
+#helper function
 logMessage()
 {
     LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][autoremove]"
