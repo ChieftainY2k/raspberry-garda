@@ -20,6 +20,10 @@ check_errors()
     fi
 }
 
+ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
+availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
+logMessage "Starting installation. My IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb."
+
 logMessage "Checking if camera module is enabled and taking sample picture..."
 rm -rf /tmp/testimage.jpg
 raspistill -o /tmp/testimage.jpg
@@ -62,7 +66,6 @@ logMessage "Starting services..."
 docker-compose up -d --remove-orphans
 check_errors $?
 
-ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
 availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
 logMessage "Installation complete. My IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb."
 logMessage "Run 'docker-compose logs -f' to see services logs."
