@@ -1,4 +1,4 @@
-![alt text](docs/images/kerberos-flow.png "Dockerized KerberosIO flow")
+![Overall diagram](./docs/images/kerberos-flow.png "Dockerized KerberosIO flow")
 
 **Intro**
 

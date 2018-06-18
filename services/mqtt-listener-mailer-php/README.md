@@ -19,3 +19,4 @@ Simple PHP implementataion to send email with images upon motion detection.
 
 * /.env
 
+![Email Example](./docs/images/email-motion-alert-example.png "Email example")
