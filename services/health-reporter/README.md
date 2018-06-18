@@ -4,6 +4,11 @@ The health reporter service gathers some hardware and system statistics (like CP
 
 **Published MQTT topics**
 
-* topic: **healthcheck/report** with statistics data 
+* topic: **healthcheck/report** with such data as:
+  * cpu_temp
+  * cpu_voltage
+  * uptime_seconds
+  * disk_space_free_kb
+  * disk_space_total_kb 
 
 

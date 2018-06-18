@@ -1,10 +1,26 @@
 ![Overall diagram](./docs/images/kerberos-flow.png "Dockerized KerberosIO flow")
 
-**Intro**
+**Overview**
 
-This project is an attempt at running Kerberos-io (https://github.com/kerberos-io/) instance in a docker container on Raspberry Pi 2/3 hardware and use the native Raspberry Camera Module.
+This project is an attempt at creating universal platform for service-based sensor/motion detection and notification system on Raspberry Pi 2/3.
 
-The kerberos container is managed by the docker-compose and runs along with other "helper" apps in containers (like simple webhooks listener).
+The goal was to create platform for separated services that may be easily updated/modified/developed/enabled/disabled.
+
+This project was successfully tested with Raspberry Pi 3B+.
+
+**How the platform works ?**
+
+* Each service runs in a separate docker container
+* The core services are
+  * Kerberos-io motion detection service (https://github.com/kerberos-io/)
+  * MQTT server/broker service (https://mosquitto.org/)
+* Docker containers are managed by docker-compose
+* Containers have access to some shared file space (so that they can access media files etc.) 
+* Containers have access to some shared file space (so that they can access media files etc.) 
+* Services communicate with each other using MQTT topics with JSON payloads.
+* A service may interact with some input/output hardware device (like camera, audio output, temperature sensors etc.) 
+* A service may publish MQTT topics or subscribe to a topic to react accordingly. 
+* A service may use remote services (like external MQTT server, SMTP server, IFTTT server etc.) to get its job done (like sending emails via a SMTP server).
 
 Enjoy! :-)
  
@@ -12,7 +28,7 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card (8GB at least).
-* Enable the SSH (raspi-config -> interfacing -> SSH)
+* (optional) Enable the SSH (raspi-config -> interfacing -> SSH)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
 * Set video memory do 256MB (raspi-config -> advanced -> memory split)
 * (optional) Enable WiFi networking (raspi-config)

@@ -49,8 +49,11 @@ echo -n ", max speed: $maxFreq MHz"
 echo -n ", current speed: $freq MHz"
 echo -n ", governor: $governor"
 
-availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
+# @FIXME use env/config var to get media directory here
+availableDiskSpaceKb=$(df / | tail -1  | awk '{print $4/1}')
+totalDiskSpaceKb=$(df /  | tail -1 | awk '{print $2}')
 
+echo -n ", total disk space: $totalDiskSpaceKb kb"
 echo ", available disk space: $availableDiskSpaceKb kb"
 
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
@@ -61,7 +64,8 @@ messageJson=$(cat <<EOF
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",
     "uptime_seconds":"$uptimeSeconds",
-    "disk_space_available_kb":"$availableDiskSpaceKb"
+    "disk_space_free_kb":"$availableDiskSpaceKb",
+    "disk_space_total_kb":"$totalDiskSpaceKb"
 }
 EOF
 )
