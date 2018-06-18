@@ -48,8 +48,8 @@ $client->onSubscribe(function () {
 
 $client->onMessage(function (Mosquitto\Message $message) use ($clientRemote) {
     echo "[" . date("Y-m-d H:i:s") . "] received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
-    $clientRemote->publish($message->topic, $message->payload, 1, false);
-    //echo "[" . date("Y-m-d H:i:s") . "] forwarded to REMOTE MQTT server, result = " . $res . "\n";
+    $res = $clientRemote->publish($message->topic, $message->payload, 1, false);
+    echo "[" . date("Y-m-d H:i:s") . "] forwarded to REMOTE MQTT server, result = " . $res . "\n";
     //$res = $clientRemote->publish("test", "test", 1, false);
 });
 
@@ -76,6 +76,11 @@ $clientRemote->connect(getenv("KD_MQTT_REMOTE_HOST"), getenv("KD_MQTT_REMOTE_POR
 $clientRemote->publish("service/connected/mqtt-forwarder", '{"name":"' . getenv("KD_SYSTEM_NAME") . '"}', 1, false);
 
 
-$client->loopForever();
+while (true) {
+    $client->loop();
+    $clientRemote->loop();
+    sleep(1);
+}
+//$client->loopForever();
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
