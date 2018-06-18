@@ -84,6 +84,14 @@ services:
       dockerfile: Dockerfile.mqtt-server
     ports:
       - "1883:1883"
+    environment:
+      - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
+      - KD_MQTT_BRIDGE_ENABLED=${KD_MQTT_BRIDGE_ENABLED}
+      - KD_MQTT_BRIDGE_REMOTE_HOST=${KD_MQTT_BRIDGE_REMOTE_HOST}
+      - KD_MQTT_BRIDGE_REMOTE_PORT=${KD_MQTT_BRIDGE_REMOTE_PORT}
+      - KD_MQTT_BRIDGE_REMOTE_USER=${KD_MQTT_BRIDGE_REMOTE_USER}
+      - KD_MQTT_BRIDGE_REMOTE_PASSWORD=${KD_MQTT_BRIDGE_REMOTE_PASSWORD}
+      - KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX=${KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX}
     volumes:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro

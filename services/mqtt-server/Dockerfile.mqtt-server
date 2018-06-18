@@ -7,12 +7,12 @@ ENV DEBIAN_FRONTEND noninteractive
 # Common stuff
 
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y mc joe multitail curl wget telnet
+RUN apt-get install -y mc joe multitail curl wget telnet psmisc
 
 # Install mqtt server
 
 RUN apt-get install -y mosquitto mosquitto-clients
-
+#add custom config
 ADD ./mqtt-server.conf /etc/mosquitto/conf.d/docker.conf
 
 ADD ./run.sh /run.sh
