@@ -62,5 +62,8 @@ logMessage "Starting services..."
 docker-compose up -d --remove-orphans
 check_errors $?
 
-MYIP=$(ip route get 1 | awk '{print $NF;exit}')
-logMessage "Installation complete. My IP address is: $MYIP"
+ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
+availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
+logMessage "Installation complete. My IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb."
+logMessage "Run 'docker-compose logs -f' to see services logs."
+
