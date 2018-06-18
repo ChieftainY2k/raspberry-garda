@@ -15,10 +15,10 @@ echo "[" . date("Y-m-d H:i:s") . "] starting topic forwarder.\n";
 
 //check environment params
 if (
-    empty(getenv("KD_MQTT_REMOTE_HOST"))
-    or empty(getenv("KD_MQTT_REMOTE_PORT"))
-    or empty(getenv("KD_MQTT_REMOTE_USER"))
-    or empty(getenv("KD_MQTT_REMOTE_PASSWORD"))
+    empty(getenv("KD_MQTT_BRIDGE_REMOTE_HOST"))
+    or empty(getenv("KD_MQTT_BRIDGE_REMOTE_PORT"))
+    or empty(getenv("KD_MQTT_BRIDGE_REMOTE_USER"))
+    or empty(getenv("KD_MQTT_BRIDGE_REMOTE_PASSWORD"))
 ) {
     echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
     sleep(3600);
@@ -70,9 +70,9 @@ $clientRemote->onSubscribe(function () {
 $clientRemote->onMessage(function (Mosquitto\Message $message) {
     echo "[" . date("Y-m-d H:i:s") . "] REMOTE: received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
 });
-$clientRemote->setCredentials(getenv("KD_MQTT_REMOTE_USER"), getenv("KD_MQTT_REMOTE_PASSWORD"));
+$clientRemote->setCredentials(getenv("KD_MQTT_BRIDGE_REMOTE_USER"), getenv("KD_MQTT_BRIDGE_REMOTE_PASSWORD"));
 $clientRemote->setWill("service/disconnected/mqtt-forwarder", '{"name":"' . getenv("KD_SYSTEM_NAME") . '"}', 1, false);
-$clientRemote->connect(getenv("KD_MQTT_REMOTE_HOST"), getenv("KD_MQTT_REMOTE_PORT"), 60);
+$clientRemote->connect(getenv("KD_MQTT_BRIDGE_REMOTE_HOST"), getenv("KD_MQTT_BRIDGE_REMOTE_PORT"), 60);
 $clientRemote->publish("service/connected/mqtt-forwarder", '{"name":"' . getenv("KD_SYSTEM_NAME") . '"}', 1, false);
 
 
