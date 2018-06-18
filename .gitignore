@@ -1,2 +1,11 @@
-data/capture
 .env
+
+logs/
+!logs/kerberos/.gitkeep
+
+data/kerberos/capture
+!data/kerberos/capture/.gitkeep
+
+data/kerberos/h264
+!data/kerberos/h264/.gitkeep
+
