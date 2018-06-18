@@ -1,13 +1,21 @@
-**MQTT queue listener and email sender**
+**Service: alert email sender**
 
 Simple PHP implementataion to send email with images upon motion detection.
 
-The flow:
-* Kerberos detects motion and sends MQTT topic
-* Topic is picked up by php subscriber and saved in local queue
-* Queue processor takes data from local queue and creates email with topic data and captured files.
+**Overview**
+* Subscribes to the MQTT topic **kerberos/machinery/detection/motion**
+* Topics are picked up by topic collector and saved in local queue
+* Saved topics are picked up from the local queue by the queue processor which creates emails with alerts and sends via externam SMTP server.
 
+**Subscribed to MQTT topics**
 
+* kerberos/machinery/detection/motion  
 
+**Shared files**
 
+* /data/kerberos/capture - captured media  
+
+**Configuration files**
+
+* /.env
 
