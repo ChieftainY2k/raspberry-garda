@@ -25,8 +25,7 @@ availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
 logMessage "Starting installation. My IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb."
 
 logMessage "Checking if camera module is enabled and taking sample picture..."
-rm -rf /tmp/testimage.jpg
-raspistill -o /tmp/testimage.jpg
+raspistill -o /tmp/$(date +%s).jpg
 check_errors $?
 
 # Install some required packages first

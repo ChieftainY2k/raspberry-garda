@@ -33,10 +33,10 @@ services:
 #    restart: always
 
 
-  kerberos-deb:
+  kerberos:
     build:
-      context: ./services/kerberos-deb
-      dockerfile: Dockerfile.kerberos-deb
+      context: ./services/kerberos
+      dockerfile: Dockerfile.kerberos
     ports:
       - "80:80"
       - "8889:8889"
