@@ -32,35 +32,34 @@ $client->onSubscribe(function () {
 });
 
 $client->onMessage(function (Mosquitto\Message $message) use ($clientRemote) {
-    echo "[" . date("Y-m-d H:i:s") . "] LOCAL received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
-    $res = $clientRemote->publish($message->topic, $message->payload, 1, false);
+    echo "[" . date("Y-m-d H:i:s") . "] received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
+    $clientRemote->publish($message->topic, $message->payload, 1, false);
+    //echo "[" . date("Y-m-d H:i:s") . "] forwarded to REMOTE MQTT server, result = " . $res . "\n";
     //$res = $clientRemote->publish("test", "test", 1, false);
 });
+
 
 $client->connect("mqtt-server", 1883, 60);
 $client->subscribe('#', 2);
 
-
+//Init remote client
 $clientRemote->onConnect(function ($responseCode, $responseMessage) {
     echo "[" . date("Y-m-d H:i:s") . "] REMOTE: connected, got code $responseCode , message '$responseMessage'\n";
 });
-
 $clientRemote->onDisconnect(function () {
     echo "[" . date("Y-m-d H:i:s") . "] REMOTE: disconnected\n";
 });
-
 $clientRemote->onSubscribe(function () {
     echo "[" . date("Y-m-d H:i:s") . "] REMOTE: subscribed to a topic\n";
 });
-
 $clientRemote->onMessage(function (Mosquitto\Message $message) {
     echo "[" . date("Y-m-d H:i:s") . "] REMOTE: received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
 });
+$clientRemote->setCredentials(getenv("KD_MQTT_REMOTE_USER"), getenv("KD_MQTT_REMOTE_PASSWORD"));
+$clientRemote->setWill("service/disconnected/mqtt-forwarder", '{"name":"' . getenv("KD_SYSTEM_NAME") . '"}', 1, false);
+$clientRemote->connect(getenv("KD_MQTT_REMOTE_HOST"), getenv("KD_MQTT_REMOTE_PORT"), 60);
+$clientRemote->publish("service/connected/mqtt-forwarder", '{"name":"'.getenv("KD_SYSTEM_NAME").'"}', 1, false);
 
-$clientRemote->setCredentials("umnrdqlb", "eqV04m09X_Rm");
-$clientRemote->setWill("disconnected", "mqtt-forwarder", 1, false);
-$clientRemote->connect("m21.cloudmqtt.com", 16794, 60);
-$clientRemote->publish("test/test", "test", 1, false);
 
 $client->loopForever();
 

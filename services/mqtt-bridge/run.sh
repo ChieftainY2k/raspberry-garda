@@ -4,13 +4,13 @@
 cd /code
 composer install
 
-sleep infinity
+#sleep infinity
 
-## run  the listener forever
-#while sleep 3; do
-#    echo "Starting the MQTT events listener..."
-#    php -f /code/mqtt-listener.php
-#done
-#
+# run  the listener forever
+while sleep 3; do
+    echo "Starting the MQTT events forwarder..."
+    php -f /code/mqtt-forwarder.php
+done
+
 
 
