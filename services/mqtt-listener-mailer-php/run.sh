@@ -1,5 +1,8 @@
+
+# Workaround: preserve the environment for cron process
+printenv | grep -v "no_proxy" >> /etc/environment
+
 # Init crontab and cron process
-printenv | grep -v "no_proxy" >> /etc/environment  # preserve environment for cron process
 rsyslogd &
 cron &
 

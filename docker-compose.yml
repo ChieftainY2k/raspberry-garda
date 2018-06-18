@@ -6,7 +6,7 @@ services:
 
 #  streamer-rtsp:
 #    build:
-#      context: ./streamer-rtsp
+#      context: ./services/streamer-rtsp
 #      dockerfile: Dockerfile.streamer-rtsp
 #    ports:
 #      - "9000:9000"
@@ -20,7 +20,7 @@ services:
 
 #  streamer-mjpg:
 #    build:
-#      context: ./streamer-mjpeg
+#      context: ./services/streamer-mjpeg
 #      dockerfile: Dockerfile.streamer-mjpg
 #    ports:
 #      - "9000:9000"
@@ -35,7 +35,7 @@ services:
 
   kerberos-deb:
     build:
-      context: ./kerberos-deb
+      context: ./services/kerberos-deb
       dockerfile: Dockerfile.kerberos-deb
     ports:
       - "80:80"
@@ -54,7 +54,7 @@ services:
 
 #  webhook-php:
 #    build:
-#      context: ./webhook-php
+#      context: ./services/webhook-php
 #      dockerfile: Dockerfile.webhook-php
 #    ports:
 #      - "8080:8080"
@@ -80,7 +80,7 @@ services:
 
   mqtt-server:
     build:
-      context: ./mqtt-server
+      context: ./services/mqtt-server
       dockerfile: Dockerfile.mqtt-server
     ports:
       - "1883:1883"
@@ -101,10 +101,10 @@ services:
 
   mqtt-listener-mailer-php:
     build:
-      context: ./mqtt-listener-mailer-php
+      context: ./services/mqtt-listener-mailer-php
       dockerfile: Dockerfile.mqtt-listener-mailer-php
     volumes:
-     - ./mqtt-listener-mailer-php/code:/code
+     - ./services/mqtt-listener-mailer-php/code:/code
      - ./data/capture:/etc/opt/kerberosio/capture
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
@@ -121,7 +121,7 @@ services:
 
   health-reporter:
     build:
-      context: ./health-reporter
+      context: ./services/health-reporter
       dockerfile: Dockerfile.health-reporter
     volumes:
      - /etc/timezone:/etc/timezone:ro
@@ -132,7 +132,7 @@ services:
 
 #  kerberos-dist:
 #    build:
-#      context: ./kerberos-dist
+#      context: ./services/kerberos-dist
 #      dockerfile: Dockerfile.kerberos-dist
 #    ports:
 #      - "80:80"
@@ -160,3 +160,5 @@ services:
       - ./data/portainer:/data
     ports:
       - 82:9000
+
+
