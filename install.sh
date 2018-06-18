@@ -24,18 +24,9 @@ check_errors $?
 sudo apt update
 check_errors $?
 sudo apt install -y \
-     apt-transport-https \
-     ca-certificates \
-     curl \
-     wget \
-     telnet \
-     gnupg2 \
-     software-properties-common \
-     git \
-     mc \
-     multitail \
-     htop \
-     jnettop
+     apt-transport-https ca-certificates \
+     curl wget telnet gnupg2 software-properties-common \
+     git mc multitail htop jnettop python python-pip
 check_errors $?
 
 # Get the Docker signing key for packages
@@ -59,10 +50,6 @@ sudo systemctl enable docker
 check_errors $?
 
 sudo systemctl start docker
-check_errors $?
-
-# Install required packages
-apt install -y python python-pip
 check_errors $?
 
 # Install Docker Compose from pip
