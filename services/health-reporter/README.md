@@ -8,7 +8,7 @@ The health reporter service gathers some hardware and system statistics (like CP
   * cpu_temp
   * cpu_voltage
   * uptime_seconds
-  * disk_space_free_kb
+  * disk_space_available_kb
   * disk_space_total_kb 
 
 

@@ -1,0 +1,7 @@
+{
+  "minimum-stability": "dev",
+  "require": {
+    "nakard/mosquitto-php-stub": "dev-master",
+    "phpmailer/phpmailer": "~6.0"
+  }
+}

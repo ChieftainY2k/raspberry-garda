@@ -57,14 +57,17 @@ echo -n ", total disk space: $totalDiskSpaceKb kb"
 echo ", available disk space: $availableDiskSpaceKb kb"
 
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
+timestamp=$(date +%s)
 
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
+    "name":"$KD_SYSTEM_NAME",
+    "timestamp":"$timestamp",
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",
     "uptime_seconds":"$uptimeSeconds",
-    "disk_space_free_kb":"$availableDiskSpaceKb",
+    "disk_space_available_kb":"$availableDiskSpaceKb",
     "disk_space_total_kb":"$totalDiskSpaceKb"
 }
 EOF
