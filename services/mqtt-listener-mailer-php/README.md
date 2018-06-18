@@ -2,6 +2,8 @@
 
 Simple PHP implementataion to send email with images upon motion detection.
 
+![Email Example](./docs/images/email-motion-alert-example.png "Email example")
+
 **Overview**
 * Subscribes to the MQTT topic **kerberos/machinery/detection/motion**
 * Topics are picked up by topic collector and saved in local queue
@@ -19,4 +21,3 @@ Simple PHP implementataion to send email with images upon motion detection.
 
 * /.env
 
-![Email Example](./docs/images/email-motion-alert-example.png "Email example")
