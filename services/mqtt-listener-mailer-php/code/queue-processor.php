@@ -27,7 +27,8 @@ if (
     or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
     or empty(getenv("KD_SYSTEM_NAME"))
 ) {
-    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, exiting.\n";
+    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
+    sleep(3600);
     exit;
 }
 

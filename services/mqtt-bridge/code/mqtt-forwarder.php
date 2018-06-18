@@ -11,6 +11,21 @@
 
 require('vendor/autoload.php');
 
+echo "[" . date("Y-m-d H:i:s") . "] starting topic forwarder.\n";
+
+//check environment params
+if (
+    empty(getenv("KD_MQTT_REMOTE_HOST"))
+    or empty(getenv("KD_MQTT_REMOTE_PORT"))
+    or empty(getenv("KD_MQTT_REMOTE_USER"))
+    or empty(getenv("KD_MQTT_REMOTE_PASSWORD"))
+) {
+    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
+    sleep(3600);
+    exit;
+}
+
+
 //$clientId = "mqtt-listener-mailer-php-" . uniqid("");
 $clientId = "mqtt-forwarder";
 
@@ -58,7 +73,7 @@ $clientRemote->onMessage(function (Mosquitto\Message $message) {
 $clientRemote->setCredentials(getenv("KD_MQTT_REMOTE_USER"), getenv("KD_MQTT_REMOTE_PASSWORD"));
 $clientRemote->setWill("service/disconnected/mqtt-forwarder", '{"name":"' . getenv("KD_SYSTEM_NAME") . '"}', 1, false);
 $clientRemote->connect(getenv("KD_MQTT_REMOTE_HOST"), getenv("KD_MQTT_REMOTE_PORT"), 60);
-$clientRemote->publish("service/connected/mqtt-forwarder", '{"name":"'.getenv("KD_SYSTEM_NAME").'"}', 1, false);
+$clientRemote->publish("service/connected/mqtt-forwarder", '{"name":"' . getenv("KD_SYSTEM_NAME") . '"}', 1, false);
 
 
 $client->loopForever();

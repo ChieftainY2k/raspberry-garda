@@ -13,7 +13,7 @@ composer install
 #sleep infinity
 
 # run  the listener forever
-while sleep 3; do
+while sleep 10; do
     echo "Starting the MQTT events collector."
     php -f /code/mqtt-collector.php
 done

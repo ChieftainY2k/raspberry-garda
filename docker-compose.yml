@@ -97,6 +97,12 @@ services:
      - ./services/mqtt-bridge/code:/code
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
+    environment:
+     - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
+     - KD_MQTT_REMOTE_HOST=${KD_MQTT_REMOTE_HOST}
+     - KD_MQTT_REMOTE_PORT=${KD_MQTT_REMOTE_PORT}
+     - KD_MQTT_REMOTE_USER=${KD_MQTT_REMOTE_USER}
+     - KD_MQTT_REMOTE_PASSWORD=${KD_MQTT_REMOTE_PASSWORD}
     restart: always
 
 #  mqtt-listener-php:
