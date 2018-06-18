@@ -50,7 +50,7 @@ tmpreaper -v 24h /etc/opt/kerberosio/h264/
 if [[ "$cleanupPerformed" = "1" ]]; then
 
     messageJson=''
-    messageTopic="kios/files/removed"
+    messageTopic="kerberos/files/removed"
 
     #publish it
     mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
