@@ -12,3 +12,7 @@ This core service provides the MQTT server to all services
 
 * See the **/.env** file for details and topic bridge params (see http://www.steves-internet-guide.com/mosquitto-bridge-configuration/)
 
+**Example of working bridge publishing topics to remote server**
+
+![Screenshot](./docs/images/mqtt-bridge-remote-topics.png "Screenshot")
+
