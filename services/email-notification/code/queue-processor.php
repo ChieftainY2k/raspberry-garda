@@ -73,7 +73,7 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
 
         $imageFullPath = $pathToCapturedImages . "/" . $imageFileName;
 
-        $htmlBody .= "<li>" . $imageFileName . "";
+        //$htmlBody .= "<li>" . $imageFileName . "";
 
         //@TODO resize images to cut the email size
         //@TODO do not include images that are created shortly one after other
@@ -86,22 +86,25 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
     $queueProcessedItemsList[] = $queueItemFileName;
 
     //do not process too many items at once
-    if (count($queueProcessedItemsList) >= 20) {
+    if (count($queueProcessedItemsList) >= 25) {
         break;
     }
 };
 
 
-if (!empty($htmlBody)) {
+if (!empty($fileListToAttach)) {
 
     echo "[" . date("Y-m-d H:i:s") . "] sending alert email to recipients.\n";
+
+    $htmlBody .= "Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>.";
 
     //attach last health report if available
     if (file_exists($lastHealthReportFile)) {
         $lastHealthReportData = file_get_contents($lastHealthReportFile);
-        $htmlBody .= "<hr>Last health report: " . $lastHealthReportData . "";
+        $htmlBody .= "<br><br>Last health report: <br><pre>" . var_export(json_decode($lastHealthReportData, true), true) . "</pre>";
     }
 
+    //@TODO if we cannot send an email thel sleep for a while until the SMTP server is back
     //Server settings (see docker env params for details)
     $mail = new PHPMailer(true);
     //$mail->SMTPDebug = 2;                                 // Enable verbose debug output
