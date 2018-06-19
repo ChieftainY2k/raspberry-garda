@@ -62,7 +62,7 @@ timestamp=$(date +%s)
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
-    "name":"$KD_SYSTEM_NAME",
+    "system_name":"$KD_SYSTEM_NAME",
     "timestamp":"$timestamp",
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",

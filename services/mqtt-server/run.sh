@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#modify local config
+#modify local config - disable logging to file
 sed -i '/^log_dest/s/^/#/g' /etc/mosquitto/mosquitto.conf
 
 #disable bridge by default

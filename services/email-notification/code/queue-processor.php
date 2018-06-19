@@ -100,8 +100,26 @@ if (!empty($fileListToAttach)) {
 
     //attach last health report if available
     if (file_exists($lastHealthReportFile)) {
+
         $lastHealthReportData = file_get_contents($lastHealthReportFile);
-        $htmlBody .= "<br><br>Last health report: <br><pre>" . var_export(json_decode($lastHealthReportData, true), true) . "</pre>";
+        //$htmlBody .= "<br><br>Last health report: <br><pre>" . var_export(json_decode($lastHealthReportData, true), true) . "</pre>";
+        $lastHealthReportData = json_decode($lastHealthReportData, true);
+        $reportPayload = $lastHealthReportData['payload'];
+        $htmlBody .= "
+        <br><br>Last health report (reported " . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "): <br>
+        <ul>
+            <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
+            <li>Uptime: <b>" . $reportPayload['uptime_seconds'] . " sec.</b></li>
+            <li>CPU temp.: <b>" . $reportPayload['cpu_temp'] . " 'C</b></li>
+            <li>CPU volt.: <b>" . $reportPayload['cpu_voltage'] . " V</b></li>
+            <li>Disk space total: <b>" . $reportPayload['disk_space_total_kb'] . " kb</b></li>
+            <li>Disk space available: <b>" . $reportPayload['disk_space_available_kb'] . " kb</b></li>
+        </ul>";
+
+    } else {
+
+        echo "[" . date("Y-m-d H:i:s") . "] last health report is missing, ignored.\n";
+
     }
 
     //@TODO if we cannot send an email thel sleep for a while until the SMTP server is back
@@ -140,7 +158,9 @@ if (!empty($fileListToAttach)) {
     $client = new Mosquitto\Client($clientId);
     $client->connect("mqtt-server", 1883, 60);
     $client->publish("notification/email/sent", json_encode([
+        "system_name" => getenv("KD_SYSTEM_NAME"),
         "recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
+        "subject" => $mail->Subject,
         "service" => basename(__FILE__),
         "attachmentCount" => count($fileListToAttach),
     ]), 1, false);
