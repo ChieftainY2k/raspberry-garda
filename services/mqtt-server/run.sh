@@ -3,13 +3,14 @@
 #modify local config
 sed -i '/^log_dest/s/^/#/g' /etc/mosquitto/mosquitto.conf
 
+#disable bridge by default
+configFile=/etc/mosquitto/conf.d/bridge.conf
+echo "" > ${configFile}
+
 #prepare bridge configuration if bridge is enabled
 if [ "$KD_MQTT_BRIDGE_ENABLED" == "1" ]
 then
-
-    configFile=/etc/mosquitto/conf.d/bridge.conf
     echo "Creating the bridge config $configFile"
-    echo "" > ${configFile}
     echo "connection bridge-to-therabithia" >> ${configFile}
     echo "address $KD_MQTT_BRIDGE_REMOTE_HOST:$KD_MQTT_BRIDGE_REMOTE_PORT" >> ${configFile}
     echo "remote_clientid $KD_SYSTEM_NAME" >> ${configFile}
