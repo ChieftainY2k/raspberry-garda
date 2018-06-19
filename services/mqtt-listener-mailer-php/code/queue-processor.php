@@ -130,6 +130,19 @@ if (!empty($htmlBody)) {
         throw new \Exception("Cannot send email: " . $mail->ErrorInfo);
     }
     //echo "[" . date("Y-m-d H:i:s") . "] email sent.\n";
+
+    //publish a topic that an email has been just sent
+    $clientId = basename(__FILE__) . "-" . uniqid("");
+    $client = new Mosquitto\Client($clientId);
+    $client->connect("mqtt-server", 1883, 60);
+    $client->publish("notification/email/sent", json_encode([
+        "recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
+        "service" => basename(__FILE__),
+        "attachmentCount" => count($fileListToAttach),
+    ]), 2, false);
+    $client->disconnect();
+
+
 }
 
 //remove the processed queue items
@@ -146,4 +159,5 @@ if (!empty($queueProcessedFilesList)) {
 }
 
 echo "[" . date("Y-m-d H:i:s") . "] finished queue processing.\n";
+
 

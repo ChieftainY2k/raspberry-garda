@@ -15,6 +15,10 @@ Simple PHP implementataion to send email with images upon motion detection.
 
 * kerberos/machinery/detection/motion  
 
+**Published MQTT topics**
+
+* notification/email/sent  
+
 **Shared files**
 
 * /data/kerberos/capture - captured media  
