@@ -20,6 +20,7 @@ This project was successfully tested with Raspberry Pi 3B+.
 * A service may interact with some input/output hardware device (like camera, audio output, temperature sensors etc.) 
 * A service may publish MQTT topics or subscribe to a topic to react accordingly. 
 * A service may use remote services (like external MQTT server, SMTP server, IFTTT server etc.) to get its job done (like sending emails via a SMTP server).
+* Want to know more what a service does ? Check out the /services directory and relevant README files
 
 Enjoy! :-)
  
