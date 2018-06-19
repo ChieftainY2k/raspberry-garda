@@ -4,7 +4,7 @@
 
 This project is an attempt at creating universal platform for service-based sensor/motion detection and notification system on Raspberry Pi 2/3.
 
-The goal was to create platform for separated services that may be easily updated/modified/developed/enabled/disabled.
+The goal was to create platform for separated services that can be easily managed/updated/modified/developed/enabled/disabled.
 
 This project was successfully tested with Raspberry Pi 3B+.
 
