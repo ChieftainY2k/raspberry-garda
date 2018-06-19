@@ -63,4 +63,3 @@ if [[ "$cleanupPerformed" = "1" ]]; then
 
 
 fi
-

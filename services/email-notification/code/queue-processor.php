@@ -37,7 +37,7 @@ $lastHealthReportFile = "/tmp/health-report.json";
 $localQueueDirName = "/topics-queue";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
-$queueProcessedFilesList = [];
+$queueProcessedItemsList = [];
 
 $htmlBody = "";
 $fileListToAttach = [];
@@ -83,10 +83,10 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
 
     }
     //remember that this queue item was processed
-    $queueProcessedFilesList[] = $queueItemFileName;
+    $queueProcessedItemsList[] = $queueItemFileName;
 
     //do not process too many items at once
-    if (count($queueProcessedFilesList) >= 20) {
+    if (count($queueProcessedItemsList) >= 20) {
         break;
     }
 };
@@ -99,7 +99,7 @@ if (!empty($htmlBody)) {
     //attach last health report if available
     if (file_exists($lastHealthReportFile)) {
         $lastHealthReportData = file_get_contents($lastHealthReportFile);
-        $htmlBody .= "<hr>Last health report:<br>" . $lastHealthReportData;
+        $htmlBody .= "<hr>Last health report: " . $lastHealthReportData . "";
     }
 
     //Server settings (see docker env params for details)
@@ -136,23 +136,22 @@ if (!empty($htmlBody)) {
     $clientId = basename(__FILE__) . "-" . uniqid("");
     $client = new Mosquitto\Client($clientId);
     $client->connect("mqtt-server", 1883, 60);
-    $res = $client->publish("notification/email/sent", json_encode([
+    $client->publish("notification/email/sent", json_encode([
         "recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
         "service" => basename(__FILE__),
         "attachmentCount" => count($fileListToAttach),
     ]), 1, false);
-    var_dump($res);
     $client->disconnect();
 
 
 }
 
 //remove the processed queue items
-if (!empty($queueProcessedFilesList)) {
+if (!empty($queueProcessedItemsList)) {
 
-    echo "[" . date("Y-m-d H:i:s") . "] removing processed " . count($queueProcessedFilesList) . " item(s) from queue.\n";
+    echo "[" . date("Y-m-d H:i:s") . "] removing processed " . count($queueProcessedItemsList) . " item(s) from queue.\n";
 
-    foreach ($queueProcessedFilesList as $queueItemFileName) {
+    foreach ($queueProcessedItemsList as $queueItemFileName) {
         //remote the file
         if (!unlink($localQueueDirName . "/" . $queueItemFileName)) {
             throw new \Exception("Cannot remove file " . $localQueueDirName . "/" . $queueItemFileName . "");
