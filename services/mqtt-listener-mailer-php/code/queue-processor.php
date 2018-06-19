@@ -32,7 +32,8 @@ if (
     exit;
 }
 
-
+//@TODO make it shared
+$lastHealthReportFile = "/tmp/health-report.json";
 $localQueueDirName = "/mqtt-topics-queue";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
@@ -93,6 +94,12 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
 if (!empty($htmlBody)) {
 
     echo "[" . date("Y-m-d H:i:s") . "] sending alert email to recipients.\n";
+
+    //attach last health report if available
+    if (file_exists($lastHealthReportFile)) {
+        $lastHealthReportData = file_get_contents($lastHealthReportFile);
+        $htmlBody .= "<hr>Last health report:<br>" . $lastHealthReportData;
+    }
 
     //Server settings (see docker env params for details)
     $mail = new PHPMailer(true);
