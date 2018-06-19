@@ -96,7 +96,7 @@ if (!empty($fileListToAttach)) {
 
     echo "[" . date("Y-m-d H:i:s") . "] sending alert email to recipients.\n";
 
-    $htmlBody .= "Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>.";
+    $htmlBody .= "Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>. See the attached media for details.";
 
     //attach last health report if available
     if (file_exists($lastHealthReportFile)) {
