@@ -13,9 +13,8 @@ require('vendor/autoload.php');
 
 //@TODO make it shared
 $clientId = basename(__FILE__) . "-" . uniqid("");
-//$clientId = "mqtt-listener-mailer-php";
 $lastHealthReportFile = "/tmp/health-report.json";
-$localQueueDirName = "/mqtt-topics-queue";
+$localQueueDirName = "/topics-queue";
 
 if (!file_exists($localQueueDirName)) {
     if (!mkdir($localQueueDirName)) {
@@ -49,7 +48,7 @@ $client->onMessage(function (Mosquitto\Message $message) use ($localQueueDirName
 
         //@FIXME save queue files in a 1-2 level deep dir structure for faster processing ?
         //save message to local queue, repack it
-        $filePath = $localQueueDirName . "/" . time() . ".json";
+        $filePath = $localQueueDirName . "/" . (microtime(true)) . ".json";
         if (!file_put_contents($filePath, json_encode([
             "timestamp" => time(),
             "topic" => $message->topic,

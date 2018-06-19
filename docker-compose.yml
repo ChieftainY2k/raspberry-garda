@@ -107,12 +107,13 @@ services:
 #     - /etc/localtime:/etc/localtime:ro
 #    restart: always
 
-  mqtt-listener-mailer-php:
+  email-notification:
     build:
-      context: ./services/mqtt-listener-mailer-php
-      dockerfile: Dockerfile.mqtt-listener-mailer-php
+      context: ./services/email-notification
+      dockerfile: Dockerfile.email-notification
     volumes:
-     - ./services/mqtt-listener-mailer-php/code:/code
+     - ./services/email-notification/code:/code
+     - ./data/email-notification/topics-queue:/topics-queue
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
@@ -171,4 +172,5 @@ services:
       - ./data/portainer:/data
     ports:
       - 82:9000
+
 

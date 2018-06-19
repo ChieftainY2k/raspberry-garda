@@ -34,7 +34,7 @@ if (
 
 //@TODO make it shared
 $lastHealthReportFile = "/tmp/health-report.json";
-$localQueueDirName = "/mqtt-topics-queue";
+$localQueueDirName = "/topics-queue";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
 $queueProcessedFilesList = [];
@@ -67,6 +67,7 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
     //{"timestamp":1529315427,"topic":"kerberos\/machinery\/detection\/motion","payload":{"regionCoordinates":[23,273,789,631],"numberOfChanges":17393,"pathToVideo":"1529315426_6-874214_kerberosInDocker_23-273-789-631_17393_386.mp4","name":"kerberosInDocker","timestamp":"1529315426","microseconds":"6-874367","token":386,"pathToImage":"1529315426_6-874367_kerberosInDocker_23-273-789-631_17393_386.jpg"}}
 
     //@TODO add data validation here
+    //@TODO check if media file still exists
     $imageFileName = $queueItemData->payload->pathToImage;
     if (!empty($imageFileName)) {
 
@@ -135,11 +136,12 @@ if (!empty($htmlBody)) {
     $clientId = basename(__FILE__) . "-" . uniqid("");
     $client = new Mosquitto\Client($clientId);
     $client->connect("mqtt-server", 1883, 60);
-    $client->publish("notification/email/sent", json_encode([
+    $res = $client->publish("notification/email/sent", json_encode([
         "recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
         "service" => basename(__FILE__),
         "attachmentCount" => count($fileListToAttach),
-    ]), 2, false);
+    ]), 1, false);
+    var_dump($res);
     $client->disconnect();
 
 
