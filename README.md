@@ -16,7 +16,6 @@ This project was successfully tested with Raspberry Pi 3B+.
   * MQTT server/broker service (https://mosquitto.org/)
 * Docker containers are managed by docker-compose
 * Containers have access to some shared file space (so that they can access media files etc.) 
-* Containers have access to some shared file space (so that they can access media files etc.) 
 * Services communicate with each other using MQTT topics with JSON payloads.
 * A service may interact with some input/output hardware device (like camera, audio output, temperature sensors etc.) 
 * A service may publish MQTT topics or subscribe to a topic to react accordingly. 
