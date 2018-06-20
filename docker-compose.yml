@@ -141,6 +141,20 @@ services:
     restart: always
 
 
+  alpr:
+    build:
+      context: ./services/alpr
+      dockerfile: Dockerfile.alpr
+    volumes:
+     - ./data:/data
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
+    environment:
+     - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
+#    privileged: true
+    restart: always
+
+
 #  kerberos-dist:
 #    build:
 #      context: ./services/kerberos-dist
