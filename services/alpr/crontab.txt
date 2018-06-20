@@ -1,0 +1,4 @@
+
+# process the queued messages
+
+* * * * * php /code/alpr-queue-processor.php 2>&1 > /proc/1/fd/2
