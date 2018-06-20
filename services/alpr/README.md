@@ -1,4 +1,4 @@
-**Service: alert email sender**
+**Service: automatic license plate recognition**
 
 This service uses openALPR (automatic license plate recognition) to analyze images and find car registration numbers.
 
