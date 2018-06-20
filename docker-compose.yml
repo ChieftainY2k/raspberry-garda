@@ -153,6 +153,7 @@ services:
      - /etc/localtime:/etc/localtime:ro
     environment:
      - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
+     - KD_ALPR_COUNTRY=${KD_ALPR_COUNTRY}
 #    privileged: true
     restart: always
 

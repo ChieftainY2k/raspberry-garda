@@ -1,4 +1,4 @@
 
 # process the queued messages
 
-* * * * * php /code/alpr-queue-processor.php 2>&1 > /proc/1/fd/2
+* * * * * /usr/bin/flock -w 0 /tmp/alpr-queue-processor.lock nice -n 10 php /code/alpr-queue-processor.php 2>&1 > /proc/1/fd/2
