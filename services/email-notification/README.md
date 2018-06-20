@@ -8,7 +8,7 @@ Simple PHP implementation to send email with images upon motion detection.
 
 **Overview**
 * Subscribes to the MQTT topic **kerberos/machinery/detection/motion**
-* Topics are picked up by topic collector and saved in local queue
+* Topic payloads are picked up by topic collector and saved in local queue
 * Saved topics are picked up from the local queue by the queue processor which creates emails with alerts and sends via external SMTP server.
 
 **Subscribed to MQTT topics**
