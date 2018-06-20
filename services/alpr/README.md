@@ -26,3 +26,7 @@ This service uses openALPR (automatic license plate recognition) to analyze imag
 
 * /data/kerberos/capture - captured media  
 
+**Configuration files**
+
+* /.env
+
