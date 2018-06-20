@@ -1,29 +1,16 @@
 **Service: alert email sender**
 
-Simple PHP implementation to send email with images upon motion detection.
-
-**Email example**
-
-![Email Example](./docs/images/email-motion-alert-example.png "Email example")
-
-**Overview**
-* Subscribes to the MQTT topic **kerberos/machinery/detection/motion**
-* Topics are picked up by topic collector and saved in local queue
-* Saved topics are picked up from the local queue by the queue processor which creates emails with alerts and sends via external SMTP server.
+This service uses alpr (automatic license plate recognition) to analyze images and find car registration plates. 
 
 **Subscribed to MQTT topics**
 
-* kerberos/machinery/detection/motion  
+* **kerberos/machinery/detection/motion** - this topic triggers alpr to find license plates in an image  
 
 **Published MQTT topics**
 
-* notification/email/sent  
+* **alpr/recognition/detection** with found car registration plates in the JSON payload  
 
 **Shared files**
 
 * /data/kerberos/capture - captured media  
-
-**Configuration files**
-
-* /.env
 
