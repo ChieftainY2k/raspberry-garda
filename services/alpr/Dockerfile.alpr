@@ -9,7 +9,10 @@ RUN apt-get install -y mc joe multitail curl wget \
     telnet mosquitto-clients cron \
     git libmosquitto-dev mosquitto-dev libcurl3-openssl-dev \
     openalpr openalpr-daemon openalpr-utils libopenalpr-dev libraspberrypi0 \
-    php7.0-cli php-zip composer telnet mosquitto-clients
+    php7.0-cli php-zip composer telnet mosquitto-clients \
+    php-pear php-dev
+
+RUN apt-get install -y make
 
 # Enable mosquitto lib in PHP
 
@@ -27,6 +30,4 @@ RUN crontab /crontab.txt
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
 CMD /run.sh
-
-
 
