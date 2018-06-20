@@ -78,7 +78,7 @@ messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 messageTopic="healthcheck/report"
 
 #publish it
-mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
+mosquitto_pub -h mqtt-server --retain -t "$messageTopic" -m "$messageJson"
 EXITCODE=$?
 if [ $EXITCODE -ne 0 ]; then
     echo "[$DATE] ERROR: there was an error publishing the MQTT topic."
