@@ -8,46 +8,7 @@ RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y mc joe multitail curl wget \
     telnet mosquitto-clients \
     git libmosquitto-dev mosquitto-dev libcurl3-openssl-dev \
-    make autoconf automake libtool libleptonica-dev libicu-dev \
-    libpango1.0-dev libcairo2-dev cmake git libgtk2.0-dev pkg-config libavcodec-dev \
-    libavformat-dev libswscale-dev python-dev python-numpy libjpeg-dev libpng-dev \
-    libtiff-dev libjasper-dev libdc1394-22-dev virtualenvwrapper liblog4cplus-dev \
-    libcurl4-openssl-dev autoconf-archive libjpeg62-turbo-dev cmake git mc joe \
-    multitail g++ make cmake make sudo g++ libav-tools libssl-dev wget \
-    curl rpi-update rsyslog tmpreaper strace unzip liblog4cplus-dev libtesseract-dev
-
-
-# See: https://blog.vinczejanos.info/2016/08/31/install-openalpr-on-raspberry-pi-3/
-
-# Install tesseract
-
-#RUN git clone https://github.com/tesseract-ocr/tesseract
-#RUN cd ./tesseract && ./autogen.sh
-#RUN cd ./tesseract && ./configure
-#RUN cd ./tesseract && make install
-#RUN cd ./tesseract && ldconfig
-
-# Install OpenCV
-
-RUN wget https://github.com/Itseez/opencv/archive/2.4.13.zip
-RUN unzip -q 2.4.13.zip
-RUN cd ./opencv-2.4.13 && mkdir release
-RUN cd ./opencv-2.4.13/release &&  cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_NEW_PYTHON_SUPPORT=ON -D INSTALL_C_EXAMPLES=ON -D INSTALL_PYTHON_EXAMPLES=ON  -D BUILD_EXAMPLES=ON -D ENABLE_PRECOMPILED_HEADERS=OFF ..
-RUN cd ./opencv-2.4.13/release &&  make -j2
-RUN cd ./opencv-2.4.13/release &&  make install
-RUN cd ./opencv-2.4.13/release &&  ldconfig
-
-# Install JAVA JNI
-RUN mkdir java
-RUN cd ./java && wget http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-arm32-vfp-hflt.tar.gz
-
-# Install OpenALPR
-
-RUN git clone https://github.com/openalpr/openalpr.git
-RUN cd ./openalpr && git checkout v2.1.0
-RUN cd ./openalpr/src && cmake ./
-
-
+    openalpr openalpr-daemon openalpr-utils libopenalpr-dev libraspberrypi0
 
 
 # Add Startup scripts
