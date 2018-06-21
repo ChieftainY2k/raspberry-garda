@@ -18,7 +18,8 @@ echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 
 //check environment params
 if (
-    empty(getenv("KD_REMOTE_SMTP_HOST"))
+    empty(getenv("KD_EMAIL_NOTIFICATION_ENABLED"))
+    or empty(getenv("KD_REMOTE_SMTP_HOST"))
     or empty(getenv("KD_REMOTE_SMTP_USERNAME"))
     or empty(getenv("KD_REMOTE_SMTP_PASSWORD"))
     or empty(getenv("KD_REMOTE_SMTP_SECURE_METHOD"))

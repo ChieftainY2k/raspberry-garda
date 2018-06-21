@@ -11,6 +11,24 @@
 
 require('vendor/autoload.php');
 
+//check environment params
+if (
+    empty(getenv("KD_EMAIL_NOTIFICATION_ENABLED"))
+    or empty(getenv("KD_REMOTE_SMTP_HOST"))
+    or empty(getenv("KD_REMOTE_SMTP_USERNAME"))
+    or empty(getenv("KD_REMOTE_SMTP_PASSWORD"))
+    or empty(getenv("KD_REMOTE_SMTP_SECURE_METHOD"))
+    or empty(getenv("KD_REMOTE_SMTP_PORT"))
+    or empty(getenv("KD_REMOTE_SMTP_FROM"))
+    or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
+    or empty(getenv("KD_SYSTEM_NAME"))
+) {
+    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
+    sleep(3600);
+    exit;
+}
+
+
 //@TODO make it shared
 $clientId = basename(__FILE__) . "-" . uniqid("");
 $lastHealthReportFile = "/tmp/health-report.json";
