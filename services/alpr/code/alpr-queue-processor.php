@@ -17,7 +17,7 @@ if (
     or empty(getenv("KD_ALPR_COUNTRY"))
 ) {
     echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
-    sleep(60*15);
+    sleep(60 * 15);
     exit;
 }
 
@@ -53,6 +53,7 @@ echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 
 
 $localQueueDirName = "/data/topics-queue";
+$recognizedPlatesDatabaseDirName = "/data/recognized-numbers";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 //process the queue
 $dirHandle = opendir($localQueueDirName);
@@ -102,6 +103,17 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
             }
 
             echo "[" . date("Y-m-d H:i:s") . "] numbers found: ." . json_encode($foundNumbersList) . "\n";
+
+            //save to local db for later
+            $filePath = $recognizedPlatesDatabaseDirName . "/" . (microtime(true)) . "-numbers.json";
+            if (!file_put_contents($filePath, json_encode([
+                "timestamp" => time(),
+                "numbers" => $foundNumbersList,
+            ]), LOCK_EX)) {
+                throw new \Exception("Cannot save data to file " . $filePath);
+            }
+            echo "[" . date("Y-m-d H:i:s") . "] saved numbers to db file $filePath\n";
+
 
             //publish topic that plate numbers were found
             $clientId = basename(__FILE__) . "-" . uniqid("");
