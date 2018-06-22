@@ -102,12 +102,13 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
                 ];
             }
 
-            echo "[" . date("Y-m-d H:i:s") . "] numbers found: ." . json_encode($foundNumbersList) . "\n";
+            echo "[" . date("Y-m-d H:i:s") . "] numbers found: " . json_encode($foundNumbersList) . "\n";
 
             //save to local db for later
             $filePath = $recognizedPlatesDatabaseDirName . "/" . (microtime(true)) . "-numbers.json";
             if (!file_put_contents($filePath, json_encode([
                 "timestamp" => time(),
+                "image" => $imageFullPath,
                 "numbers" => $foundNumbersList,
             ]), LOCK_EX)) {
                 throw new \Exception("Cannot save data to file " . $filePath);

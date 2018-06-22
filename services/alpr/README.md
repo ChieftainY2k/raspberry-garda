@@ -30,3 +30,8 @@ This service uses openALPR (automatic license plate recognition) to analyze imag
 
 * /.env
 
+**Known issues**
+
+* Alpr service is very CPU intensive.
+   
+
