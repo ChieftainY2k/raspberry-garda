@@ -134,27 +134,13 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
 
     }
 
-
-    //remember that this queue item was processed
-    $queueProcessedItemsList[] = $queueItemFileName;
-
-}
-
-
-//remove the processed queue items
-if (!empty($queueProcessedItemsList)) {
-
-    echo "[" . date("Y-m-d H:i:s") . "] removing processed " . count($queueProcessedItemsList) . " item(s) from queue.\n";
-
-    foreach ($queueProcessedItemsList as $queueItemFileName) {
-        //remote the file
-        if (!unlink($localQueueDirName . "/" . $queueItemFileName)) {
-            throw new \Exception("Cannot remove file " . $localQueueDirName . "/" . $queueItemFileName . "");
-        }
+    //remove the file from queue
+    if (!unlink($localQueueDirName . "/" . $queueItemFileName)) {
+        throw new \Exception("Cannot remove file " . $localQueueDirName . "/" . $queueItemFileName . "");
     }
+    echo "[" . date("Y-m-d H:i:s") . "] topic data successfully removed from the queue.\n";
+
 }
 
 
 echo "[" . date("Y-m-d H:i:s") . "] finished queue processing.\n";
-
-

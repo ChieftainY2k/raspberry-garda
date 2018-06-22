@@ -43,6 +43,13 @@ Enjoy! :-)
 The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
 
+**Configuration**
+
+* Edit the **/.env** file (if it doesn't exist then create it and copy the content from **/.env.template** file)
+* Restart the services:
+  * `docker-compose stop && docker-compose up -d`
+
+
 **Stop the system**
 `````
 docker-compose stop 
