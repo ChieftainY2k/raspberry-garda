@@ -29,13 +29,13 @@ if (
     or empty(getenv("KD_SYSTEM_NAME"))
 ) {
     echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
-    sleep(3600);
+    sleep(60*15);
     exit;
 }
 
 //@TODO make it shared
 $lastHealthReportFile = "/tmp/health-report.json";
-$localQueueDirName = "/topics-queue";
+$localQueueDirName = "/data/topics-queue";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
 $queueProcessedItemsList = [];

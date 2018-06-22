@@ -113,7 +113,7 @@ services:
       dockerfile: Dockerfile.email-notification
     volumes:
      - ./services/email-notification/code:/code
-     - ./data/email-notification/topics-queue:/topics-queue
+     - ./data/email-notification/:/data
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
@@ -148,7 +148,7 @@ services:
       dockerfile: Dockerfile.alpr
     volumes:
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
-     - ./data/alpr/topics-queue:/topics-queue
+     - ./data/alpr/:/data
      - ./services/alpr/code:/code
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro

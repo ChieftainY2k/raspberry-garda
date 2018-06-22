@@ -35,7 +35,7 @@ check_errors $?
 sudo apt install -y \
      apt-transport-https ca-certificates \
      curl wget telnet gnupg2 software-properties-common \
-     git mc multitail htop jnettop python python-pip
+     git mc multitail htop jnettop python python-pip joe
 check_errors $?
 
 # Get the Docker signing key for packages
@@ -64,6 +64,10 @@ logMessage "Starting services..."
 # start the containers
 docker-compose up -d --remove-orphans
 check_errors $?
+
+#logMessage "Removing usunsed images..."
+#docker rmi -f $(docker images -aq) 2>&1 /dev/null
+#check_errors $?
 
 availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
 logMessage "Installation complete. My IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb."

@@ -33,7 +33,7 @@ do
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
 
     usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
-    bytesAvailable=$(df --sync $imagedir | tail -1 | awk '{print $4}')
+    spaceAvailableKb=$(df --sync $imagedir | tail -1 | awk '{print $4}')
     filesCount=$(find $imagedir| wc -l)
     totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}')
 

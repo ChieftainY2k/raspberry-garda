@@ -17,7 +17,7 @@ if (
     or empty(getenv("KD_ALPR_COUNTRY"))
 ) {
     echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
-    sleep(3600);
+    sleep(60*15);
     exit;
 }
 
@@ -52,7 +52,7 @@ echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 //exit;
 
 
-$localQueueDirName = "/topics-queue";
+$localQueueDirName = "/data/topics-queue";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 //process the queue
 $dirHandle = opendir($localQueueDirName);

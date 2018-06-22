@@ -16,14 +16,14 @@ if (
     or empty(getenv("KD_ALPR_COUNTRY"))
 ) {
     echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
-    sleep(3600);
+    sleep(60*15);
     exit;
 }
 
 
 //@TODO make it shared
 $clientId = basename(__FILE__) . "-" . uniqid("");
-$localQueueDirName = "/topics-queue";
+$localQueueDirName = "/data/topics-queue";
 
 if (!file_exists($localQueueDirName)) {
     if (!mkdir($localQueueDirName)) {
