@@ -15,7 +15,7 @@ composer install
 # run  the listener forever
 while sleep 10; do
     echo "Starting the MQTT topics collector."
-    php -f /code/topics-collector.php
+    php -f /code/email-topics-collector.php
 done
 
 #echo "MQTT events listener finished."

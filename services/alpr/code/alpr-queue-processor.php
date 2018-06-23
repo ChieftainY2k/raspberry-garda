@@ -12,6 +12,12 @@
 
 require('vendor/autoload.php');
 
+if (intval(getenv("KD_ALPR_ENABLED")) != 1) {
+    echo "[" . date("Y-m-d H:i:s") . "] WARNING: ALPR service is DISABLED, sleeping and exiting.\n";
+    sleep(60 * 15);
+    exit;
+}
+
 if (
     empty(getenv("KD_ALPR_ENABLED"))
     or empty(getenv("KD_ALPR_COUNTRY"))

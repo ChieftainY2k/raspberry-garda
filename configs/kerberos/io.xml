@@ -7,11 +7,11 @@
         <markWithTimestamp type="bool">false</markWithTimestamp>
         <timestampColor type="text">none</timestampColor>
         <privacy type="bool">false</privacy>
-        <throttler type="number">0</throttler>
+        <throttler type="number">1</throttler>
     </Disk>
     <Video>
         <fps type="number">10</fps>
-        <recordAfter type="number">5</recordAfter>
+        <recordAfter type="number">1</recordAfter>
         <maxDuration type="number">30</maxDuration>
         <extension type="number">mp4</extension>
         <codec type="number">h264</codec>
