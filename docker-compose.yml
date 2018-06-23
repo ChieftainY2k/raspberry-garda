@@ -194,3 +194,15 @@ services:
     restart: always
 
 
+  # Global UI to give access to all services with one web interface
+  ui-overlay:
+    build:
+      context: ./services/ui-overlay
+      dockerfile: Dockerfile.ui-overlay
+    volumes:
+      - ./services/ui-overlay/code:/code
+    ports:
+      - 85:80
+    restart: always
+
+
