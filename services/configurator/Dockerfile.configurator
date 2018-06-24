@@ -9,8 +9,7 @@ RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y git mc joe multitail wget curl \
     php7.0-cli php-zip composer telnet mosquitto-clients \
     git libmosquitto-dev mosquitto-dev php-pear php-dev libcurl3-openssl-dev \
-    make cron php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache \
-    php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
+    make
 
 # Enable mosquitto lib in PHP
 
@@ -30,4 +29,5 @@ ADD ./configurator.conf /etc/nginx/sites-enabled/configurator.conf
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
 CMD /run.sh
+
 
