@@ -134,6 +134,7 @@ services:
       context: ./services/health-reporter
       dockerfile: Dockerfile.health-reporter
     volumes:
+     - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
     environment:
