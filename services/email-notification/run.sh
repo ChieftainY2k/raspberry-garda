@@ -3,7 +3,7 @@
 printenv | grep -v "no_proxy" >> /etc/environment
 
 # Init crontab and cron process
-rsyslogd &
+#rsyslogd &
 cron &
 
 # Install external libraries
