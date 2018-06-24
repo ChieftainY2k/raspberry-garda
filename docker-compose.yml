@@ -1,7 +1,5 @@
 version: '3.2'
 
-
-
 services:
 
 #  streamer-rtsp:
@@ -34,6 +32,8 @@ services:
 
 
   kerberos:
+    env_file:
+      - configs/environment.conf
     build:
       context: ./services/kerberos
       dockerfile: Dockerfile.kerberos
@@ -79,19 +79,13 @@ services:
 #    restart: always
 
   mqtt-server:
+    env_file:
+      - configs/environment.conf
     build:
       context: ./services/mqtt-server
       dockerfile: Dockerfile.mqtt-server
     ports:
       - "1883:1883"
-    environment:
-      - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
-      - KD_MQTT_BRIDGE_ENABLED=${KD_MQTT_BRIDGE_ENABLED}
-      - KD_MQTT_BRIDGE_REMOTE_HOST=${KD_MQTT_BRIDGE_REMOTE_HOST}
-      - KD_MQTT_BRIDGE_REMOTE_PORT=${KD_MQTT_BRIDGE_REMOTE_PORT}
-      - KD_MQTT_BRIDGE_REMOTE_USER=${KD_MQTT_BRIDGE_REMOTE_USER}
-      - KD_MQTT_BRIDGE_REMOTE_PASSWORD=${KD_MQTT_BRIDGE_REMOTE_PASSWORD}
-      - KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX=${KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX}
     volumes:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
@@ -108,6 +102,8 @@ services:
 #    restart: always
 
   email-notification:
+    env_file:
+      - configs/environment.conf
     build:
       context: ./services/email-notification
       dockerfile: Dockerfile.email-notification
@@ -117,32 +113,24 @@ services:
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
-    environment:
-     - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
-     - KD_EMAIL_NOTIFICATION_ENABLED=${KD_EMAIL_NOTIFICATION_ENABLED}
-     - KD_REMOTE_SMTP_HOST=${KD_REMOTE_SMTP_HOST}
-     - KD_REMOTE_SMTP_PORT=${KD_REMOTE_SMTP_PORT}
-     - KD_REMOTE_SMTP_USERNAME=${KD_REMOTE_SMTP_USERNAME}
-     - KD_REMOTE_SMTP_PASSWORD=${KD_REMOTE_SMTP_PASSWORD}
-     - KD_REMOTE_SMTP_SECURE_METHOD=${KD_REMOTE_SMTP_SECURE_METHOD}
-     - KD_REMOTE_SMTP_FROM=${KD_REMOTE_SMTP_FROM}
-     - KD_EMAIL_NOTIFICATION_RECIPIENT=${KD_EMAIL_NOTIFICATION_RECIPIENT}
     restart: always
 
   health-reporter:
+    env_file:
+      - configs/environment.conf
     build:
       context: ./services/health-reporter
       dockerfile: Dockerfile.health-reporter
     volumes:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
-    environment:
-     - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
     privileged: true
     restart: always
 
 
   alpr:
+    env_file:
+      - configs/environment.conf
     build:
       context: ./services/alpr
       dockerfile: Dockerfile.alpr
@@ -152,11 +140,6 @@ services:
      - ./services/alpr/code:/code
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
-    environment:
-     - KD_SYSTEM_NAME=${KD_SYSTEM_NAME}
-     - KD_ALPR_ENABLED=${KD_ALPR_ENABLED}
-     - KD_ALPR_COUNTRY=${KD_ALPR_COUNTRY}
-#    privileged: true
     restart: always
 
 
@@ -196,11 +179,14 @@ services:
 
   # UI and "supervisor" to reload the configuration for containers
   configurator:
+    env_file:
+      - configs/environment.conf
     build:
       context: ./services/configurator
       dockerfile: Dockerfile.configurator
     volumes:
       - ./services/configurator/code:/code
+      - ./configs:/docker-configs
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 85:80
