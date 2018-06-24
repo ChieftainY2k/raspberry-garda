@@ -194,13 +194,14 @@ services:
     restart: always
 
 
-  # Global UI to give access to all services with one web interface
-  ui-overlay:
+  # UI and "supervisor" to reload the configuration for containers
+  configurator:
     build:
-      context: ./services/ui-overlay
-      dockerfile: Dockerfile.ui-overlay
+      context: ./services/configurator
+      dockerfile: Dockerfile.configurator
     volumes:
-      - ./services/ui-overlay/code:/code
+      - ./services/configurator/code:/code
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 85:80
     restart: always

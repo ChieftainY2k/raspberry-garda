@@ -6,7 +6,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi" | tee --append /etc/apt/sources.list
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail make cmake make sudo g++ libav-tools libssl-dev wget curl rpi-update cron rsyslog tmpreaper strace
+RUN apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail make cmake make \
+    sudo g++ libav-tools libssl-dev wget curl \
+    rpi-update cron rsyslog tmpreaper strace
 
 #RUN git clone http://github.com/raspberrypi/userland
 #RUN cd ./userland && ./buildme && cp build/bin/* /bin/
