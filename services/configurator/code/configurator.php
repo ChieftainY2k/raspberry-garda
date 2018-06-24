@@ -47,7 +47,7 @@ class Configurator
     }
 }
 
-//simple routing, wimple web interface
+//simple routing, simple web interface
 $requestUrl = $_SERVER['REQUEST_URI'];
 //echo "Current URL: ". $requestUrl . "<br>";
 switch ($requestUrl) {
