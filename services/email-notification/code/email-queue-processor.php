@@ -75,9 +75,9 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
 
     //@TODO add data validation here
     //@TODO check if media file still exists
-    $imageFileName = $queueItemData->payload->pathToImage;
-    if (!empty($imageFileName)) {
+    if (!empty($queueItemData->payload->pathToImage)) {
 
+        $imageFileName = $queueItemData->payload->pathToImage;
         $imageFullPath = $pathToCapturedImages . "/" . $imageFileName;
 
         //$htmlBody .= "<li>" . $imageFileName . "";
@@ -149,7 +149,9 @@ if (!empty($fileListToAttach)) {
 
     //Add requested attachments
     foreach ($fileListToAttach as $attachmentFilePath) {
-        $mail->addAttachment($attachmentFilePath);
+        if (file_exists($attachmentFilePath)) {
+            $mail->addAttachment($attachmentFilePath);
+        }
     }
 
     //Content
