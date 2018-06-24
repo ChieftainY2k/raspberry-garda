@@ -1,0 +1,6 @@
+{
+  "minimum-stability": "dev",
+  "require": {
+    "docker-php/docker-php": "*"
+  }
+}

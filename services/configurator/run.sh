@@ -6,4 +6,9 @@ echo "Starting services..."
 
 service nginx restart
 
+# Install external libraries
+cd /code
+composer install
+
+
 sleep infinity
