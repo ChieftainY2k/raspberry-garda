@@ -1,4 +1,5 @@
 .env
+./configs/environment.conf
 
 logs/
 !logs/kerberos/.gitkeep
