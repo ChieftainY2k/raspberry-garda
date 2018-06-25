@@ -11,6 +11,12 @@
 
 require('vendor/autoload.php');
 
+echo "[" . date("Y-m-d H:i:s") . "] starting the collector.\n";
+
+//load the services configuration
+(new Dotenv\Dotenv("/service-configs","services.conf"))->load();
+
+
 if (intval(getenv("KD_ALPR_ENABLED")) != 1) {
     echo "[" . date("Y-m-d H:i:s") . "] WARNING: ALPR service is DISABLED, sleeping and exiting.\n";
     sleep(60 * 15);
@@ -36,7 +42,7 @@ if (!file_exists($localQueueDirName)) {
     }
 }
 
-echo "[" . date("Y-m-d H:i:s") . "] starting the listener, clientId = $clientId\n";
+echo "[" . date("Y-m-d H:i:s") . "] starting the mqtt listener, clientId = $clientId\n";
 
 $client = new Mosquitto\Client($clientId);
 
