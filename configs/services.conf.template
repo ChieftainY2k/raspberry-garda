@@ -1,6 +1,13 @@
+#
 # Template for the services.conf file
-# Private configs go here.
-# services.conf file MUST NOT be included in the repository for security reasons.
+# Private/secret configuration goes here.
+#
+# services.conf file MUST NOT be included in the CVS for security reasons.
+#
+# services.conf values that contain spaces must be surrounded by quotes i.e. FOO="bar bar"
+#
+#
+
 
 # Global namespace (must be alphanumerical, without spaces)
 
@@ -29,8 +36,8 @@ KD_MQTT_BRIDGE_REMOTE_USER=
 KD_MQTT_BRIDGE_REMOTE_PASSWORD=
 KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX=
 
-# ALPR service configuration
+# ALPR service configuration (see http://doc.openalpr.com/opensource.html)
 
 KD_ALPR_ENABLED=0
-KD_ALPR_COUNTRY=eu  # Country code for ALPR (see http://doc.openalpr.com/opensource.html)
+KD_ALPR_COUNTRY=eu
 

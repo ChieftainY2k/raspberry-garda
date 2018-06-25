@@ -17,8 +17,41 @@ class Configurator
      */
     static function showUI()
     {
-        echo "Main menu:<hr>";
-        echo "[<a href='/reloadContainers'>reload containers</a>]";
+        if (!empty($_REQUEST['configAsText'])) {
+            self::saveServicesConfig($_REQUEST['configAsText']);
+            self::reloadContainers();
+        }
+
+        $currentConfig = file_get_contents("/service-configs/services.conf");
+        echo "
+            Current services configuration:<hr>
+            <form action='' method='post'>
+            <textarea name='configAsText' style='width:100%; height:400px;'>" . htmlspecialchars($currentConfig) . "</textarea>
+            <input type='submit' value='save config and reload services'>
+            </form>
+        ";
+    }
+
+
+    /**
+     * Save new configuration file for services
+     * @param $configAsText
+     * @throws Exception
+     */
+    static function saveServicesConfig($configAsText)
+    {
+        echo "Updating services config...<hr>";
+
+        //split to lines, normalize, strip empty space, validate
+        $configAsTextLines = explode("\n", $configAsText);
+        array_walk($configAsTextLines, function (&$line) {
+            $line = trim($line);
+        });
+        $newConfig = join("\n", $configAsTextLines);
+        if (!file_put_contents("/service-configs/services.conf", $newConfig)) {
+            throw new Exception("Cannot save config file");
+        }
+        echo "Services configuration successfully saved.<hr>";
     }
 
     /**
@@ -28,33 +61,35 @@ class Configurator
     {
         echo "Reloading containers... <hr>";
 
+        //init docker API client
         $docker = new Docker();
         $manager = $docker->getContainerManager();
         $containers = $manager->findAll();
 
+        //reload all containers except for the configurator container
         foreach ($containers as $container) {
             $containerNames = join(",", $container->getNames());
             if (!preg_match("/configurator/", $containerNames)) {
                 echo "Restarting container $containerNames ...<br>";
-                flush();
                 $manager->restart($container->getId());
             }
 
         }
-
-        echo "<hr>Containers successfully reloaded.";
+        echo "Containers successfully reloaded.<hr>";
 
     }
 }
 
-//simple routing, simple web interface
-$requestUrl = $_SERVER['REQUEST_URI'];
-//echo "Current URL: ". $requestUrl . "<br>";
-switch ($requestUrl) {
-    case "/reloadContainers":
-        Configurator::reloadContainers();
-        break;
-    default:
-        Configurator::showUI();
-}
+Configurator::showUI();
 
+////simple routing, simple web interface
+//$requestUrl = $_SERVER['REQUEST_URI'];
+////echo "Current URL: ". $requestUrl . "<br>";
+//switch ($requestUrl) {
+//    case "/reloadContainers":
+//        Configurator::reloadContainers();
+//        break;
+//    default:
+//        Configurator::showUI();
+//}
+//
