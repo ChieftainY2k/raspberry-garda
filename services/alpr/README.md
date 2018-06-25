@@ -34,7 +34,7 @@ This service uses openALPR (automatic license plate recognition) to analyze imag
 
 **Configuration files**
 
-* /.env
+* /configs/services.conf
 
 **Known issues**
 

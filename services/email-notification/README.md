@@ -29,5 +29,5 @@ Simple PHP implementation to send email with images upon motion detection.
 
 **Configuration files**
 
-* /.env
+* /configs/services.conf
 

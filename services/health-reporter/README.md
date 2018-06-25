@@ -11,4 +11,8 @@ The health reporter service gathers some hardware and system statistics (like CP
   * disk_space_available_kb
   * disk_space_total_kb 
 
+**Configuration files**
+
+* /configs/services.conf
+
 

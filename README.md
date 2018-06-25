@@ -14,6 +14,7 @@ This project was successfully tested with Raspberry Pi 3B+.
 * The core services are
   * Kerberos-io motion detection service (https://github.com/kerberos-io/)
   * MQTT server/broker service (https://mosquitto.org/)
+  * Services configurator (web based user interface)
 * Docker containers are managed by docker-compose
 * Containers have access to some shared file space (so that they can access media files etc.) 
 * Services communicate with each other using MQTT topics with JSON payloads.
@@ -33,8 +34,8 @@ Enjoy! :-)
 * Set video memory do 256MB (raspi-config -> advanced -> memory split)
 * (optional) Enable WiFi networking (raspi-config)
 * Clone this repo (git clone REPO_URL)
-* Rename the file **.env.template** to **.env** then edit it and update with your configuration (like SMTP host/password etc.)
-* Run "**bash ./install.sh**" inside the repo directory you've just cloned.
+* Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
+* Run "**bash ./install.sh**" 
 
 * See the installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
@@ -45,7 +46,7 @@ The application will be automatically restarted on reboot, unless you explicitel
 
 **Configuration**
 
-* Edit the **/.env** file (if it doesn't exist then create it and copy the content from **/.env.template** file)
+* Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
 * Restart the services:
   * `docker-compose stop && docker-compose up -d`
 
