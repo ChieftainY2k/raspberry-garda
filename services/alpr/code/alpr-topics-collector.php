@@ -56,7 +56,7 @@ $client->onMessage(function (Mosquitto\Message $message) use ($localQueueDirName
 
     echo "[" . date("Y-m-d H:i:s") . "] received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
 
-    if ($message->topic == "kerberos/machinery/detection/motion") {
+    if ($message->topic == "kerberos/motiondetected") {
 
         //motion detected
 
@@ -78,7 +78,7 @@ $client->onMessage(function (Mosquitto\Message $message) use ($localQueueDirName
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);
-$client->subscribe('kerberos/machinery/detection/motion', 2);
+$client->subscribe('kerberos/motiondetected', 2);
 $client->loopForever();
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";

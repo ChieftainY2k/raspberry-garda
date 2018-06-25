@@ -14,8 +14,8 @@ require('vendor/autoload.php');
 
 echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 
-//load environment and service configs
-(new Dotenv\Dotenv("/service-configs","environment.conf"))->overload();
+//load the services configuration
+(new Dotenv\Dotenv("/service-configs","services.conf"))->load();
 
 
 if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {

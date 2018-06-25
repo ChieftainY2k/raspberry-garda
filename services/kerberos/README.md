@@ -16,7 +16,7 @@ This service is the heart of motion detection.
 
 **Published MQTT topics**
 
-* topic: **kerberos/machinery/detection/motion** with data (see: https://doc.kerberos.io/2.0/machinery/Outputs/MQTT)  
+* topic: **kerberos/motiondetected** with data (see: https://doc.kerberos.io/2.0/machinery/Outputs/MQTT)  
 * topic: **kerberos/files/removed** - when some media files are removed to free the disk space  
 
 **Shared files**

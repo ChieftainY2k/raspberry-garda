@@ -17,6 +17,9 @@ function calculate_overvolts {
     echo "$overvolts"
 }
 
+#load services confuguration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+
 temp=$(vcgencmd measure_temp)
 temp=${temp:5:4}
 

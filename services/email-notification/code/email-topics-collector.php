@@ -11,8 +11,8 @@ require('vendor/autoload.php');
 
 echo "[" . date("Y-m-d H:i:s") . "] Starting topics collector.\n";
 
-//load environment and service configs
-(new Dotenv\Dotenv("/service-configs","environment.conf"))->overload();
+//load the services configuration
+(new Dotenv\Dotenv("/service-configs","services.conf"))->load();
 
 if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
     echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
@@ -68,7 +68,7 @@ $client->onMessage(function (Mosquitto\Message $message) use ($localQueueDirName
 
     echo "[" . date("Y-m-d H:i:s") . "] received topic '" . $message->topic . "' with payload: '" . $message->payload . "'\n";
 
-    if ($message->topic == "kerberos/machinery/detection/motion") {
+    if ($message->topic == "kerberos/motiondetected") {
 
         //motion detected
 
@@ -103,7 +103,7 @@ $client->onMessage(function (Mosquitto\Message $message) use ($localQueueDirName
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);
-$client->subscribe('kerberos/machinery/detection/motion', 2);
+$client->subscribe('kerberos/motiondetected', 2);
 $client->subscribe('healthcheck/report', 2);
 $client->loopForever();
 

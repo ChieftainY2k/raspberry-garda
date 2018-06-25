@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+
 #modify local config - disable logging to file
 sed -i '/^log_dest/s/^/#/g' /etc/mosquitto/mosquitto.conf
 
@@ -18,7 +21,8 @@ then
     echo "remote_password $KD_MQTT_BRIDGE_REMOTE_PASSWORD" >> ${configFile}
     echo "topic # out 1 \"\" $KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX/" >> ${configFile}
     echo "topic # in 1" remote/ \"\">> ${configFile}
-
+else
+    echo "MQTT bridge is DISABLED."
 fi
 
 # Fix permissions
