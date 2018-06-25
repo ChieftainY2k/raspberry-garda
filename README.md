@@ -29,15 +29,14 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card (8GB at least).
-* (optional) Enable the SSH (raspi-config -> interfacing -> SSH)
+* Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
 * Enable the camera module support (raspi-config -> interfacing -> camera)
 * Set video memory do 256MB (raspi-config -> advanced -> memory split)
-* (optional) Enable WiFi networking (raspi-config)
-* Clone this repo (git clone REPO_URL)
+* Clone this repo (git clone REPO_URL), go to the newly created repo directory
 * Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
 * Run "**bash ./install.sh**" 
+* Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
 
-* See the installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
 * The docker containers statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:82   
 

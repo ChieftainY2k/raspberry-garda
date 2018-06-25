@@ -15,7 +15,7 @@ require('vendor/autoload.php');
 echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 
 //load the services configuration
-(new Dotenv\Dotenv("/service-configs","services.conf"))->load();
+(new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
 
 
 if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
@@ -114,11 +114,12 @@ if (!empty($fileListToAttach)) {
         //$htmlBody .= "<br><br>Last health report: <br><pre>" . var_export(json_decode($lastHealthReportData, true), true) . "</pre>";
         $lastHealthReportData = json_decode($lastHealthReportData, true);
         $reportPayload = $lastHealthReportData['payload'];
+        $uptimeSeconds = $reportPayload['uptime_seconds'];
         $htmlBody .= "
         <br><br>Last health report (reported " . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "): <br>
         <ul>
             <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
-            <li>Uptime: <b>" . $reportPayload['uptime_seconds'] . " sec.</b></li>
+            <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . gmdate(":i:s", $uptimeSeconds % 3600) . " (hours:minutes:seconds)</b></li>
             <li>CPU temp.: <b>" . $reportPayload['cpu_temp'] . " 'C</b></li>
             <li>CPU volt.: <b>" . $reportPayload['cpu_voltage'] . " V</b></li>
             <li>Disk space total: <b>" . $reportPayload['disk_space_total_kb'] . " kb</b></li>
@@ -126,6 +127,7 @@ if (!empty($fileListToAttach)) {
                 (" . number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2) . "%)</b>
             </li>
         </ul>";
+        //<li>Uptime: <b>" . gmdate("H:i:s", $reportPayload['uptime_seconds']) . " (hours:minutes:seconds)</b></li>
 
     } else {
 

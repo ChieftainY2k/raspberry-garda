@@ -24,18 +24,27 @@ ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
 availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
 logMessage "Starting installation. My IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb."
 
+#logMessage "Updating the firmware..."
+#rpi-update
+#check_errors $?
+
+logMessage "Updating packages..."
+sudo apt-get update -y
+check_errors $?
+sudo apt-get upgrade -y
+check_errors $?
+
 logMessage "Checking if camera module is enabled and taking sample picture..."
 raspistill -o /tmp/$(date +%s).jpg
 check_errors $?
 
+
 # Install some required packages first
 logMessage "Installing packages..."
-sudo apt update
-check_errors $?
 sudo apt install -y \
      apt-transport-https ca-certificates \
      curl wget telnet gnupg2 software-properties-common \
-     git mc multitail htop jnettop python python-pip joe
+     git mc multitail htop jnettop python python-pip joe pydf
 check_errors $?
 
 # Get the Docker signing key for packages

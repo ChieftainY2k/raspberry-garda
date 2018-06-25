@@ -29,14 +29,14 @@ logMessage "partition $partition for $imagedir is used in $usedPercent percent (
 #max allowed space for files:
 #maximumAllowedSpaceTakenKb=600000 # fixed = how much we allow files to take
 #maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-1500000)) # dynamic = related to the overall free space on device
-maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-1500000)) # dynamic = related to the overall free space on device
+maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-500000)) # dynamic = related to the overall free space on device
 #logMessage "totalFilesSizeKb = $totalFilesSizeKb"
 #logMessage "maximumAllowedSpaceTakenKb = $maximumAllowedSpaceTakenKb"
 #logMessage "spaceAvailableKb = $spaceAvailableKb"
 
 cleanupPerformed=0
 #while [ $totalFilesSizeKb -gt $maximumAllowedSpaceTakenKb ]
-while [ $spaceAvailableKb -lt 1500000 ]
+while [ $spaceAvailableKb -lt 500000 ]
 do
     logMessage "cleaning up, removing some oldest files in $imagedir ..."
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
