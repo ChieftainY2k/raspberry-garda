@@ -21,6 +21,9 @@ then
 
 fi
 
+# Fix permissions
+chmod a+rwx /var/lib/mosquitto
+
 while sleep 3; do
     echo "Starting the MQTT mosquitto server..."
     mosquitto -v -c /etc/mosquitto/mosquitto.conf

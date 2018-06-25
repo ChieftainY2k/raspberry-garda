@@ -47,6 +47,7 @@ services:
       - ./data/kerberos/h264:/etc/opt/kerberosio/h264
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - ./configs:/service-configs:ro
 #    links:
 #      - webhook-php
     privileged: true
@@ -89,6 +90,8 @@ services:
     volumes:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
+     - ./data/mqtt-server/db:/var/lib/mosquitto
+     - ./configs:/service-configs
     restart: always
 
 #  mqtt-listener-php:
@@ -113,6 +116,7 @@ services:
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
+     - ./configs:/service-configs:ro
     restart: always
 
   health-reporter:
@@ -124,6 +128,7 @@ services:
     volumes:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
+     - ./configs:/service-configs:ro
     privileged: true
     restart: always
 
@@ -140,6 +145,7 @@ services:
      - ./services/alpr/code:/code
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
+     - ./configs:/service-configs:ro
     restart: always
 
 
@@ -186,7 +192,7 @@ services:
       dockerfile: Dockerfile.configurator
     volumes:
       - ./services/configurator/code:/code
-      - ./configs:/docker-configs
+      - ./configs:/service-configs
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 85:80

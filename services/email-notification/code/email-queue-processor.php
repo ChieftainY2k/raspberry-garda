@@ -5,16 +5,18 @@
  * This cript takes all messages from the queue (collected by the mqtt events collector) since
  * the last run, aggregates the content and sends email to designated recipients.
  *
- *
+ * @TODO this is just MVP/PoC, refactor it !
  */
-
-//@TODO this is just MVP/PoC, refactor it !
 
 use PHPMailer\PHPMailer\PHPMailer;
 
 require('vendor/autoload.php');
 
 echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
+
+//load environment and service configs
+(new Dotenv\Dotenv("/service-configs","environment.conf"))->overload();
+
 
 if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
     echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
