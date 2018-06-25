@@ -10,6 +10,8 @@ logMessage()
     echo "$LOGPREFIX $MESSAGE"
 }
 
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 #LOGPREFIX="$(date '+%Y-%m-%d %H:%M:%S')[autoremove]"
 imagedir=/etc/opt/kerberosio/capture/
