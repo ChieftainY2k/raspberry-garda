@@ -2,6 +2,10 @@
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+# Install external libraries
+cd /code
+composer install
+
 # run the simple PHP process to act as web interface
 while sleep 3; do
     echo "Starting the configurator server..."
