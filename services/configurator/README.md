@@ -1,4 +1,5 @@
 **Service: configurator**
 
-This core service exposes web GUI to modify service configuration and reloads services when the configuration is updated.
+* This service exposes web GUI to modify the services configuration (see the file **configs/services.conf**).
+* This service may reload services when the configuration is updated.
 
