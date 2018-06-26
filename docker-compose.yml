@@ -51,6 +51,9 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - ./configs:/service-configs:ro
+#      - /dev/video0:/dev/video0
+#      - /dev/vcsm:/dev/vcsm
+#      - /dev/vchiq:/dev/vchiq
 #    links:
 #      - webhook-php
     privileged: true
@@ -201,6 +204,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 85:80
+#    cap_add:
+#      - SYS_ADMIN
+#    privileged: true
     restart: always
 
 

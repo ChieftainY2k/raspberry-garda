@@ -122,8 +122,8 @@ if (!empty($fileListToAttach)) {
             <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
             <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate("i", $uptimeSeconds % 3600) . "m</b></li>
             <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
-            <li>Disk space total: <b>" . $reportPayload['disk_space_total_kb'] . " kb</b></li>
-            <li>Disk space available: <b>" . $reportPayload['disk_space_available_kb'] . " kb 
+            <li>Disk space total: <b>" . number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2) . " GB</b></li>
+            <li>Disk space available: <b>" . number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2) . " GB 
                 (" . number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2) . "%)</b>
             </li>
         </ul>";
