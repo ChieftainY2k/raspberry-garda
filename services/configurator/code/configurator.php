@@ -48,14 +48,15 @@ class Configurator
             $line = trim($line);
             if (
                 (!empty($line))
-                and preg_match("/^#.*$/i", $line) //comment
-                and preg_match("/^[a-z0-9_]+[=][a-z0-9@_-]+[ ]*(#.*)?$/i", $line) //key=val without quotes and possible comment at the end
-                and preg_match('/^[a-z0-9_]+[=]["][a-z0-9@_ -]+["][ ]*(#.*)?$/i', $line) //key=val without quotes and possible comment at the end
+                and !preg_match("/^#.*$/i", $line) //comment
+                and !preg_match("/^[a-z0-9_]+[=][a-z0-9@_.-]+[ ]*(#.*)?$/i", $line) //key=val without quotes and possible comment at the end
+                and !preg_match('/^[a-z0-9_]+[=]["][a-z0-9@_. -]+["][ ]*(#.*)?$/i', $line) //key=val without quotes and possible comment at the end
             ) {
-                throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\"" or comment);
+                throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\" or # (comment)");
             }
         });
-        echo "OK"; exit;
+        //echo "OK";
+        //exit;
         $newConfig = join("\n", $configAsTextLines);
         if (!file_put_contents("/service-configs/services.conf", $newConfig)) {
             throw new Exception("Cannot save config file");
@@ -64,7 +65,7 @@ class Configurator
     }
 
     /**
-     * Reload all containers except for this one with configurator
+     * Reload all containers except for the one with configurator
      */
     static function reloadContainers()
     {
@@ -89,7 +90,21 @@ class Configurator
     }
 }
 
-Configurator::showUI();
+try {
+
+    Configurator::showUI();
+
+} catch (\Exception $e) {
+
+    echo "
+        <div style='padding:10px; background:red; color:white;'>
+        Exception: <br><br.
+        <b>" . htmlspecialchars($e->getMessage()) . "</b><br><br>
+        Stack trace:<br>
+        <pre>" . $e . "</pre>
+        </div>";
+}
+
 
 ////simple routing, simple web interface
 //$requestUrl = $_SERVER['REQUEST_URI'];

@@ -120,7 +120,7 @@ if (!empty($fileListToAttach)) {
         <br><br>Last health report (reported " . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "): <br>
         <ul>
             <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
-            <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate(":i", $uptimeSeconds % 3600) . "m</b></li>
+            <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate("i", $uptimeSeconds % 3600) . "m</b></li>
             <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
             <li>Disk space total: <b>" . $reportPayload['disk_space_total_kb'] . " kb</b></li>
             <li>Disk space available: <b>" . $reportPayload['disk_space_available_kb'] . " kb 
