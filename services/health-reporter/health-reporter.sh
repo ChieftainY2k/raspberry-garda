@@ -59,8 +59,11 @@ totalDiskSpaceKb=$(df /  | tail -1 | awk '{print $2}')
 echo -n ", total disk space: $totalDiskSpaceKb kb"
 echo ", available disk space: $availableDiskSpaceKb kb"
 
+imagedir=/etc/opt/kerberosio/capture/
+
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
+totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}') # total size of captured files
 
 # prepare JSON message
 messageJson=$(cat <<EOF
@@ -71,7 +74,8 @@ messageJson=$(cat <<EOF
     "cpu_voltage":"$volts",
     "uptime_seconds":"$uptimeSeconds",
     "disk_space_available_kb":"$availableDiskSpaceKb",
-    "disk_space_total_kb":"$totalDiskSpaceKb"
+    "disk_space_total_kb":"$totalDiskSpaceKb",
+    "images_size_kb":"$totalFilesSizeKb"
 }
 EOF
 )
