@@ -71,7 +71,7 @@ check_errors $?
 
 logMessage "Starting services..."
 # start the containers
-docker-compose up -d --remove-orphans
+COMPOSE_HTTP_TIMEOUT=200 docker-compose up -d --remove-orphans
 check_errors $?
 
 #logMessage "Removing usunsed images..."
