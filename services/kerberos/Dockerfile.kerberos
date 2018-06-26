@@ -1,6 +1,7 @@
 FROM resin/rpi-raspbian:stretch
 
 MAINTAINER "ChieftainY2k@gmail.com"
+#ARG KD_RASPBERRY_PI_MODEL
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -31,7 +32,7 @@ RUN cd /tmp && dpkg -i rpi3-machinery-kerberosio-armhf-2.6.1.deb
 
 RUN apt-get install -y -t stretch nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 RUN rm -f /etc/nginx/sites-enabled/default
-ADD ./kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
+ADD ./nginx-kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
 RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
 
 USER www-data
@@ -51,9 +52,9 @@ RUN chmod a+rwx /run/php/php7.0-fpm.sock
 RUN apt-get install -y mosquitto-clients
 
 # Add helper scripts
-
-ADD ./autoremoval.sh /autoremoval.sh
-RUN chmod a+x /autoremoval.sh
+#
+#ADD ./autoremoval.sh /autoremoval.sh
+#RUN chmod a+x /autoremoval.sh
 
 # Configure cron
 ADD ./crontab.txt /crontab.txt
@@ -64,5 +65,3 @@ RUN crontab /crontab.txt
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
 CMD /run.sh
-
-

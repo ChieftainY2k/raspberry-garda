@@ -1,5 +1,5 @@
 
 # automatically remove old files if disk space is low, log to docker container output
 
-*/5 * * * * /usr/bin/flock -w 0 /tmp/autoremoval.lock /autoremoval.sh 2>&1 > /proc/1/fd/2
+*/5 * * * * /usr/bin/flock -w 0 /tmp/autoremoval.lock /code/autoremoval.sh 2>&1 > /proc/1/fd/2
 

@@ -37,10 +37,13 @@ services:
     build:
       context: ./services/kerberos
       dockerfile: Dockerfile.kerberos
+#      args:
+#        KD_RASPBERRY_PI_MODEL: ${KD_RASPBERRY_PI_MODEL}
     ports:
       - "80:80"
       - "8889:8889"
     volumes:
+      - ./services/kerberos/code:/code
       - ./configs/kerberos:/etc/opt/kerberosio/config
       - ./logs/kerberos:/etc/opt/kerberosio/logs
       - ./data/kerberos/capture:/etc/opt/kerberosio/capture
@@ -126,6 +129,7 @@ services:
       context: ./services/health-reporter
       dockerfile: Dockerfile.health-reporter
     volumes:
+     - ./services/health-reporter/code:/code
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro

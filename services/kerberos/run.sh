@@ -4,11 +4,17 @@ printenv | grep -v "no_proxy" >> /etc/environment
 
 echo "Starting kerberos-io service."
 
+
+
 service php7.0-fpm restart
 service nginx restart
 
 # Fix permissions
 chmod -R 777 /etc/opt/kerberosio/config
+
+# Fix permissions
+chmod u+x /code/autoremoval.sh
+
 
 # Init crontab and cron process
 rsyslogd &

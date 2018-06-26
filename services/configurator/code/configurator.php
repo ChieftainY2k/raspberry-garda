@@ -45,9 +45,17 @@ class Configurator
         //split to lines, normalize, strip empty space, validate
         $configAsTextLines = explode("\n", $configAsText);
         array_walk($configAsTextLines, function (&$line) {
-            //@TODO validate the line syntax for values with spaces
             $line = trim($line);
+            if (
+                (!empty($line))
+                and preg_match("/^#.*$/i", $line) //comment
+                and preg_match("/^[a-z0-9_]+[=][a-z0-9@_-]+[ ]*(#.*)?$/i", $line) //key=val without quotes and possible comment at the end
+                and preg_match('/^[a-z0-9_]+[=]["][a-z0-9@_ -]+["][ ]*(#.*)?$/i', $line) //key=val without quotes and possible comment at the end
+            ) {
+                throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\"" or comment);
+            }
         });
+        echo "OK"; exit;
         $newConfig = join("\n", $configAsTextLines);
         if (!file_put_contents("/service-configs/services.conf", $newConfig)) {
             throw new Exception("Cannot save config file");

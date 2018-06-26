@@ -35,6 +35,7 @@ Enjoy! :-)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
 * Set video memory do 256MB (raspi-config -> advanced -> memory split)
 * Clone this repo (git clone REPO_URL), go to the newly created repo directory
+* Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
 * Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
 * Run "**bash ./install.sh**" 
 * Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
