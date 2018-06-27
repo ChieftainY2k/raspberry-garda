@@ -8,16 +8,23 @@ use Mosquitto\Message;
 
 class TopicsCollector
 {
+
+    /**
+     * @var Client
+     */
+    private $mqttClient;
+
     /**
      *
      * @param Client $mqttSubscriber
      */
     function __construct(Client $mqttSubscriber)
     {
-        $mqttSubscriber->onSubscribe([$this, "onSubscribe"]);
-        $mqttSubscriber->onConnect([$this, "onConnect"]);
-        $mqttSubscriber->onDisconnect([$this, "onDisconnect"]);
-        $mqttSubscriber->onMessage([$this, "onMessage"]);
+        $this->mqttClient = $mqttSubscriber;
+        $this->mqttClient->onSubscribe([$this, "onSubscribe"]);
+        $this->mqttClient->onConnect([$this, "onConnect"]);
+        $this->mqttClient->onDisconnect([$this, "onDisconnect"]);
+        $this->mqttClient->onMessage([$this, "onMessage"]);
     }
 
     /**
@@ -42,7 +49,12 @@ class TopicsCollector
      */
     function onConnect($responseCode, $responseMessage)
     {
-        $this->log("[" . date("Y-m-d H:i:s") . "] connected, got code $responseCode , message '$responseMessage'");
+        $this->log("connected, got code $responseCode , message '$responseMessage'");
+
+        //subscribe to topics
+        $this->mqttClient->subscribe('kerberos/motiondetected', 2);
+        $this->mqttClient->subscribe('healthcheck/report', 2);
+
     }
 
     /**
@@ -50,7 +62,7 @@ class TopicsCollector
      */
     function onDisconnect()
     {
-        $this->log("[" . date("Y-m-d H:i:s") . "] disconnected");
+        $this->log("disconnected");
     }
 
     /**
@@ -59,8 +71,9 @@ class TopicsCollector
      */
     function onMessage(Message $message)
     {
-        $this->log("[" . date("Y-m-d H:i:s") . "] received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
+        $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
 
+        //@TODO make it as construcor params or SPL file/dir for better testing
         $lastHealthReportFile = "/tmp/health-report.json";
         $localQueueDirName = "/data/topics-queue";
 
@@ -84,7 +97,7 @@ class TopicsCollector
             ]), LOCK_EX)) {
                 throw new \Exception("Cannot save data to file " . $filePath);
             }
-            $this->log("[" . date("Y-m-d H:i:s") . "] saved to queue file $filePath");
+            $this->log("saved to queue file $filePath");
 
         } elseif ($message->topic == "healthcheck/report") {
 
@@ -92,11 +105,12 @@ class TopicsCollector
 
             if (!file_put_contents($lastHealthReportFile, json_encode([
                 "timestamp" => time(),
+                "topic" => $message->topic,
                 "payload" => json_decode($message->payload),
             ]), LOCK_EX)) {
                 throw new \Exception("Cannot save data to file " . $lastHealthReportFile);
             }
-            $this->log("[" . date("Y-m-d H:i:s") . "] health report saved file $lastHealthReportFile");
+            $this->log("health report saved file $lastHealthReportFile");
 
         }
 
