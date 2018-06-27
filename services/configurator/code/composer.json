@@ -1,5 +1,10 @@
 {
   "require": {
     "docker-php/docker-php": "^1.24"
+  },
+  "autoload": {
+    "psr-4": {
+      "Configurator\\": "./src/Configurator"
+    }
   }
 }
