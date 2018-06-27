@@ -22,7 +22,7 @@ echo "[" . date("Y-m-d H:i:s") . "] starting the mqtt client, clientId = $client
 $client = new Mosquitto\Client($clientId);
 
 //init topics collector with the mqtt client
-$topicsCollector = new \EmailNotifier\TopicsCollector($client);
+$topicsCollector = new \EmailNotifier\TopicCollector($client);
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);

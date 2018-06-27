@@ -6,7 +6,7 @@ namespace EmailNotifier;
 use Mosquitto\Client;
 use Mosquitto\Message;
 
-class TopicsCollector
+class TopicCollector
 {
 
     /**

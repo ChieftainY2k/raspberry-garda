@@ -183,7 +183,7 @@ if (!empty($fileListToAttach)) {
         "recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
         "subject" => $mail->Subject,
         "service" => basename(__FILE__),
-        "attachmentCount" => count($fileListToAttach),
+        "attachment_count" => count($fileListToAttach),
     ]), 1, false);
     $client->disconnect();
 
