@@ -10,13 +10,9 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-require('vendor/autoload.php');
-
+//init
 echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
-
-//load the services configuration
-(new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
-
+require(__DIR__ . "/bootstrap.php");
 
 if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
     echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
