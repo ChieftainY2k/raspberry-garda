@@ -63,6 +63,7 @@ imagedir=/etc/opt/kerberosio/capture/
 
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
+localTime=$(date '+%Y-%m-%d %H:%M:%S')
 totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}') # total size of captured files
 
 # prepare JSON message
@@ -70,6 +71,7 @@ messageJson=$(cat <<EOF
 {
     "system_name":"$KD_SYSTEM_NAME",
     "timestamp":"$timestamp",
+    "local_time":"$localTime",
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",
     "uptime_seconds":"$uptimeSeconds",
