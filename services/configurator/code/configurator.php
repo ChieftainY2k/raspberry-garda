@@ -11,7 +11,8 @@ require(__DIR__ . "/vendor/autoload.php");
 
 try {
 
-    Configurator::showUI();
+    $configurator = new Configurator();
+    $configurator->showUI();
 
 } catch (\Exception $e) {
 

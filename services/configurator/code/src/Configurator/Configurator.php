@@ -10,11 +10,11 @@ class Configurator
     /**
      * Show simple UI
      */
-    static function showUI()
+    public function showUI()
     {
         if (!empty($_REQUEST['configAsText'])) {
-            self::saveServicesConfig($_REQUEST['configAsText']);
-            self::reloadContainers();
+            $this->saveServicesConfig($_REQUEST['configAsText']);
+            $this->reloadContainers();
         }
 
         $currentConfig = file_get_contents("/service-configs/services.conf");
@@ -33,7 +33,7 @@ class Configurator
      * @param $configAsText
      * @throws \Exception
      */
-    static function saveServicesConfig($configAsText)
+    public function saveServicesConfig($configAsText)
     {
         echo "Updating services config...<br>";
 
@@ -49,6 +49,14 @@ class Configurator
             ) {
                 throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\" or # (comment)");
             }
+
+            list($key, $value) = explode("=", $line);
+
+            //specific key/value validation
+            if ($key == "KD_SYSTEM_NAME" and (!preg_match("/^[a-z0-9]+$/i", $value))) {
+                throw new \InvalidArgumentException("KD_SYSTEM_NAME must be alphanumeric without spaces");
+            }
+
         });
         //echo "OK";
         //exit;
@@ -62,7 +70,7 @@ class Configurator
     /**
      * Reload all containers except for the one with configurator
      */
-    static function reloadContainers()
+    public function reloadContainers()
     {
         echo "Reloading containers... <br>";
 

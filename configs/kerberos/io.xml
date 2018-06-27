@@ -4,7 +4,7 @@
     <Disk>
         <fileFormat type="text">timestamp_microseconds_instanceName_regionCoordinates_numberOfChanges_token.jpg</fileFormat>
         <directory type="text">/etc/opt/kerberosio/capture/</directory>
-        <markWithTimestamp type="bool">false</markWithTimestamp>
+        <markWithTimestamp type="bool">true</markWithTimestamp>
         <timestampColor type="text">none</timestampColor>
         <privacy type="bool">false</privacy>
         <throttler type="number">1</throttler>
