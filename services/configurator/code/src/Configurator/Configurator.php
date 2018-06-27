@@ -45,7 +45,7 @@ class Configurator
                 (!empty($line))
                 and !preg_match("/^#.*$/i", $line) //comment
                 and !preg_match("/^[a-z0-9_]+[=][a-z0-9@_.-]+[ ]*(#.*)?$/i", $line) //key=val without quotes and possible comment at the end
-                and !preg_match('/^[a-z0-9_]+[=]["][a-z0-9@_. -]+["][ ]*(#.*)?$/i', $line) //key=val without quotes and possible comment at the end
+                and !preg_match('/^[a-z0-9_]+[=]["][a-z0-9@_. -]+["][ ]*(#.*)?$/i', $line) //key=val with quotes and possible comment at the end
             ) {
                 throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\" or # (comment)");
             }
