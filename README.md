@@ -42,6 +42,7 @@ Enjoy! :-)
 
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
 * The docker containers statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:82   
+* The services configurator is available at http://_YOUR_RASPBERRY_PI_ADDRESS_:85   
 
 The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
@@ -50,7 +51,7 @@ The application will be automatically restarted on reboot, unless you explicitel
 
 * Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
 * Restart the services:
-  * `docker-compose stop && docker-compose up -d`
+  * `docker-compose restart`
 
 
 **Stop the system**
