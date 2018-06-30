@@ -14,7 +14,7 @@ This project was successfully tested with Raspberry Pi 3B+.
 * The core services are
   * Kerberos-io motion detection service (https://github.com/kerberos-io/)
   * MQTT server/broker service (https://mosquitto.org/)
-  * Services configurator (web based user interface)
+  * Services configurator (web based user interface to change services configuration and restart services)
 * Docker containers are managed by docker-compose
 * Containers have access to some shared file space (so that they can access media files etc.) 
 * Services communicate with each other using MQTT topics with JSON payloads.
@@ -42,16 +42,19 @@ Enjoy! :-)
 
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
 * The docker containers statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:82   
-* The services configurator is available at http://_YOUR_RASPBERRY_PI_ADDRESS_:85   
 
 The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
 
-**Configuration**
+**Configuration (shell)**
 
 * Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
 * Restart the services:
   * `docker-compose restart`
+
+**Configuration (web GUI)**
+
+* The services configurator is available at http://_YOUR_RASPBERRY_PI_ADDRESS_:85   
 
 
 **Stop the system**
