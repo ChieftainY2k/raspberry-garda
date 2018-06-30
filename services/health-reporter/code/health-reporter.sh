@@ -77,7 +77,12 @@ messageJson=$(cat <<EOF
     "uptime_seconds":"$uptimeSeconds",
     "disk_space_available_kb":"$availableDiskSpaceKb",
     "disk_space_total_kb":"$totalDiskSpaceKb",
-    "images_size_kb":"$totalFilesSizeKb"
+    "images_size_kb":"$totalFilesSizeKb",
+    "services":{
+        "alpr":"$KD_ALPR_ENABLED",
+        "email_notification":"$KD_EMAIL_NOTIFICATION_ENABLED",
+        "mqtt_bridge":"$KD_MQTT_BRIDGE_ENABLED"
+    }
 }
 EOF
 )

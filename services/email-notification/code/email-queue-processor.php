@@ -162,7 +162,7 @@ if (!empty($fileListToAttach)) {
 
     //Content
     $mail->isHTML(true);                                  // Set email format to HTML
-    $mail->Subject = '[' . getenv("KD_SYSTEM_NAME") . '] motion detected.';
+    $mail->Subject = '' . getenv("KD_SYSTEM_NAME") . ' - motion detected.';
     $mail->Body = $htmlBody;
     $result = $mail->send();
     if (!$result) {
