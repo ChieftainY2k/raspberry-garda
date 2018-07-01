@@ -15,8 +15,11 @@ $clientId = basename(__FILE__) . "-" . uniqid("");
 echo "[" . date("Y-m-d H:i:s") . "] starting the mqtt client, clientId = $clientId\n";
 $client = new Mosquitto\Client($clientId);
 
+//queue root path
+$emailQueuePath = "/data/email-queues";
+
 //init topics collector with the mqtt client
-$topicsCollector = new \EmailNotifier\TopicCollector($client);
+$topicsCollector = new \EmailNotifier\TopicCollector($client,$emailQueuePath);
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);

@@ -19,16 +19,24 @@ class TopicCollector
     private $mqttClient;
 
     /**
+     * @var string
+     */
+    private $emailQueueRootPath;
+
+    /**
      *
      * @param Client $mqttSubscriber
+     * @param string $emailQueueRootPath
      */
-    function __construct(Client $mqttSubscriber)
+    function __construct(Client $mqttSubscriber, string $emailQueueRootPath)
     {
         $this->mqttClient = $mqttSubscriber;
         $this->mqttClient->onSubscribe([$this, "onSubscribe"]);
         $this->mqttClient->onConnect([$this, "onConnect"]);
         $this->mqttClient->onDisconnect([$this, "onDisconnect"]);
         $this->mqttClient->onMessage([$this, "onMessage"]);
+
+        $this->emailQueueRootPath = $emailQueueRootPath;
     }
 
     /**
