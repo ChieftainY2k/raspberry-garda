@@ -11,6 +11,11 @@ require(__DIR__ . "/vendor/autoload.php");
 
 try {
 
+    //connect to the mqtt server, listen for topics
+    $client = new Mosquitto\Client($clientId);
+    $client->connect("mqtt-server", 1883, 60);
+
+    //create configurator
     $configurator = new Configurator();
     $configurator->showUI();
 

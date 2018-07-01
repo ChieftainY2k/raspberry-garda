@@ -1,6 +1,8 @@
 {
+  "minimum-stability": "dev",
   "require": {
-    "docker-php/docker-php": "^1.24"
+    "docker-php/docker-php": "^1.24",
+    "nakard/mosquitto-php-stub": "dev-master"
   },
   "autoload": {
     "psr-4": {

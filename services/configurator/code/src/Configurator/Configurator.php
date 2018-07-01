@@ -3,9 +3,42 @@
 namespace Configurator;
 
 use Docker\Docker;
+use Mosquitto\Client;
 
 class Configurator
 {
+
+    /**
+     * @var Client
+     */
+    private $mqttClient = null;
+
+    /**
+     *
+     * @param Client $mqttClient
+     */
+    function __construct(Client $mqttClient)
+    {
+        $this->setMqttClient($mqttClient);
+    }
+
+    /**
+     * @return Client
+     */
+    public function getMqttClient()
+    {
+        return $this->mqttClient;
+    }
+
+    /**
+     * @param Client $mqttClient
+     * @return Configurator
+     */
+    public function setMqttClient($mqttClient)
+    {
+        $this->mqttClient = $mqttClient;
+        return $this;
+    }
 
     /**
      * Show simple UI
@@ -65,6 +98,14 @@ class Configurator
             throw new \Exception("Cannot save config file");
         }
         echo "Services configuration successfully saved.<hr>";
+
+        //publish topic
+        $this->getMqttClient()->publish("configurator/config/updated", json_encode([
+            "system_name" => getenv("KD_SYSTEM_NAME"),
+            "timestamp" => time(),
+            "local_time" => date("Y-m-d H:i:s"),
+        ]), 1, false);
+
     }
 
     /**
