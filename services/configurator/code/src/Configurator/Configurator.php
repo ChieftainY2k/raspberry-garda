@@ -114,12 +114,7 @@ class Configurator
             "system_name" => getenv("KD_SYSTEM_NAME"),
             "timestamp" => time(),
             "local_time" => date("Y-m-d H:i:s"),
-        ]), 1, true);
-
-        //var_dump($res);
-        //echo "OK";
-        //exit;
-
+        ]), 1, false);
 
     }
 

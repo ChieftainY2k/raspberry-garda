@@ -19,13 +19,6 @@ try {
     $client = new Mosquitto\Client($clientId);
     $client->connect("mqtt-server", 1883, 60);
 
-    //$client->publish("configurator/config/updated", json_encode([
-    //    "system_name" => getenv("KD_SYSTEM_NAME"),
-    //    "timestamp" => time(),
-    //    "local_time" => date("Y-m-d H:i:s"),
-    //]), 1, false);
-    //exit;
-
     //create configurator
     $configurator = new Configurator($client);
     $configurator->showUI();
