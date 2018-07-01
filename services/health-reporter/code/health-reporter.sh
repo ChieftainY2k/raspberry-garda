@@ -3,6 +3,14 @@
 
 # Parts taken from https://gist.githubusercontent.com/ecampidoglio/5009512/raw/2efdb8535b30c2f8f9a391f055216c2a7f37e28b/cpustatus.sh
 
+##helper function
+#logMessage()
+#{
+#    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][health-reporter]"
+#    MESSAGE=$1
+#    echo "$LOGPREFIX $MESSAGE"
+#}
+
 function convert_to_MHz {
     let value=$1/1000
     echo "$value"
@@ -66,6 +74,13 @@ timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
 totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}') # total size of captured files
 
+#check the health of the kerberos stream
+#streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1 | awk '{ print $1 " " $2 " " $3 " " $4 }')
+streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1)
+echo "FFProbe output = $streamFFprobeOutput"
+#if [ "$streamFFprobeOutput" -ne "Stream #0:0: Video: mjpeg," ]; then
+#fi
+
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
@@ -82,7 +97,8 @@ messageJson=$(cat <<EOF
         "alpr":"$KD_ALPR_ENABLED",
         "email_notification":"$KD_EMAIL_NOTIFICATION_ENABLED",
         "mqtt_bridge":"$KD_MQTT_BRIDGE_ENABLED"
-    }
+    },
+    "video_stream":"$streamFFprobeOutput"
 }
 EOF
 )
