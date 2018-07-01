@@ -9,15 +9,28 @@ use Configurator\Configurator;
 
 require(__DIR__ . "/vendor/autoload.php");
 
+//load services config
+(new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
+
 try {
 
     //connect to the mqtt server, listen for topics
+    $clientId = basename(__FILE__) . "-" . uniqid("");
     $client = new Mosquitto\Client($clientId);
     $client->connect("mqtt-server", 1883, 60);
 
+    //$client->publish("configurator/config/updated", json_encode([
+    //    "system_name" => getenv("KD_SYSTEM_NAME"),
+    //    "timestamp" => time(),
+    //    "local_time" => date("Y-m-d H:i:s"),
+    //]), 1, false);
+    //exit;
+
     //create configurator
-    $configurator = new Configurator();
+    $configurator = new Configurator($client);
     $configurator->showUI();
+
+    $client->disconnect();
 
 } catch (\Exception $e) {
 
@@ -29,4 +42,5 @@ try {
             <pre>" . $e . "</pre>
         </div>";
 }
+
 

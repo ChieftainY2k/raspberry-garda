@@ -73,17 +73,28 @@ class Configurator
         //split to lines, normalize, strip empty space, validate
         $configAsTextLines = explode("\n", $configAsText);
         array_walk($configAsTextLines, function (&$line) {
+            $key = null;
+            $value = null;
             $line = trim($line);
-            if (
-                (!empty($line))
-                and !preg_match("/^#.*$/i", $line) //comment
-                and !preg_match("/^[a-z0-9_]+[=][a-z0-9@_.-]+[ ]*(#.*)?$/i", $line) //key=val without quotes and possible comment at the end
-                and !preg_match('/^[a-z0-9_]+[=]["][a-z0-9@_. -]+["][ ]*(#.*)?$/i', $line) //key=val with quotes and possible comment at the end
-            ) {
+            if (empty($line)) {
+                //empty line
+                return;
+            } elseif (preg_match("/^#.*$/i", $line)) {
+                //comment
+                return;
+            } elseif (preg_match("/^([a-z0-9_]+)[=]([a-z0-9@_.-]+[ ]*)(#.*)?$/i", $line, $matches)) {
+                //key=val without quotes and possible comment at the end
+                $key = $matches[1];
+                $value = $matches[2];
+            } elseif (preg_match("/^([a-z0-9_]+)[=][\"]([a-z0-9@_. -]+)[\"][ ]*(#.*)?$/i", $line, $matches)) {
+                //key=val without quotes and possible comment at the end
+                $key = $matches[1];
+                $value = $matches[2];
+            } else {
+
+                //line format unrecognized
                 throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\" or # (comment)");
             }
-
-            list($key, $value) = explode("=", $line);
 
             //specific key/value validation
             if ($key == "KD_SYSTEM_NAME" and (!preg_match("/^[a-z0-9]+$/i", $value))) {
@@ -91,8 +102,7 @@ class Configurator
             }
 
         });
-        //echo "OK";
-        //exit;
+
         $newConfig = join("\n", $configAsTextLines);
         if (!file_put_contents("/service-configs/services.conf", $newConfig)) {
             throw new \Exception("Cannot save config file");
@@ -104,7 +114,12 @@ class Configurator
             "system_name" => getenv("KD_SYSTEM_NAME"),
             "timestamp" => time(),
             "local_time" => date("Y-m-d H:i:s"),
-        ]), 1, false);
+        ]), 1, true);
+
+        //var_dump($res);
+        //echo "OK";
+        //exit;
+
 
     }
 

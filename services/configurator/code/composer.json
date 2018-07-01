@@ -2,7 +2,8 @@
   "minimum-stability": "dev",
   "require": {
     "docker-php/docker-php": "^1.24",
-    "nakard/mosquitto-php-stub": "dev-master"
+    "nakard/mosquitto-php-stub": "dev-master",
+    "vlucas/phpdotenv": "^2.4"
   },
   "autoload": {
     "psr-4": {
