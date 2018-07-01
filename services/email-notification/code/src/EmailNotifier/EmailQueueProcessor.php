@@ -5,6 +5,10 @@ namespace EmailNotifier;
 use Mosquitto\Client;
 use PHPMailer\PHPMailer\PHPMailer;
 
+/**
+ *
+ * @TODO use logger object
+ */
 class EmailQueueProcessor
 {
     /**
@@ -36,6 +40,14 @@ class EmailQueueProcessor
     }
 
     /**
+     * @param $msg
+     */
+    function log($msg)
+    {
+        echo "[" . date("Y-m-d H:i:s") . "] " . $msg . "\n";
+    }
+
+    /**
      * @param string $subQueuePath
      * @throws \Exception
      */
@@ -45,7 +57,7 @@ class EmailQueueProcessor
         //process the queue
         $dirPath = $this->queueRootPath . "/" . $subQueuePath;
 
-        echo "[" . date("Y-m-d H:i:s") . "] starting processing directory $dirPath ...\n";
+        $this->log("processing directory $dirPath ...");
 
         $dirHandle = opendir($dirPath);
         if (!$dirHandle) {
@@ -55,7 +67,7 @@ class EmailQueueProcessor
         //scan all files in queue directory
         while (($fileName = readdir($dirHandle)) !== false) {
 
-            if (!preg_match("/^[a-z0-9_-]+$/i", $fileName)) {
+            if (!preg_match("/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/i", $fileName)) {
                 continue;
             }
 
@@ -66,24 +78,120 @@ class EmailQueueProcessor
             }
 
             //process a file, ignore non-json extensions
-            if (!preg_match('/.*\.json$/i', $fileName)) {
+            if (!preg_match('/\.json$/i', $fileName)) {
                 continue;
             }
 
             $this->processFile($dirPath . "/" . $fileName);
+
+            //remove processed queue item
+            if (!unlink($dirPath . "/" . $fileName)) {
+                throw new \Exception("Cannot remove file " . $dirPath . "/" . $fileName);
+            }
+            $this->log("successfully removed " . $dirPath . "/" . $fileName . " from queue.");
         };
 
-        echo "[" . date("Y-m-d H:i:s") . "] finished processing directory $dirPath ...\n";
+        //$this->log("finished processing directory $dirPath ...");
 
     }
 
     /**
      * @param $filePath
+     * @throws \Exception
      */
     function processFile($filePath)
     {
-        echo "[" . date("Y-m-d H:i:s") . "] processing $filePath \n";
+        $this->log("processing file $filePath");
+
+        //unserializejson data
+        $itemJsonString = file_get_contents($filePath);
+
+        //$this->log("json data = " . $itemJsonString . "");
+
+        $itemData = json_decode($itemJsonString, true);
+        if (empty($itemData)) {
+            throw new \Exception("Invalid json in $filePath");
+        }
+
+        $mailer = $this->mailer;
+
+        //recipients
+        $mailer->setFrom(getenv("KD_REMOTE_SMTP_FROM"));
+        foreach ($itemData['recipients'] as $recipient) {
+            $mailer->addAddress($recipient);
+        }
+
+        //Add requested attachments
+        foreach ($itemData['attachments'] as $attachmentData) {
+            $mailer->addAttachment($attachmentData['filePath']);
+        }
+
+        //Content
+        $mailer->isHTML(true);                                  // Set email format to HTML
+        $mailer->Subject = $itemData['subject'];
+        $mailer->Body = $itemData['htmlBody'];
+        $result = $mailer->send();
+        if (!$result) {
+            throw new \Exception("Cannot send email: " . $mailer->ErrorInfo);
+        }
+
+        $this->log("successfully sent email to " . json_encode($itemData['recipients']) . " with subject " . json_encode($itemData['subject']) . "");
+
+        $this->mqttClient->publish("notification/email/sent", json_encode([
+            "system_name" => getenv("KD_SYSTEM_NAME"),
+            "timestamp" => time(),
+            "local_time" => date("Y-m-d H:i:s"),
+            //"recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
+            "recipients" => $itemData['recipients'],
+            "subject" => $mailer->Subject,
+            "service" => basename(__FILE__),
+            "attachment_count" => count($itemData['attachments']),
+        ]), 1, false);
 
     }
 
 }
+
+/*
+
+Array
+(
+    [subject] => email subject
+    [htmlBody] => <b>html body</b>
+    [recipients] => Array
+        (
+            [0] => ChieftainY2k@gmail.com
+        )
+
+    [attachments] => Array
+        (
+            [0] => Array
+                (
+                    [filePath] => /etc/opt/kerberosio/capture/1530454754_6-367298_kerberosInDocker_49-244-789-629_42588_373.jpg
+                )
+
+        )
+
+)
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

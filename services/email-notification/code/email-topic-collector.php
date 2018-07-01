@@ -4,17 +4,11 @@
  *
  * This script takes incoming messages and saves them in a simple queue for further processing (by the queue processor).
  *
- * @TODO this is just MVP/PoC, refactor it !
+ * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
 echo "[" . date("Y-m-d H:i:s") . "] Starting topics collector.\n";
 require(__DIR__ . "/bootstrap.php");
-
-if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
-    echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting. To enable this service set KD_EMAIL_NOTIFICATION_ENABLED=1\n";
-    sleep(60 * 15);
-    exit;
-}
 
 //init mqtt client
 $clientId = basename(__FILE__) . "-" . uniqid("");

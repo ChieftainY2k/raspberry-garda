@@ -5,7 +5,7 @@
  * This cript takes all messages from the queue (collected by the mqtt events collector) since
  * the last run, aggregates the content and sends email to designated recipients.
  *
- * @TODO this is just MVP/PoC, refactor it !
+ * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -14,28 +14,28 @@ use PHPMailer\PHPMailer\PHPMailer;
 echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 require(__DIR__ . "/bootstrap.php");
 
-if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
-    echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
-    sleep(60 * 15);
-    exit;
-}
-
-//check environment params
-if (
-    empty(getenv("KD_EMAIL_NOTIFICATION_ENABLED"))
-    or empty(getenv("KD_REMOTE_SMTP_HOST"))
-    or empty(getenv("KD_REMOTE_SMTP_USERNAME"))
-    or empty(getenv("KD_REMOTE_SMTP_PASSWORD"))
-    or empty(getenv("KD_REMOTE_SMTP_SECURE_METHOD"))
-    or empty(getenv("KD_REMOTE_SMTP_PORT"))
-    or empty(getenv("KD_REMOTE_SMTP_FROM"))
-    or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
-    or empty(getenv("KD_SYSTEM_NAME"))
-) {
-    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
-    sleep(60 * 15);
-    exit;
-}
+//if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
+//    echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
+//    sleep(60 * 15);
+//    exit;
+//}
+//
+////check environment params
+//if (
+//    empty(getenv("KD_EMAIL_NOTIFICATION_ENABLED"))
+//    or empty(getenv("KD_REMOTE_SMTP_HOST"))
+//    or empty(getenv("KD_REMOTE_SMTP_USERNAME"))
+//    or empty(getenv("KD_REMOTE_SMTP_PASSWORD"))
+//    or empty(getenv("KD_REMOTE_SMTP_SECURE_METHOD"))
+//    or empty(getenv("KD_REMOTE_SMTP_PORT"))
+//    or empty(getenv("KD_REMOTE_SMTP_FROM"))
+//    or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
+//    or empty(getenv("KD_SYSTEM_NAME"))
+//) {
+//    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
+//    sleep(60 * 15);
+//    exit;
+//}
 
 //@TODO make it shared
 $lastHealthReportFile = "/tmp/health-report.json";
