@@ -1,0 +1,12 @@
+{
+  "subject": "email subject",
+  "htmlBody": "<b>html body</b>",
+  "recipients": [
+    "ChieftainY2k@gmail.com"
+  ],
+  "attachments": [
+    {
+      "filePath": "/etc/opt/kerberosio/capture/1530454754_6-367298_kerberosInDocker_49-244-789-629_42588_373.jpg"
+    }
+  ]
+}
