@@ -77,7 +77,7 @@ totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}') # total size of ca
 #check the health of the kerberos stream
 #streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1 | awk '{ print $1 " " $2 " " $3 " " $4 }')
 streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1)
-echo "FFProbe output = $streamFFprobeOutput"
+echo "[$DATE] FFProbe output = $streamFFprobeOutput"
 #if [ "$streamFFprobeOutput" -ne "Stream #0:0: Video: mjpeg," ]; then
 #fi
 

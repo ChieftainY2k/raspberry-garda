@@ -1,4 +1,4 @@
 
 # process the queued messages
 
-* * * * * /usr/bin/flock -w 0 /tmp/email-queue-processor.lock php /code/email-queue-processor.php 2>&1 > /proc/1/fd/2
+* * * * * /usr/bin/flock -w 0 /tmp/email-topic-queue-processor.lock php /code/email-topic-queue-processor.php 2>&1 > /proc/1/fd/2
