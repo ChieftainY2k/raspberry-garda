@@ -6,6 +6,10 @@ namespace EmailNotifier;
 use Mosquitto\Client;
 use Mosquitto\Message;
 
+/**
+ *
+ * @use logger object
+ */
 class TopicCollector
 {
 
