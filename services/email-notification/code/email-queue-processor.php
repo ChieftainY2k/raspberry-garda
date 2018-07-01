@@ -180,6 +180,7 @@ if (!empty($fileListToAttach)) {
     $client->publish("notification/email/sent", json_encode([
         "system_name" => getenv("KD_SYSTEM_NAME"),
         "timestamp" => time(),
+        "local_time" => date("Y-m-d H:i:s"),
         "recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
         "subject" => $mail->Subject,
         "service" => basename(__FILE__),
