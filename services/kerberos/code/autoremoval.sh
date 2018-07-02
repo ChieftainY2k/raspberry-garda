@@ -66,7 +66,23 @@ tmpreaper -v 24h /etc/opt/kerberosio/h264/
 #publish topic
 if [[ "$cleanupPerformed" = "1" ]]; then
 
-    messageJson=''
+    # prepare JSON message
+    timestamp=$(date +%s)
+    localTime=$(date '+%Y-%m-%d %H:%M:%S')
+
+    messageJson=$(cat <<EOF
+    {
+        "system_name":"$KD_SYSTEM_NAME",
+        "timestamp":"$timestamp",
+        "local_time":"$localTime",
+        "disk_space_available_kb":"$spaceAvailableKb",
+        "disk_space_total_kb":"$spaceTotalKb",
+        "images_size_kb":"$totalFilesSizeKb"
+    }
+EOF
+    )
+
+    messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
     messageTopic="kerberos/files/removed"
 
     #publish it
