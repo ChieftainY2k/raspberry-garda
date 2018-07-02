@@ -29,15 +29,16 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card (8GB at least).
-* Run "**rpi-update**" 
+* Run "**sudo rpi-update**" 
 * Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
 * Configure your time zone (raspi-config -> localisation -> change timezone)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
-* Set video memory do 256MB (raspi-config -> advanced -> memory split)
+* Set video memory do 128MB (raspi-config -> advanced -> memory split)
+* (optional) Disable the swap space (sudo systemctl disable dphys-swapfile && sudo reboot)
 * Clone this repo (git clone REPO_URL), go to the newly created repo directory
 * Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
 * Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
-* Run "**bash ./install.sh**" 
+* Run "**sudo bash ./install.sh**" 
 * Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
 
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
@@ -59,12 +60,12 @@ The application will be automatically restarted on reboot, unless you explicitel
 
 **Stop the system**
 `````
-docker-compose stop 
+sudo docker-compose stop 
 `````
 
 **Start up the system again**
 `````
-docker-compose up -d 
+sudo docker-compose up -d 
 `````
 
 The containers will automatically restart on reboot/failure unless explicitly stopped 
@@ -72,26 +73,26 @@ The containers will automatically restart on reboot/failure unless explicitly st
 
 **Show containers output/logs (last 10 lines, then follow the output)**
 `````
-docker-compose logs -f --tail=10
+sudo docker-compose logs -f --tail=10
 `````
 
 **Show kerberos Web Nginx logs**
 `````
-docker-compose exec kerberos bash -c "tail -f /var/log/nginx/*"
+sudo docker-compose exec kerberos bash -c "tail -f /var/log/nginx/*"
 `````
 
 **Show Laravel logs**
 `````
-docker-compose exec kerberos bash -c "tail -f /var/www/web/storage/logs/laravel.log"
+sudo docker-compose exec kerberos bash -c "tail -f /var/www/web/storage/logs/laravel.log"
 `````
 
 **Show webhook event listener logs**
 `````
-docker-compose logs -f | grep webhook
+sudo docker-compose logs -f | grep webhook
 `````
 
 **Run bash inside kerberos container**
 `````
-docker-compose exec kerberos bash
+sudo docker-compose exec kerberos bash
 `````
 

@@ -37,7 +37,7 @@ maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-500000)) # dynamic = related to 
 
 cleanupPerformed=0
 #while [ $totalFilesSizeKb -gt $maximumAllowedSpaceTakenKb ]
-while [ $spaceAvailableKb -lt 500000 ]
+while [ $spaceAvailableKb -lt 700000 ]
 do
     logMessage "cleaning up, removing some oldest files in $imagedir ..."
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
