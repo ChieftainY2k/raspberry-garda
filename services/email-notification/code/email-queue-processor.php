@@ -120,7 +120,7 @@ if (!empty($fileListToAttach)) {
             <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
             <li>Disk: 
                 
-                <b>" . number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2) . " GB
+                <b>" . number_format($reportPayload['disk_space_available_kb'] / 1024 / 1014, 2) . " GB
                 (" . number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2) . "%) </b>
                 available ,
                 
