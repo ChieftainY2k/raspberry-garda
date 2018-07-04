@@ -63,7 +63,7 @@ do
 done
 
 logMessage "removing old temporary h264 files."
-tmpreaper -v 24h /etc/opt/kerberosio/h264/
+tmpreaper -v --mtime 24h /etc/opt/kerberosio/h264/
 
 #publish topic
 if [[ "$cleanupPerformed" = "1" ]]; then
