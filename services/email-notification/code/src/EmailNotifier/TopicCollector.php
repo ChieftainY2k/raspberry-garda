@@ -86,7 +86,6 @@ class TopicCollector
         $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
 
         //@TODO make it as construcor params or SPL file/dir for better testing
-        $lastHealthReportFile = "/tmp/health-report.json";
         $localQueueDirName = "/data/topics-queue";
 
         if (!file_exists($localQueueDirName)) {
@@ -102,26 +101,41 @@ class TopicCollector
             //@FIXME save queue files in a 1-2 level deep dir structure for faster processing ?
             //save message to local queue, repack it
             $filePath = $localQueueDirName . "/" . (microtime(true)) . ".json";
-            if (!file_put_contents($filePath, json_encode([
+            $filePathTmp = $filePath . ".tmp";
+            if (!file_put_contents($filePathTmp, json_encode([
                 "timestamp" => time(),
                 "topic" => $message->topic,
                 "payload" => json_decode($message->payload),
             ]), LOCK_EX)) {
                 throw new \Exception("Cannot save data to file " . $filePath);
             }
+
+            //rename temporaty file to dest file
+            if (!rename($filePathTmp, $filePath)) {
+                throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+            }
+
             $this->log("saved to queue file $filePath");
 
         } elseif ($message->topic == "healthcheck/report") {
 
             //health report updated
 
-            if (!file_put_contents($lastHealthReportFile, json_encode([
+            $lastHealthReportFile = "/tmp/health-report.json";
+            $lastHealthReportFileTmp = $lastHealthReportFile . ".tmp";
+            if (!file_put_contents($lastHealthReportFileTmp, json_encode([
                 "timestamp" => time(),
                 "topic" => $message->topic,
                 "payload" => json_decode($message->payload),
             ]), LOCK_EX)) {
                 throw new \Exception("Cannot save data to file " . $lastHealthReportFile);
             }
+
+            //rename temporaty file to dest file
+            if (!rename($lastHealthReportFileTmp, $lastHealthReportFile)) {
+                throw new \Exception("Cannot rename file $lastHealthReportFile to $lastHealthReportFile");
+            }
+
             $this->log("health report saved file $lastHealthReportFile");
 
         }

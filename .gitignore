@@ -13,3 +13,6 @@ data/kerberos/h264
 data/portainer
 !data/portainer/.gitkeep
 
+data/mqtt-server
+!data/mqtt-server/.gitkeep
+

@@ -10,6 +10,8 @@ logMessage()
     echo "$LOGPREFIX $MESSAGE"
 }
 
+logMessage "cleanup started."
+
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
@@ -37,7 +39,7 @@ maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-500000)) # dynamic = related to 
 
 cleanupPerformed=0
 #while [ $totalFilesSizeKb -gt $maximumAllowedSpaceTakenKb ]
-while [ $spaceAvailableKb -lt 700000 ]
+while [ $spaceAvailableKb -lt 1000000 ]
 do
     logMessage "cleaning up, removing some oldest files in $imagedir ..."
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
@@ -97,3 +99,5 @@ EOF
 
 
 fi
+
+logMessage "cleanup finished."
