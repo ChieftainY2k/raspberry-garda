@@ -14,9 +14,11 @@ try {
     //queue root path
     $topicQueuePath = "/data/topics-queue";
     $emailQueuePath = "/data/email-queues/default";
+    $lastHealthReportFile = "/tmp/health-report.json";
+    $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
     //queue processor
-    $queueProcessor = new \EmailNotifier\TopicQueueProcessor($topicQueuePath,$emailQueuePath);
+    $queueProcessor = new \EmailNotifier\TopicQueueProcessor($topicQueuePath, $emailQueuePath, $lastHealthReportFile, $pathToCapturedImages);
     $queueProcessor->processTopicQueue();
 
     echo "[" . date("Y-m-d H:i:s") . "] finished topic queue processing.\n";

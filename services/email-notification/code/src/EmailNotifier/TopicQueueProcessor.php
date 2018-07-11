@@ -31,15 +31,23 @@ class TopicQueueProcessor
 
     /**
      *
+     * @var string
+     */
+    private $pathToCapturedImages;
+
+    /**
+     *
      * @param string $topicQueueRootPath
      * @param string $emailQueueRootPath
      * @param string $lastHealthReportFile
+     * @param string $pathToCapturedImages
      */
-    function __construct(string $topicQueueRootPath, string $emailQueueRootPath, string $lastHealthReportFile)
+    function __construct(string $topicQueueRootPath, string $emailQueueRootPath, string $lastHealthReportFile, string $pathToCapturedImages)
     {
         $this->topicQueueRootPath = $topicQueueRootPath;
         $this->emailQueueRootPath = $emailQueueRootPath;
         $this->lastHealthReportFile = $lastHealthReportFile;
+        $this->pathToCapturedImages = $pathToCapturedImages;
     }
 
     /**
@@ -82,7 +90,7 @@ class TopicQueueProcessor
 
         } else {
 
-            echo "[" . date("Y-m-d H:i:s") . "] last health report is missing, ignored.\n";
+            $this->log("last health report is missing, ignored.");
 
         }
 
@@ -94,6 +102,92 @@ class TopicQueueProcessor
      */
     function processTopicQueue()
     {
+
+        $queueProcessedItemsList = [];
+        $fileListToAttach = [];
+
+        //scan directory for queued topics data, sort it by name, ascending
+        $files = scandir($this->topicQueueRootPath, SCANDIR_SORT_ASCENDING);
+        if ($files === false) {
+            throw new \Exception("Cannot open directory " . $this->topicQueueRootPath . "");
+        }
+
+        //scan all files in queue directory
+        foreach ($files as $queueItemFileName) {
+
+            if (!preg_match('/.*\.json$/i', $queueItemFileName)) {
+                continue;
+            }
+
+            $this->log("processing $queueItemFileName");
+
+            $queueItemData = file_get_contents($this->topicQueueRootPath . "/" . $queueItemFileName);
+            if (empty($queueItemData)) {
+                throw new \Exception("Cannot get content of file " . $this->topicQueueRootPath . "/" . $queueItemFileName);
+            }
+            $this->log("content =  " . $queueItemData . "");
+            $queueItemData = json_decode($queueItemData);
+
+            //{
+            //  "timestamp":1529315427,
+            //  "topic":"kerberos\/machinery\/detection\/motion",
+            //  "payload":{
+            //      "regionCoordinates":[
+            //          23,273,789,631
+            //          ],
+            //      "numberOfChanges":17393,
+            //      "pathToVideo":"1529315426_6-874214_kerberosInDocker_23-273-789-631_17393_386.mp4",
+            //      "name":"kerberosInDocker",
+            //      "timestamp":"1529315426",
+            //      "microseconds":"6-874367",
+            //      "token":386,
+            //      "pathToImage":"1529315426_6-874367_kerberosInDocker_23-273-789-631_17393_386.jpg"
+            //  }
+
+            //@TODO add data validation here
+            //@TODO check if media file still exists
+            if (!empty($queueItemData->payload->pathToImage)) {
+
+                $imageFileName = $queueItemData->payload->pathToImage;
+                $imageFullPath = $this->pathToCapturedImages . "/" . $imageFileName;
+
+                //@TODO resize images to cut the email size
+                //@TODO do not include images that are created shortly one after other
+
+                //register an attachment for inclusion
+                $fileListToAttach[] = $imageFullPath;
+
+            }
+            //remember that this queue item was processed
+            $queueProcessedItemsList[] = $queueItemFileName;
+
+            //do not process too many items at once
+            if (count($queueProcessedItemsList) >= 25) {
+                break;
+            }
+
+            break;
+        };
+
+
+        //create email data
+
+        //remove the processed topic items
+        if (!empty($queueProcessedItemsList)) {
+
+            $this->log("removing processed " . count($queueProcessedItemsList) . " item(s) from queue.");
+
+            foreach ($queueProcessedItemsList as $queueItemFileName) {
+                //remote the file
+                if (!unlink($this->topicQueueRootPath . "/" . $queueItemFileName)) {
+                    throw new \Exception("Cannot remove file " . $this->topicQueueRootPath . "/" . $queueItemFileName . "");
+                }
+            }
+        }
+
+        $this->log("finished queue processing.");
+
+
     }
 
 }
