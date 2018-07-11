@@ -141,6 +141,9 @@ class Configurator
         }
         echo "Containers successfully reloaded.<hr>";
 
+        //sleep for a while so that services are available again @FIXME
+        sleep(20);
+
         //publish topic
         $this->getMqttClient()->publish("configurator/containers/reloaded", json_encode([
             "system_name" => getenv("KD_SYSTEM_NAME"),
