@@ -15,6 +15,8 @@ try {
     echo "[" . date("Y-m-d H:i:s") . "] starting email queue processing.\n";
     require(__DIR__ . "/bootstrap.php");
 
+    //@TODO use DI/Config here
+
     //mqtt client
     $mqttClientId = basename(__FILE__) . "-" . uniqid("");
     $mqttClient = new Mosquitto\Client($mqttClientId);
