@@ -31,12 +31,23 @@ class EmailQueueProcessor
      * @param PHPMailer $mailer
      * @param Client $mqttClient
      * @param string $queueRootPath
+     * @throws \Exception
      */
     function __construct(PHPMailer $mailer, Client $mqttClient, string $queueRootPath)
     {
         $this->mqttClient = $mqttClient;
         $this->mailer = $mailer;
         $this->queueRootPath = $queueRootPath;
+
+        //@FIXME use DI/Config here
+
+        if (empty(getenv("KD_SYSTEM_NAME"))) {
+            throw new \Exception("Empty environment variable KD_SYSTEM_NAME");
+        }
+        if (empty(getenv("KD_REMOTE_SMTP_FROM"))) {
+            throw new \Exception("Empty environment variable KD_REMOTE_SMTP_FROM");
+        }
+
     }
 
     /**
@@ -59,6 +70,8 @@ class EmailQueueProcessor
 
         $this->log("processing directory $dirPath ...");
 
+        //@TODO sort files by filename ascending
+
         $dirHandle = opendir($dirPath);
         if (!$dirHandle) {
             throw new \Exception("Cannot open directory " . $dirPath . "");
@@ -67,7 +80,9 @@ class EmailQueueProcessor
         //scan all files in queue directory
         while (($fileName = readdir($dirHandle)) !== false) {
 
-            if (!preg_match("/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/i", $fileName)) {
+            //echo $fileName . "\n";
+
+            if (!preg_match("/^[a-z0-9_-]+(\.[a-z0-9_.-]+)?$/i", $fileName)) {
                 continue;
             }
 
@@ -106,11 +121,13 @@ class EmailQueueProcessor
         //unserializejson data
         $itemJsonString = file_get_contents($filePath);
 
-        //$this->log("json data = " . $itemJsonString . "");
+        //$this->log("json data = " . $itemJsonString . ""); exit;
 
         //@TODO validate loaded data before processing
 
+        //@TODO use DTO here
         $itemData = json_decode($itemJsonString, true);
+
         if (empty($itemData)) {
             throw new \Exception("Invalid json in $filePath");
         }
@@ -137,7 +154,7 @@ class EmailQueueProcessor
             throw new \Exception("Cannot send email: " . $mailer->ErrorInfo);
         }
 
-        $this->log("successfully sent email to " . json_encode($itemData['recipients']) . " with subject " . json_encode($itemData['subject']) . "");
+        $this->log("successfully sent email to " . json_encode($itemData['recipients']) . " with subject " . json_encode($itemData['subject']) . ", with " . count($itemData['attachments']) . " attachments");
 
         $this->mqttClient->publish("notification/email/sent", json_encode([
             "system_name" => getenv("KD_SYSTEM_NAME"),
@@ -154,46 +171,24 @@ class EmailQueueProcessor
 
 }
 
-/*
-
-Array
-(
-    [subject] => email subject
-    [htmlBody] => <b>html body</b>
-    [recipients] => Array
-        (
-            [0] => ChieftainY2k@gmail.com
-        )
-
-    [attachments] => Array
-        (
-            [0] => Array
-                (
-                    [filePath] => /etc/opt/kerberosio/capture/1530454754_6-367298_kerberosInDocker_49-244-789-629_42588_373.jpg
-                )
-
-        )
-
-)
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+///*
+//Array
+//(
+//    [subject] => email subject
+//    [htmlBody] => <b>html body</b>
+//    [recipients] => Array
+//        (
+//            [0] => ChieftainY2k@gmail.com
+//        )
+//
+//    [attachments] => Array
+//        (
+//            [0] => Array
+//                (
+//                    [filePath] => /etc/opt/kerberosio/capture/1530454754_6-367298_kerberosInDocker_49-244-789-629_42588_373.jpg
+//                )
+//
+//        )
+//
+//)
+//*/

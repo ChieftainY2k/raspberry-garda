@@ -102,6 +102,7 @@ class TopicCollector
             //save message to local queue, repack it
             $filePath = $localQueueDirName . "/" . (microtime(true)) . ".json";
             $filePathTmp = $filePath . ".tmp";
+            //@TODO use DTO here
             if (!file_put_contents($filePathTmp, json_encode([
                 "timestamp" => time(),
                 "topic" => $message->topic,
@@ -123,6 +124,7 @@ class TopicCollector
 
             $lastHealthReportFile = "/tmp/health-report.json";
             $lastHealthReportFileTmp = $lastHealthReportFile . ".tmp";
+            //@TODO use DTO here
             if (!file_put_contents($lastHealthReportFileTmp, json_encode([
                 "timestamp" => time(),
                 "topic" => $message->topic,

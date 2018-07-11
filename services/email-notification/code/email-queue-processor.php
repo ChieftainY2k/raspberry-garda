@@ -45,7 +45,7 @@ try {
 
 } catch (Exception $e) {
 
-    echo "[" . date("Y-m-d H:i:s") . "] EXCEPTION: " . $e . ". \n";
+    echo "[" . date("Y-m-d H:i:s") . "] EXCEPTION: " . $e . ". Sleeping for a while...\n";
     sleep(60 * 10);
 
 }

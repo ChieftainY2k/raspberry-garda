@@ -41,6 +41,7 @@ class TopicQueueProcessor
      * @param string $emailQueueRootPath
      * @param string $lastHealthReportFile
      * @param string $pathToCapturedImages
+     * @throws \Exception
      */
     function __construct(string $topicQueueRootPath, string $emailQueueRootPath, string $lastHealthReportFile, string $pathToCapturedImages)
     {
@@ -48,6 +49,15 @@ class TopicQueueProcessor
         $this->emailQueueRootPath = $emailQueueRootPath;
         $this->lastHealthReportFile = $lastHealthReportFile;
         $this->pathToCapturedImages = $pathToCapturedImages;
+
+        //@FIXME use DI/Config here
+
+        if (empty(getenv("KD_SYSTEM_NAME"))) {
+            throw new \Exception("Empty environment variable KD_SYSTEM_NAME");
+        }
+        if (empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))) {
+            throw new \Exception("Empty environment variable KD_EMAIL_NOTIFICATION_RECIPIENT");
+        }
     }
 
     /**
@@ -73,19 +83,20 @@ class TopicQueueProcessor
             $reportPayload = $lastHealthReportData['payload'];
             $uptimeSeconds = $reportPayload['uptime_seconds'];
             $htmlBody .= "
-        <br><br>Last health report (reported " . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "): <br>
-        <ul>
-            <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
-            <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate("i", $uptimeSeconds % 3600) . "m</b></li>
-            <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
-            <li>Disk: 
-                <b>" . number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2) . " GB
-                (" . number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2) . "%) </b> available ,
-                <b>" . number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2) . " GB </b> 
-                total 
-                
-            </li>
-        </ul>";
+                Last health report (reported " . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "): <br>
+                <ul>
+                    <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
+                    <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate("i", $uptimeSeconds % 3600) . "m</b></li>
+                    <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
+                    <li>Disk: 
+                        <b>" . number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2) . " GB
+                        (" . number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2) . "%) </b> available ,
+                        <b>" . number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2) . " GB </b> 
+                        total 
+                        
+                    </li>
+                </ul>
+            ";
             //<li>Uptime: <b>" . gmdate("H:i:s", $reportPayload['uptime_seconds']) . " (hours:minutes:seconds)</b></li>
 
         } else {
@@ -155,7 +166,7 @@ class TopicQueueProcessor
                 //@TODO do not include images that are created shortly one after other
 
                 //register an attachment for inclusion
-                $fileListToAttach[] = $imageFullPath;
+                $fileListToAttach[] = ["filePath" => $imageFullPath];
 
             }
             //remember that this queue item was processed
@@ -166,11 +177,52 @@ class TopicQueueProcessor
                 break;
             }
 
-            break;
+            //break;
         };
 
 
+        //do we need to send an email ?
+        if (empty($queueProcessedItemsList)) {
+            //no files processed
+            return;
+        }
+
+        //email content
+        $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - motion detected.';
+        $emailHtmlBody = "Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>. See the attached media for details.";
+
+        //attach health report if available
+        $lastHealthReportAsHtml = $this->getLastHealthReportAsHtml();
+        if (!empty($lastHealthReportAsHtml)) {
+            $emailHtmlBody .= "<br><br>" . $lastHealthReportAsHtml;
+        }
+
         //create email data
+        $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
+        //@TODO use DTO here
+        $emailData = [
+            "recipients" => [
+                $recipient
+            ],
+            "subject" => $emailSubject,
+            "htmlBody" => $emailHtmlBody,
+            "attachments" => $fileListToAttach
+        ];
+
+        //print_r($emailData);
+        //exit;
+
+        //save email data to temporary JSON file
+        $filePath = $this->emailQueueRootPath . "/" . (microtime(true)) . ".json";
+        $filePathTmp = $filePath . ".tmp";
+        if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
+            throw new \Exception("Cannot save data to file " . $filePath);
+        }
+
+        //rename temporaty file to dest file
+        if (!rename($filePathTmp, $filePath)) {
+            throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+        }
 
         //remove the processed topic items
         if (!empty($queueProcessedItemsList)) {
