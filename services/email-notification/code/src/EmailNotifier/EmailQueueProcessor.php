@@ -44,14 +44,14 @@ class EmailQueueProcessor
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "] " . $msg . "\n";
+        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
     }
 
     /**
      * @param string $subQueuePath
      * @throws \Exception
      */
-    function processQueue($subQueuePath = "")
+    function processEmailQueue($subQueuePath = "")
     {
 
         //process the queue
@@ -73,7 +73,7 @@ class EmailQueueProcessor
 
             //process a sub-directory
             if (is_dir($dirPath . "/" . $fileName)) {
-                $this->processQueue($fileName);
+                $this->processEmailQueue($fileName);
                 continue;
             }
 
@@ -107,6 +107,8 @@ class EmailQueueProcessor
         $itemJsonString = file_get_contents($filePath);
 
         //$this->log("json data = " . $itemJsonString . "");
+
+        //@TODO validate loaded data before processing
 
         $itemData = json_decode($itemJsonString, true);
         if (empty($itemData)) {

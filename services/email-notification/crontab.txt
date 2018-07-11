@@ -1,6 +1,6 @@
 
 #process queued topics
-* * * * * /usr/bin/flock -w 0 /tmp/topic-queue-processor.lock php /code/topic-queue-processor.php 2>&1 > /proc/1/fd/2
+#* * * * * /usr/bin/flock -w 0 /tmp/topic-queue-processor.lock php /code/topic-queue-processor.php 2>&1 > /proc/1/fd/2
 
 #process queued emails
 * * * * * /usr/bin/flock -w 0 /tmp/email-queue-processor.lock php /code/email-queue-processor.php 2>&1 > /proc/1/fd/2

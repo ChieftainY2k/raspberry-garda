@@ -36,7 +36,7 @@ try {
 
     //queue processor
     $queueProcessor = new \EmailNotifier\EmailQueueProcessor($mailer, $mqttClient, $emailQueuePath);
-    $queueProcessor->processQueue();
+    $queueProcessor->processEmailQueue();
 
     //clean up
     $mqttClient->disconnect();

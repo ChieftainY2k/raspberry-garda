@@ -32,7 +32,7 @@ logMessage "partition $partition for $imagedir is used in $usedPercent percent (
 #maximumAllowedSpaceTakenKb=600000 # fixed = how much we allow files to take
 #maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-1500000)) # dynamic = related to the overall free space on device
 #@TODO make it a variable param with services config
-maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-500000)) # dynamic = related to the overall free space on device
+maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-1000000)) # dynamic = related to the overall free space on device
 #logMessage "totalFilesSizeKb = $totalFilesSizeKb"
 #logMessage "maximumAllowedSpaceTakenKb = $maximumAllowedSpaceTakenKb"
 #logMessage "spaceAvailableKb = $spaceAvailableKb"
