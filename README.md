@@ -33,7 +33,7 @@ Enjoy! :-)
 * Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
 * Configure your time zone (raspi-config -> localisation -> change timezone)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
-* Set video memory do 128MB (raspi-config -> advanced -> memory split)
+* Set video memory to 128MB (raspi-config -> advanced -> memory split)
 * (optional) Disable the swap space (sudo systemctl disable dphys-swapfile && sudo reboot)
 * Clone this repo (git clone REPO_URL), go to the newly created repo directory
 * Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)

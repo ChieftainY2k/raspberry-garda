@@ -2,6 +2,9 @@
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+
 echo "Starting kerberos-io service."
 
 service php7.0-fpm restart
