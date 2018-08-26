@@ -1,5 +1,7 @@
 version: '3.2'
 
+# @TODO Make use of the docker compose 'extend' , https://docs.docker.com/compose/extends/
+
 services:
 
 #  streamer-rtsp:
@@ -150,6 +152,7 @@ services:
     volumes:
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
      - ./data/alpr/:/data
+     - ./data/email-notification/:/data-email-notification
      - ./services/alpr/code:/code
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro

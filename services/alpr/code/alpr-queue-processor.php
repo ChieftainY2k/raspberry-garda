@@ -15,7 +15,7 @@ require('vendor/autoload.php');
 echo "[" . date("Y-m-d H:i:s") . "] starting the processor.\n";
 
 //load the services configuration
-(new Dotenv\Dotenv("/service-configs","services.conf"))->load();
+(new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
 
 
 if (intval(getenv("KD_ALPR_ENABLED")) != 1) {
@@ -27,6 +27,7 @@ if (intval(getenv("KD_ALPR_ENABLED")) != 1) {
 if (
     empty(getenv("KD_ALPR_ENABLED"))
     or empty(getenv("KD_ALPR_COUNTRY"))
+    or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
 ) {
     echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
     sleep(60 * 15);
@@ -67,6 +68,8 @@ echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 $localQueueDirName = "/data/topics-queue";
 $recognizedPlatesDatabaseDirName = "/data/recognized-numbers";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
+$emailQueuePath = "/data-email-notification/email-queues/default";
+
 //process the queue
 $dirHandle = opendir($localQueueDirName);
 if (!$dirHandle) {
@@ -138,6 +141,53 @@ while (($queueItemFileName = readdir($dirHandle)) !== false) {
                 "alpr_result" => $foundNumbersList
             ]), 1, false);
             $client->disconnect();
+
+
+            //Save an email in the email queue
+
+            //email content
+            $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - ALPR - number plate detected.';
+            $emailHtmlBody = "
+                Number plate detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>. See the attached media for details.
+                <br>
+                <br>
+                Detected numbers:<br>
+                <ul>
+            ";
+            foreach ($foundNumbersList as $numberData) {
+                $emailHtmlBody .= "<li><b>" . $numberData['number'] . "</b> , confidence = " . $numberData['confidence'] . "</li>";
+            }
+            $emailHtmlBody .= "</ul>";
+
+            $fileListToAttach = [];
+            $fileListToAttach[] = ["filePath" => $imageFullPath];
+
+            //create email data
+            $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
+            //@TODO use DTO here
+            $emailData = [
+                "recipients" => [
+                    $recipient
+                ],
+                "subject" => $emailSubject,
+                "htmlBody" => $emailHtmlBody,
+                "attachments" => $fileListToAttach
+            ];
+
+            //save email data to temporary JSON file
+            $filePath = $emailQueuePath . "/" . (microtime(true)) . ".json";
+            $filePathTmp = $filePath . ".tmp";
+            if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
+                throw new \Exception("Cannot save data to file " . $filePath);
+            }
+
+            //rename temporaty file to dest file
+            if (!rename($filePathTmp, $filePath)) {
+                throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+            }
+
+            echo "[" . date("Y-m-d H:i:s") . "] Email successfully created and saved to $filePath.\n";
+
 
         } else {
 
