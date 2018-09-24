@@ -84,5 +84,25 @@ class TopicCollector
     {
         $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
 
+        //save topic do the dedicated file
+        $filePath = $this->healthReportsRootPath . "/" . (md5($message->topic)) . ".json";
+        $filePathTmp = $filePath . ".tmp";
+        //@TODO use DTO here
+        if (!file_put_contents($filePathTmp, json_encode([
+            "timestamp" => time(),
+            "topic" => $message->topic,
+            "payload" => json_decode($message->payload),
+        ]), LOCK_EX)) {
+            throw new \Exception("Cannot save data to file " . $filePath);
+        }
+
+        //rename temporaty file to dest file
+        if (!rename($filePathTmp, $filePath)) {
+            throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+        }
+
+        $this->log("saved " . $message->topic . " data to file $filePath");
+
+
     }
 }
