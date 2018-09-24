@@ -14,9 +14,10 @@ require(__DIR__ . "/bootstrap.php");
 $healthReportsRootPath = "/data/health-reports";
 //email queue root path
 $emailQueuePath = "/data-email-notification/email-queues/default";
+$localCacheRootPath = "/data/cache";
 
 //init topics collector with the mqtt client
-$reportAnalyzer = new \SwarmWatcher\ReportAnalyzer($healthReportsRootPath, $emailQueuePath);
-$reportAnalyzer->analyzeReports();
+$reportAnalyzer = new \SwarmWatcher\ReportAnalyzer($healthReportsRootPath, $emailQueuePath, $localCacheRootPath);
+$reportAnalyzer->sendNotificationsBasedOnReports();
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
