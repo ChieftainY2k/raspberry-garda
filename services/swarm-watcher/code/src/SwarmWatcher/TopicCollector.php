@@ -8,7 +8,8 @@ use Mosquitto\Message;
 
 /**
  *
- * @use logger object
+ * @TODO use logger object
+ * @TODO use SPL for files and directories
  */
 class TopicCollector
 {
