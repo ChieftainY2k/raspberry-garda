@@ -88,7 +88,7 @@ class ReportAnalyzer
 
         if (!empty($newWarnings)) {
             $emailHtmlBody .= "
-                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW</b> anomalies in the swarm:<br>
+                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW</b> anomalies:<br>
                 <ul>
                     <li>" . join("</li><li>", $newWarnings) . "</li>    
                 </ul>
@@ -97,7 +97,7 @@ class ReportAnalyzer
 
         if (!empty($deletedWarnings)) {
             $emailHtmlBody .= "
-                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following anomalies <b style='color:green'>REPAIRED</b> in the swarm:<br>
+                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected that the following anomalies <b style='color:green'>DISAPPEARED</b>:<br>
                 <ul>
                    <li style='text-decoration: line-through;'>" . join("</li><li>", $deletedWarnings) . "</li>    
                 </ul>
@@ -133,7 +133,7 @@ class ReportAnalyzer
 
         } else {
 
-            $this->log("[" . date("Y-m-d H:i:s") . "] no new or deleted warnings");
+            $this->log("no new or deleted warnings");
 
         }
 
@@ -209,7 +209,7 @@ class ReportAnalyzer
                 continue;
             }
 
-            $this->log("processing $queueItemFileName");
+            //$this->log("processing $queueItemFileName");
 
             $reportData = file_get_contents($this->healthReportsRootPath . "/" . $queueItemFileName);
             if (empty($reportData)) {
@@ -231,6 +231,7 @@ class ReportAnalyzer
             $reportSystemName = $reportData['payload']['system_name'];
             $reportVideoStreamStatus = $reportData['payload']['video_stream'];
 
+            //check report age
             $maxReportAge = 60 * 15;
             if ((time() - $reportTimestamp) > $maxReportAge) {
                 $warningMessage = "<b>" . $reportSystemName . "</b>: the last health report is older than " . $maxReportAge . " sec. (last seen at " . $reportLocalTime . " local time)";
@@ -238,6 +239,7 @@ class ReportAnalyzer
                 $warnings[$warningId] = $warningMessage;
             }
 
+            //check jpeg stream
             if (strpos($reportVideoStreamStatus, "Stream #0:0: Video: mjpeg") === false) {
                 $warningMessage = "<b>" . $reportSystemName . "</b>: the video stream format is invalid: <b>" . $reportVideoStreamStatus . "</b>";
                 $warningId = $reportSystemName . "-stream-error";
