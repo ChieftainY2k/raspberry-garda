@@ -99,7 +99,7 @@ class ReportAnalyzer
             $emailHtmlBody .= "
                 Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected that the following anomalies <b style='color:green'>DISAPPEARED</b>:<br>
                 <ul>
-                   <li style='text-decoration: line-through;'>" . join("</li><li>", $deletedWarnings) . "</li>    
+                   <li style='text-decoration: line-through;'>" . join("</li><li style='text-decoration: line-through;'>", $deletedWarnings) . "</li>    
                 </ul>
             ";
         }
