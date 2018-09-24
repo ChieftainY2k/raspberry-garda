@@ -16,6 +16,7 @@ composer install
 while sleep 10; do
     echo "Starting the swarm watcher MQTT topics collector."
     php -f /code/swarm-watcher-topic-collector.php
+    echo "Swarm watcher MQTT topics collector finished."
 done
 
 #echo "MQTT events listener finished."
