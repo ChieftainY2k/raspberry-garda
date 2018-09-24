@@ -1,0 +1,5 @@
+
+#launch swarm wather
+* * * * * /usr/bin/flock -w 0 /tmp/swarm-watcher-analyzer.lock php /code/swarm-watcher-analyzer.php 2>&1 > /proc/1/fd/2
+
+

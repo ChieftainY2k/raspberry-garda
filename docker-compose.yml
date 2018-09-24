@@ -127,6 +127,20 @@ services:
      - ./configs:/service-configs:ro
     restart: always
 
+  swarm-watcher:
+    env_file:
+      - configs/environment.conf
+    build:
+      context: ./services/swarm-watcher
+      dockerfile: Dockerfile.swarm-watcher
+    volumes:
+     - ./services/swarm-watcher/code:/code
+     - ./data/email-notification/:/data
+     - /etc/timezone:/etc/timezone:ro
+     - /etc/localtime:/etc/localtime:ro
+     - ./configs:/service-configs:ro
+    restart: always
+
   health-reporter:
     env_file:
       - configs/environment.conf
