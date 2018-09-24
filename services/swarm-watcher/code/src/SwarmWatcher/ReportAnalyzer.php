@@ -66,19 +66,77 @@ class ReportAnalyzer
     public function sendNotificationsBasedOnReports()
     {
         //get current warnings based on the health reports
-        $currentWarnings = $this->getCurrentWarnings();
-        print_r($currentWarnings);
+        $currentWarnings = $this->getWarningsFromLatestHealthReports();
+        //print_r($currentWarnings);
 
         //get previous warnings
         $lastWarningsFilePath = $this->localCacheRootPath . "/" . "last-warnings.json";
         if (file_exists($lastWarningsFilePath)) {
-            $lastWarnings = json_decode(file_get_contents($lastWarningsFilePath), true);
+            $previousWarnings = json_decode(file_get_contents($lastWarningsFilePath), true);
         } else {
-            $lastWarnings = [];
+            $previousWarnings = [];
         }
 
-        //print_r($lastWarnings);
-        //exit;
+        //compare current and presious warnings => find new and deleted warnings
+        $newWarnings = $this->findNewWarnings($previousWarnings, $currentWarnings);
+        $deletedWarnings = $this->findDeletedWarnings($previousWarnings, $currentWarnings);
+        $this->log("new warnings: " . json_encode(array_keys($newWarnings)));
+        $this->log("deleted warnings: " . json_encode(array_keys($deletedWarnings)));
+
+        //Save an email in the email queue
+        $emailHtmlBody = "";
+
+        if (!empty($newWarnings)) {
+            $emailHtmlBody .= "
+                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW</b> anomalies in the swarm:<br>
+                <ul>
+                    <li>" . join("</li><li>", $newWarnings) . "</li>    
+                </ul>
+            ";
+        }
+
+        if (!empty($deletedWarnings)) {
+            $emailHtmlBody .= "
+                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following anomalies <b style='color:green'>REPAIRED</b> in the swarm:<br>
+                <ul>
+                   <li style='text-decoration: line-through;'>" . join("</li><li>", $deletedWarnings) . "</li>    
+                </ul>
+            ";
+        }
+
+        if (!empty($emailHtmlBody)) {
+            $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - swarm anomaly detected';
+            //create email data
+            $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
+            //@TODO use DTO here
+            $emailData = [
+                "recipients" => [
+                    $recipient
+                ],
+                "subject" => $emailSubject,
+                "htmlBody" => $emailHtmlBody
+            ];
+
+            //save email data to temporary JSON file
+            $filePath = $this->emailQueuePath . "/" . (microtime(true)) . ".json";
+            $filePathTmp = $filePath . ".tmp";
+            if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
+                throw new \Exception("Cannot save data to file " . $filePath);
+            }
+
+            //rename temporaty file to dest file
+            if (!rename($filePathTmp, $filePath)) {
+                throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+            }
+
+            $this->log("email successfully created and saved to $filePath");
+
+        } else {
+
+            $this->log("[" . date("Y-m-d H:i:s") . "] no new or deleted warnings");
+
+        }
+
 
         //save current warnings as the las warnings
         if (!file_put_contents($lastWarningsFilePath, json_encode($currentWarnings), LOCK_EX)) {
@@ -88,10 +146,51 @@ class ReportAnalyzer
     }
 
     /**
+     * @param $previousWarnings
+     * @param $currentWarnings
+     * @return array
+     */
+    public function findNewWarnings($previousWarnings, $currentWarnings)
+    {
+        $newWarnings = [];
+
+        //@TODO optimize this
+        //check for new entries
+        foreach ($currentWarnings as $currentWarningId => $currentWarningData) {
+            //this new warning does not exist in previous warnings table
+            if (empty($previousWarnings[$currentWarningId])) {
+                $newWarnings[$currentWarningId] = $currentWarningData;
+            }
+        }
+
+        return $newWarnings;
+    }
+
+    /**
+     * @param $previousWarnings
+     * @param $currentWarnings
+     * @return array
+     */
+    public function findDeletedWarnings($previousWarnings, $currentWarnings)
+    {
+        $deletedWarnings = [];
+
+        //check for deleted entries
+        foreach ($previousWarnings as $previousWarningId => $previousWarningData) {
+            if (empty($currentWarnings[$previousWarningId])) {
+                $deletedWarnings[$previousWarningId] = $previousWarningData;
+            }
+        }
+
+        return $deletedWarnings;
+    }
+
+
+    /**
      * @throws \Exception
      * @return array warnings table
      */
-    public function getCurrentWarnings()
+    public function getWarningsFromLatestHealthReports()
     {
 
         //scan directory for queued topics data, sort it by name, ascending
@@ -116,7 +215,7 @@ class ReportAnalyzer
             if (empty($reportData)) {
                 throw new \Exception("Cannot get content of file " . $this->healthReportsRootPath . "/" . $queueItemFileName);
             }
-            $this->log("content =  " . $reportData . "");
+            //$this->log("content =  " . $reportData . "");
             $reportData = json_decode($reportData, true);
             //print_r($reportData); //exit;
 
@@ -126,7 +225,7 @@ class ReportAnalyzer
                 continue;
             }
 
-            $tmpDir = sys_get_temp_dir();
+            //$tmpDir = sys_get_temp_dir();
             $reportTimestamp = $reportData['payload']['timestamp'];
             $reportLocalTime = $reportData['payload']['local_time'];
             $reportSystemName = $reportData['payload']['system_name'];
@@ -134,15 +233,15 @@ class ReportAnalyzer
 
             $maxReportAge = 60 * 15;
             if ((time() - $reportTimestamp) > $maxReportAge) {
-                $message = "<b>" . $reportSystemName . "</b>: the last health report is older than " . $maxReportAge . " sec. (last reported at " . $reportLocalTime . " local time)";
-                $messageDeterministicId = $reportSystemName . "-old-report";
-                $warnings[$messageDeterministicId] = $message;
+                $warningMessage = "<b>" . $reportSystemName . "</b>: the last health report is older than " . $maxReportAge . " sec. (last seen at " . $reportLocalTime . " local time)";
+                $warningId = $reportSystemName . "-old-report";
+                $warnings[$warningId] = $warningMessage;
             }
 
             if (strpos($reportVideoStreamStatus, "Stream #0:0: Video: mjpeg") === false) {
-                $message = "<b>" . $reportSystemName . "</b>: the video stream format is invalid: <b style='color:red'>" . $reportVideoStreamStatus . "</b>";
-                $messageDeterministicId = $reportSystemName . "-stream-error";
-                $warnings[$messageDeterministicId] = $message;
+                $warningMessage = "<b>" . $reportSystemName . "</b>: the video stream format is invalid: <b>" . $reportVideoStreamStatus . "</b>";
+                $warningId = $reportSystemName . "-stream-error";
+                $warnings[$warningId] = $warningMessage;
             }
 
             /*
