@@ -5,9 +5,11 @@ namespace SwarmWatcher;
 
 
 /**
+ * Analyze report collection and produce readable report with new warnings and warnings that disappeared
  *
  * @TODO use logger object
  * @TODO use SPL for files and directories
+ * @TODO use objects/factories for better testing
  */
 class ReportAnalyzer
 {
@@ -88,7 +90,7 @@ class ReportAnalyzer
 
         if (!empty($newWarnings)) {
             $emailHtmlBody .= "
-                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW</b> anomalies:<br>
+                Swarm watcher at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW anomalies</b>:<br>
                 <ul>
                     <li>" . join("</li><li>", $newWarnings) . "</li>    
                 </ul>
@@ -97,7 +99,7 @@ class ReportAnalyzer
 
         if (!empty($deletedWarnings)) {
             $emailHtmlBody .= "
-                Service at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected that the following anomalies <b style='color:green'>DISAPPEARED</b>:<br>
+                Swarm watcher at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected that the following <b style='color:green'>anomalies DISAPPEARED</b>:<br>
                 <ul>
                    <li style='text-decoration: line-through;'>" . join("</li><li style='text-decoration: line-through;'>", $deletedWarnings) . "</li>    
                 </ul>
@@ -106,6 +108,12 @@ class ReportAnalyzer
 
         if (!empty($emailHtmlBody)) {
             $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - swarm anomaly detected';
+
+            $emailHtmlBody .= "
+                <br>
+                System local time: " . date("Y-m-d H:i:s")."
+            ";
+
             //create email data
             $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
             //@TODO use DTO here

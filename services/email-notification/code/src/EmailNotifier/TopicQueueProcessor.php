@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 /**
  *
  * @TODO use logger object
+ * @TODO use objects/factories for better testing
  */
 class TopicQueueProcessor
 {
