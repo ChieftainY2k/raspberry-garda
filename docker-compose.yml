@@ -30,7 +30,7 @@ services:
 #      - STREAM_WIDTH=1280
 #      - STREAM_HEIGHT=720
 #      - STREAM_FPS=10
-#    restart: always
+#    restart: unless-stopped
 
 
   kerberos:
@@ -59,7 +59,7 @@ services:
 #    links:
 #      - webhook-php
     privileged: true
-    restart: always
+    restart: unless-stopped
 
 #  webhook-php:
 #    build:
@@ -70,7 +70,7 @@ services:
 #    volumes:
 #     - /etc/timezone:/etc/timezone:ro
 #     - /etc/localtime:/etc/localtime:ro
-#    restart: always
+#    restart: unless-stopped
 
 #  cadvisor:
 #    image: unibaktr/cadvisor
@@ -85,7 +85,7 @@ services:
 #     - /dev/disk/:/dev/disk:ro
 #     - /etc/timezone:/etc/timezone:ro
 #     - /etc/localtime:/etc/localtime:ro
-#    restart: always
+#    restart: unless-stopped
 
   mqtt-server:
     env_file:
@@ -100,7 +100,7 @@ services:
      - /etc/localtime:/etc/localtime:ro
      - ./data/mqtt-server/db:/var/lib/mosquitto
      - ./configs:/service-configs
-    restart: always
+    restart: unless-stopped
 
 #  mqtt-listener-php:
 #    build:
@@ -110,7 +110,7 @@ services:
 #     - ./mqtt-listener-php/code:/code
 #     - /etc/timezone:/etc/timezone:ro
 #     - /etc/localtime:/etc/localtime:ro
-#    restart: always
+#    restart: unless-stopped
 
   email-notification:
     env_file:
@@ -125,7 +125,7 @@ services:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
      - ./configs:/service-configs:ro
-    restart: always
+    restart: unless-stopped
 
   swarm-watcher:
     env_file:
@@ -140,7 +140,7 @@ services:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
      - ./configs:/service-configs:ro
-    restart: always
+    restart: unless-stopped
 
   health-reporter:
     env_file:
@@ -155,7 +155,7 @@ services:
      - /etc/localtime:/etc/localtime:ro
      - ./configs:/service-configs:ro
     privileged: true
-    restart: always
+    restart: unless-stopped
 
 
   alpr:
@@ -172,7 +172,7 @@ services:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
      - ./configs:/service-configs:ro
-    restart: always
+    restart: unless-stopped
 
 
 #  kerberos-dist:
@@ -190,7 +190,7 @@ services:
 #    privileged: true
 ##    links:
 ##      - streamer-mjpg
-##    restart: always
+##    restart: unless-stopped
 
 
   #######################################
@@ -206,7 +206,7 @@ services:
       - ./data/portainer:/data
     ports:
       - 82:9000
-    restart: always
+    restart: unless-stopped
 
 
   # UI and "supervisor" to reload the configuration for containers
@@ -225,6 +225,5 @@ services:
 #    cap_add:
 #      - SYS_ADMIN
 #    privileged: true
-    restart: always
-
+    restart: unless-stopped
 
