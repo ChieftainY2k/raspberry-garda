@@ -149,6 +149,7 @@ class EmailQueueProcessor
         $mailer->isHTML(true);                                  // Set email format to HTML
         $mailer->Subject = $itemData['subject'];
         $mailer->Body = $itemData['htmlBody'];
+        $mailer->addCustomHeader("x-local-time", date("Y-m-d H:i:s"));
         $result = $mailer->send();
         if (!$result) {
             throw new \Exception("Cannot send email: " . $mailer->ErrorInfo);

@@ -83,8 +83,8 @@ class TopicQueueProcessor
             $reportPayload = $lastHealthReportData['payload'];
             $uptimeSeconds = $reportPayload['uptime_seconds'];
             $htmlBody .= "
-                Last health report (reported " . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "): <br>
                 <ul>
+                    <li>Report time: <b>" . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "</b></li>
                     <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
                     <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate("i", $uptimeSeconds % 3600) . "m</b></li>
                     <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
@@ -189,12 +189,15 @@ class TopicQueueProcessor
 
         //email content
         $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - motion detected.';
-        $emailHtmlBody = "Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>. See the attached media for details.";
+        $emailHtmlBody = "
+            Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>.<br>
+            Local time: <b>" . date("Y-m-d H:i:s") . "</b><br>
+        ";
 
         //attach health report if available
         $lastHealthReportAsHtml = $this->getLastHealthReportAsHtml();
         if (!empty($lastHealthReportAsHtml)) {
-            $emailHtmlBody .= "<br><br>" . $lastHealthReportAsHtml;
+            $emailHtmlBody .= "Last health report: <br>" . $lastHealthReportAsHtml;
         }
 
         //create email data
