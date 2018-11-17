@@ -5,11 +5,12 @@ namespace SwarmWatcher;
 
 use Mosquitto\Client;
 use Mosquitto\Message;
+use Psr\Log\LoggerInterface;
 
 /**
  *
  * @TODO use logger object
- * @TODO use SPL for files and directories
+ * @TODO use queuing system for collecting messages
  */
 class TopicCollector
 {
@@ -25,11 +26,17 @@ class TopicCollector
     private $healthReportsRootPath;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      *
      * @param Client $mqttSubscriber
      * @param string $healthReportsRootPath
+     * @param LoggerInterface $logger
      */
-    function __construct(Client $mqttSubscriber, string $healthReportsRootPath)
+    function __construct(Client $mqttSubscriber, string $healthReportsRootPath, LoggerInterface $logger)
     {
         $this->mqttClient = $mqttSubscriber;
         $this->mqttClient->onSubscribe([$this, "onSubscribe"]);
@@ -38,14 +45,8 @@ class TopicCollector
         $this->mqttClient->onMessage([$this, "onMessage"]);
 
         $this->healthReportsRootPath = $healthReportsRootPath;
-    }
 
-    /**
-     * @param $msg
-     */
-    function log($msg)
-    {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
+        $this->logger = $logger;
     }
 
     /**
@@ -53,7 +54,7 @@ class TopicCollector
      */
     function onSubscribe()
     {
-        $this->log("subscribed to a topic");
+        $this->logger->debug("subscribed to a topic");
     }
 
     /**
@@ -62,7 +63,7 @@ class TopicCollector
      */
     function onConnect($responseCode, $responseMessage)
     {
-        $this->log("connected, got code $responseCode , message '$responseMessage'");
+        $this->logger->debug("connected, got code $responseCode , message '$responseMessage'");
 
         //subscribe to remote topics with healthchecks from the gardas connected to the swarm
         $this->mqttClient->subscribe('remote/+/healthcheck/report', 2);
@@ -74,7 +75,7 @@ class TopicCollector
      */
     function onDisconnect()
     {
-        $this->log("disconnected");
+        $this->logger->debug("disconnected");
     }
 
     /**
@@ -83,7 +84,7 @@ class TopicCollector
      */
     function onMessage(Message $message)
     {
-        $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
+        $this->logger->debug("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
 
         //save topic do the dedicated file
         $filePath = $this->healthReportsRootPath . "/" . (md5($message->topic)) . ".json";
@@ -102,7 +103,7 @@ class TopicCollector
             throw new \Exception("Cannot rename file $filePathTmp to $filePath");
         }
 
-        $this->log("saved " . $message->topic . " data to file $filePath");
+        $this->logger->debug("saved " . $message->topic . " data to file $filePath");
 
 
     }
