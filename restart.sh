@@ -3,7 +3,7 @@
 #helper function
 logMessage()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][rebuild]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][restart]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }

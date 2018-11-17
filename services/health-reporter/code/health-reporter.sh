@@ -84,6 +84,7 @@ echo "[$DATE] FFProbe output = $streamFFprobeOutput"
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
+    "version":"1",
     "system_name":"$KD_SYSTEM_NAME",
     "timestamp":"$timestamp",
     "local_time":"$localTime",

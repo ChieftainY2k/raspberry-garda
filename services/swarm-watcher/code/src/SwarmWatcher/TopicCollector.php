@@ -9,8 +9,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  *
- * @TODO use logger object
- * @TODO use queuing system for collecting messages
+ * @TODO use report saver object
  */
 class TopicCollector
 {
@@ -95,12 +94,12 @@ class TopicCollector
             "topic" => $message->topic,
             "payload" => json_decode($message->payload),
         ]), LOCK_EX)) {
-            throw new \Exception("Cannot save data to file " . $filePath);
+            throw new \RuntimeException("Cannot save data to file " . $filePath);
         }
 
         //rename temporaty file to dest file
         if (!rename($filePathTmp, $filePath)) {
-            throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+            throw new \RuntimeException("Cannot rename file $filePathTmp to $filePath");
         }
 
         $this->logger->debug("saved " . $message->topic . " data to file $filePath");
