@@ -254,36 +254,6 @@ class ReportAnalyzer
                 $warnings[$warningId] = $warningMessage;
             }
 
-            /*
-             * Array
-            (
-                [timestamp] => 1537790459
-                [topic] => remote/DevBox/healthcheck/report
-                [payload] => Array
-                    (
-                        [system_name] => MySurveillanceBox
-                        [timestamp] => 1535280716
-                        [local_time] => 2018-08-26 12:51:56
-                        [cpu_temp] => 60.7
-                        [cpu_voltage] => 1.20
-                        [uptime_seconds] => 2944
-                        [disk_space_available_kb] => 1209864
-                        [disk_space_total_kb] => 7645880
-                        [images_size_kb] => 857620
-                        [services] => Array
-                            (
-                                [alpr] => 1
-                                [email_notification] => 1
-                                [mqtt_bridge] => 1
-                            )
-
-                        [video_stream] => http://kerberos:8889: Connection refused
-                    )
-
-            )
-             */
-
-
         };
 
         //print_r($warnings);
@@ -292,19 +262,4 @@ class ReportAnalyzer
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
