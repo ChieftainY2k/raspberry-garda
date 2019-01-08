@@ -16,6 +16,7 @@ if [[ "$KD_NGROK_ENABLED" == "1" ]]; then
 else
 
     echo "NGROK tunnel is DISABLED."
+    sleep infinity
 
 fi
 
