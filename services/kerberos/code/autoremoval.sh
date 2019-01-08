@@ -62,7 +62,7 @@ if [[ ${spaceAvailableKb} -lt 1000000 ]]; then
 fi
 
 logMessage "removing old temporary h264 files."
-tmpreaper -v --mtime 24h /etc/opt/kerberosio/h264/
+tmpreaper -v --mtime 4h /etc/opt/kerberosio/h264/
 
 #publish topic
 if [[ "$cleanupPerformed" = "1" ]]; then
