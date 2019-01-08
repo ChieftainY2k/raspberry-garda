@@ -142,7 +142,11 @@ class EmailQueueProcessor
 
         //Add requested attachments
         foreach ($itemData['attachments'] as $attachmentData) {
-            $mailer->addAttachment($attachmentData['filePath']);
+            if (file_exists($attachmentData['filePath'])) {
+                $mailer->addAttachment($attachmentData['filePath']);
+            } else {
+                $this->log("warning: skipping missing attachment file " . $attachmentData['filePath']);
+            }
         }
 
         //Content
