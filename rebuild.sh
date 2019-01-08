@@ -12,7 +12,7 @@ logMessage()
 check_errors()
 {
     EXITCODE=$1
-    if [ $EXITCODE -ne 0 ]; then
+    if [[ ${EXITCODE} -ne 0 ]]; then
         logMessage "ERROR: there were some errors, check the ouput for details, press ENTER to continue or Ctrl-C to abort."
         read
     else
@@ -33,4 +33,3 @@ check_errors $?
 logMessage "Starting containers..."
 docker-compose up -d --remove-orphans --build
 check_errors $?
-

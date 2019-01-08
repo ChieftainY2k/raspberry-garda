@@ -39,8 +39,7 @@ maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-1000000)) # dynamic = related to
 
 cleanupPerformed=0
 #while [ $totalFilesSizeKb -gt $maximumAllowedSpaceTakenKb ]
-while [ $spaceAvailableKb -lt 1000000 ]
-do
+if [[ ${spaceAvailableKb} -lt 1000000 ]]; then
     logMessage "cleaning up, removing some oldest files in $imagedir ..."
     find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
 
@@ -60,7 +59,7 @@ do
     sleep 3
 
     cleanupPerformed=1
-done
+fi
 
 logMessage "removing old temporary h264 files."
 tmpreaper -v --mtime 24h /etc/opt/kerberosio/h264/
@@ -75,7 +74,7 @@ if [[ "$cleanupPerformed" = "1" ]]; then
 
     messageJson=$(cat <<EOF
     {
-        "system_name":"$KD_SYSTEM_NAME",
+        "system_name":"${KD_SYSTEM_NAME}",
         "timestamp":"$timestamp",
         "local_time":"$localTime",
         "disk_space_available_kb":"$spaceAvailableKb",
@@ -91,7 +90,7 @@ EOF
     #publish it
     mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
     EXITCODE=$?
-    if [ $EXITCODE -ne 0 ]; then
+    if [[ ${EXITCODE} -ne 0 ]]; then
         logMessage "ERROR: there was an error publishing the MQTT topic."
     else
         logMessage "success, published MQTT topic $messageTopic with message $messageJson"
