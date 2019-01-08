@@ -11,8 +11,8 @@ configFile=/etc/mosquitto/conf.d/bridge.conf
 echo "" > ${configFile}
 
 #prepare bridge configuration if bridge is enabled
-if [ "$KD_MQTT_BRIDGE_ENABLED" == "1" ]
-then
+if [[ "$KD_MQTT_BRIDGE_ENABLED" == "1" ]]; then
+
     echo "Creating the bridge config $configFile"
     echo "connection bridge-to-therabithia" >> ${configFile}
     echo "address $KD_MQTT_BRIDGE_REMOTE_HOST:$KD_MQTT_BRIDGE_REMOTE_PORT" >> ${configFile}
@@ -21,8 +21,11 @@ then
     echo "remote_password $KD_MQTT_BRIDGE_REMOTE_PASSWORD" >> ${configFile}
     echo "topic # out 1 \"\" $KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX/" >> ${configFile}
     echo "topic # in 1" remote/ \"\">> ${configFile}
+
 else
+
     echo "MQTT bridge is DISABLED."
+
 fi
 
 # Fix permissions
