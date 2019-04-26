@@ -44,7 +44,8 @@ logMessage "Installing packages..."
 sudo apt install -y \
      apt-transport-https ca-certificates \
      curl wget telnet gnupg2 software-properties-common \
-     git mc multitail htop jnettop python python-pip joe pydf
+     git mc multitail htop jnettop python python-pip joe pydf \
+     build-essential libssl-dev libffi-dev python-dev
 check_errors $?
 
 # Get the Docker signing key for packages
