@@ -46,6 +46,11 @@ Enjoy! :-)
 
 The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
+**Hardening (optional)**
+
+* Change default passwords
+* Use unattended upgrades
+* Use Fail2Ban 
 
 **Configuration (shell)**
 
