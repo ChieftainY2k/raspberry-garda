@@ -29,7 +29,6 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://www.raspberrypi.org/downloads/ , install it on a SD card (8GB at least).
-* Run "**sudo rpi-update**" 
 * Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
 * Configure your time zone (raspi-config -> localisation -> change timezone)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
