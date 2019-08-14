@@ -1,18 +1,6 @@
 .env
 configs/services.conf
 
-logs/
-!logs/kerberos/.gitkeep
-
-data/kerberos/capture
-!data/kerberos/capture/.gitkeep
-
-data/kerberos/h264
-!data/kerberos/h264/.gitkeep
-
-data/portainer
-!data/portainer/.gitkeep
-
 data/mqtt-server
 !data/mqtt-server/.gitkeep
 
