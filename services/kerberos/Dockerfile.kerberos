@@ -21,11 +21,11 @@ RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
 
-#RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi3-machinery-kerberosio-armhf-2.6.1.deb
-#RUN cd /tmp && dpkg -i rpi3-machinery-kerberosio-armhf-2.6.1.deb
+RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi3-machinery-kerberosio-armhf-2.6.1.deb
+RUN cd /tmp && dpkg -i rpi3-machinery-kerberosio-armhf-2.6.1.deb
 
-RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi2-machinery-kerberosio-armhf-2.6.1.deb
-RUN cd /tmp && dpkg -i rpi2-machinery-kerberosio-armhf-2.6.1.deb
+#RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi2-machinery-kerberosio-armhf-2.6.1.deb
+#RUN cd /tmp && dpkg -i rpi2-machinery-kerberosio-armhf-2.6.1.deb
 
 #RUN systemctl enable kerberosio
 #RUN chmod go-rw /etc/systemd/system/kerberosio.service
