@@ -81,6 +81,9 @@ echo "[$DATE] FFProbe output = $streamFFprobeOutput"
 #if [ "$streamFFprobeOutput" -ne "Stream #0:0: Video: mjpeg," ]; then
 #fi
 
+#@FIXME make it universal, do not assume any services' names
+NGROK_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/ngrok/report.json)
+
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
@@ -97,7 +100,8 @@ messageJson=$(cat <<EOF
     "services":{
         "alpr":"$KD_ALPR_ENABLED",
         "email_notification":"$KD_EMAIL_NOTIFICATION_ENABLED",
-        "mqtt_bridge":"$KD_MQTT_BRIDGE_ENABLED"
+        "mqtt_bridge":"$KD_MQTT_BRIDGE_ENABLED",
+        "ngrok":${NGROK_SERVICE_REPORT_JSON}
     },
     "video_stream":"$streamFFprobeOutput"
 }

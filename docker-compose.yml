@@ -164,6 +164,7 @@ services:
     volumes:
      - ./services/health-reporter/code:/code
      - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
+     - ./data/services-health-reports:/data-services-health-reports
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
      - ./configs:/service-configs:ro
