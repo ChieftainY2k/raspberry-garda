@@ -19,8 +19,28 @@ if [[ "$KD_NGROK_ENABLED" == "1" ]]; then
     curl --silent --show-error http://127.0.0.1:4040/api/tunnels
 
     while sleep 1; do
+
         NGROK_TUNNEL_URL=$(curl --silent --show-error http://127.0.0.1:4040/api/tunnels | sed -nE 's/.*public_url":"https:..([^"]*).*/\1/p')
         echo "NGROK tunnel public url is $NGROK_TUNNEL_URL"
+
+        timestamp=$(date +%s)
+        localTime=$(date '+%Y-%m-%d %H:%M:%S')
+
+        # prepare JSON message
+        messageJson=$(cat <<EOF
+{
+    "timestamp":"${timestamp}",
+    "local_time":"${localTime}",
+    "ngrok_url":"${NGROK_TUNNEL_URL}"
+}
+EOF
+)
+
+        #save ngrok service health report
+        messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
+        echo "Saving health report: ${messageJson}"
+        echo "${messageJson}" > /data-services-health-reports-ngrok/report.json
+
         sleep 600
     done
 

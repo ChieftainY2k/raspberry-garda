@@ -152,6 +152,7 @@ services:
      - /etc/timezone:/etc/timezone:ro
      - /etc/localtime:/etc/localtime:ro
      - ./configs:/service-configs:ro
+     - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
     restart: unless-stopped
 
   health-reporter:
