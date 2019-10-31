@@ -37,7 +37,7 @@ Enjoy! :-)
 * Clone this repo (git clone REPO_URL), go to the newly created repo directory
 * Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
 * Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
-* Run "**sudo bash ./install.sh**" 
+* Run "**sudo ./garda.sh install**" 
 * Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
 
 * The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
