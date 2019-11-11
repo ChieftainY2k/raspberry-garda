@@ -70,33 +70,26 @@ install()
          apt-transport-https ca-certificates \
          curl wget telnet gnupg2 software-properties-common \
          git mc multitail htop jnettop python python-pip joe pydf \
-         build-essential libssl-dev libffi-dev python-dev
+         build-essential libssl-dev libffi-dev python-dev python3-gpiozero
     check_errors $?
 
-    # Get the Docker signing key for packages
     log_message "Installing docker..."
-    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+    curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
     check_errors $?
-    echo "deb [arch=armhf] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-         $(lsb_release -cs) stable" | \
-        sudo tee /etc/apt/sources.list.d/docker.list
-    check_errors $?
-    sudo apt update
-    check_errors $?
-    sudo apt install -y docker-ce
-    check_errors $?
-    sudo systemctl enable docker
-    check_errors $?
-    sudo systemctl start docker
+    /tmp/get-docker.sh
     check_errors $?
 
-    log_message "Installing docker-compose..."
     # Install Docker Compose from pip
+    log_message "Installing docker-compose..."
     pip install docker-compose
     check_errors $?
 
     log_message "Checking docker installation..."
     sudo docker run hello-world
+    check_errors $?
+
+    log_message "Checking pinout..."
+    sudo pinout
     check_errors $?
 
     availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
