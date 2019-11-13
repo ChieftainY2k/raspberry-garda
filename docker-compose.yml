@@ -134,8 +134,8 @@ services:
             - ./services/configurator/code:/code
             - ./configs:/service-configs
             - /var/run/docker.sock:/var/run/docker.sock
-        ports:
-            - 85:80
+        #        ports:
+        #            - 85:80
         #    cap_add:
         #      - SYS_ADMIN
         #    privileged: true
