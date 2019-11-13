@@ -1,6 +1,8 @@
 FROM braingamer/nginx-proxy-arm
 
-#See docs for nginx support for the "vhost.d" directory
+COPY nginx.conf /etc/nginx/nginx.conf
+
+#See docs for  nginx support for the "vhost.d" directory
 
 ADD ./vhost.d/ /etc/nginx/vhost.d/
 

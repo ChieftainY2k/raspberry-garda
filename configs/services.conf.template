@@ -41,7 +41,12 @@ KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX=
 KD_ALPR_ENABLED=0
 KD_ALPR_COUNTRY=eu
 
-#Authorization token for ngrok tunnel (see https://ngrok.com/docs#authtoken)
+# Authorization token for ngrok tunnel (see https://ngrok.com/docs#authtoken)
 
 KD_NGROK_ENABLED=0
 KD_NGROK_AUTHTOKEN=0
+
+
+# Password for the configurator service to access UI
+
+KD_CONFIGURATOR_UI_PASSWORD=mypassword

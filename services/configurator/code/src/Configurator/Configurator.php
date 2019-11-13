@@ -54,7 +54,7 @@ class Configurator
         echo "
             Current services configuration:<br>
             <form action='' method='post'>
-            <textarea name='configAsText' style='width:100%; height:400px;'>" . htmlspecialchars($currentConfig) . "</textarea>
+            <textarea name='configAsText' style='width:100%; height:80%;'>" . htmlspecialchars($currentConfig) . "</textarea>
             <input type='submit' value='save config and reload services'>
             </form>
         ";
