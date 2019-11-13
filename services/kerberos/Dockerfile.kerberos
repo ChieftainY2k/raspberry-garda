@@ -66,3 +66,6 @@ RUN crontab /crontab.txt
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
 CMD /run.sh
+
+EXPOSE 80
+EXPOSE 8889

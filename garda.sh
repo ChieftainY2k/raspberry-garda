@@ -17,8 +17,8 @@ check_errors()
     EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
         log_message "ERROR: there were some errors, check the ouput for details, press ENTER to continue or Ctrl-C to abort."
-        #read
-        exit 1
+        read
+        #exit 1
     else
         log_message "OK, operation successfully completed."
     fi
@@ -49,10 +49,12 @@ helper()
 install()
 {
     ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
-    availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
     raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
+    availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
     log_message "Starting installation."
-    log_message "IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb., hardware = $raspberryDistro"
+    log_message "IP address: $ipAddress"
+    log_message "Available disk space: $availableDiskSpaceKb kb."
+    log_message "Hardware = $raspberryDistro"
 
     log_message "Updating packages..."
     sudo apt-get update -y
@@ -88,10 +90,13 @@ install()
     sudo docker run hello-world
     check_errors $?
 
-    availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
-    log_message "Installation complete"
-    log_message "IP address: $ipAddress , available disk space: $availableDiskSpaceKb kb., hardware = $raspberryDistro"
+    log_message "IP address: $ipAddress"
+    log_message "Available disk space: $availableDiskSpaceKb kb."
+    log_message "Probing for available disk space..."
+    pydf
+    check_errors $?
 
+    log_message "Installation completed"
 }
 
 stop()
@@ -157,6 +162,11 @@ log()
 
 status()
 {
+    ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
+    raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
+    log_message "IP address: $ipAddress"
+    log_message "Probing for available disk space..."
+    pydf
     log_message "Probing for container status..."
     docker-compose ${DOCKER_PARAMS} ps
 }

@@ -4,240 +4,250 @@ version: '3.2'
 
 services:
 
-#  streamer-rtsp:
-#    build:
-#      context: ./services/streamer-rtsp
-#      dockerfile: Dockerfile.streamer-rtsp
-#    ports:
-#      - "9000:9000"
-#    devices:
-#      - "/dev/video0"
-#      - "/dev/vchiq"
-#      - "/dev/vcsm"
-#    volumes:
-#      - "/opt/vc:/opt/vc"
-#    privileged: true
+    #######################################
+    # NGINX proxy for virtual hosts
+    #######################################
+    nginx:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/nginx
+            dockerfile: Dockerfile.nginx
+        environment:
+            - DEFAULT_HOST=kerberos.local
+        ports:
+            - "80:80"
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
 
-#  streamer-mjpg:
-#    build:
-#      context: ./services/streamer-mjpeg
-#      dockerfile: Dockerfile.streamer-mjpg
-#    ports:
-#      - "9000:9000"
-#    privileged: true
-#    environment:
-#      - STREAM_PORT=9000
-#      - STREAM_WIDTH=1280
-#      - STREAM_HEIGHT=720
-#      - STREAM_FPS=10
-#    restart: unless-stopped
+    kerberos:
+        env_file:
+            - configs/environment.conf
+        environment:
+            - VIRTUAL_HOST=kerberos.local
+        build:
+            context: ./services/kerberos
+            dockerfile: Dockerfile.kerberos
+        ports:
+            - "8889:8889"
+        volumes:
+            - ./services/kerberos/code:/code
+            - ./configs/kerberos:/etc/opt/kerberosio/config
+            - ./logs/kerberos:/etc/opt/kerberosio/logs
+            - ./data/kerberos/capture:/etc/opt/kerberosio/capture
+            - ./data/kerberos/h264:/etc/opt/kerberosio/h264
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        privileged: true
+        restart: unless-stopped
 
+    mqtt-server:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/mqtt-server
+            dockerfile: Dockerfile.mqtt-server
+        ports:
+            - "1883:1883"
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./data/mqtt-server/db:/var/lib/mosquitto
+            - ./configs:/service-configs
+        restart: unless-stopped
 
-  kerberos:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/kerberos
-      dockerfile: Dockerfile.kerberos
-#      args:
-#        KD_RASPBERRY_PI_MODEL: ${KD_RASPBERRY_PI_MODEL}
-    ports:
-      - "80:80"
-      - "8889:8889"
-    volumes:
-      - ./services/kerberos/code:/code
-      - ./configs/kerberos:/etc/opt/kerberosio/config
-      - ./logs/kerberos:/etc/opt/kerberosio/logs
-      - ./data/kerberos/capture:/etc/opt/kerberosio/capture
-      - ./data/kerberos/h264:/etc/opt/kerberosio/h264
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - ./configs:/service-configs:ro
-#      - /dev/video0:/dev/video0
-#      - /dev/vcsm:/dev/vcsm
-#      - /dev/vchiq:/dev/vchiq
-#    links:
-#      - webhook-php
-    privileged: true
-    restart: unless-stopped
+    email-notification:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/email-notification
+            dockerfile: Dockerfile.email-notification
+        volumes:
+            - ./services/email-notification/code:/code
+            - ./data/email-notification/:/data
+            - ./data/kerberos/capture:/etc/opt/kerberosio/capture
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        restart: unless-stopped
 
-#  webhook-php:
-#    build:
-#      context: ./services/webhook-php
-#      dockerfile: Dockerfile.webhook-php
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#     - /etc/timezone:/etc/timezone:ro
-#     - /etc/localtime:/etc/localtime:ro
-#    restart: unless-stopped
+    swarm-watcher:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/swarm-watcher
+            dockerfile: Dockerfile.swarm-watcher
+        volumes:
+            - ./services/swarm-watcher/code:/code
+            - ./data/email-notification/:/data-email-notification
+            - ./data/swarm-watcher/:/data
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        restart: unless-stopped
 
-#  cadvisor:
-#    image: unibaktr/cadvisor
-#    ports:
-#      - "8090:8080"
-#    privileged: true
-#    volumes:
-#     - /:/rootfs:ro
-#     - /var/run:/var/run:rw
-#     - /sys:/sys:ro
-#     - /var/lib/docker/:/var/lib/docker:ro
-#     - /dev/disk/:/dev/disk:ro
-#     - /etc/timezone:/etc/timezone:ro
-#     - /etc/localtime:/etc/localtime:ro
-#    restart: unless-stopped
+    ngrok:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/ngrok
+            dockerfile: Dockerfile.ngrok
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+            - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
+        restart: unless-stopped
 
-  mqtt-server:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/mqtt-server
-      dockerfile: Dockerfile.mqtt-server
-    ports:
-      - "1883:1883"
-    volumes:
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-     - ./data/mqtt-server/db:/var/lib/mosquitto
-     - ./configs:/service-configs
-    restart: unless-stopped
+    health-reporter:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/health-reporter
+            dockerfile: Dockerfile.health-reporter
+        volumes:
+            - ./services/health-reporter/code:/code
+            - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
+            - ./data/services-health-reports:/data-services-health-reports
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        privileged: true
+        restart: unless-stopped
 
-#  mqtt-listener-php:
-#    build:
-#      context: ./mqtt-listener-php
-#      dockerfile: Dockerfile.mqtt-listener-php
-#    volumes:
-#     - ./mqtt-listener-php/code:/code
-#     - /etc/timezone:/etc/timezone:ro
-#     - /etc/localtime:/etc/localtime:ro
-#    restart: unless-stopped
+    # UI and "supervisor" to reload the configuration for containers
+    configurator:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/configurator
+            dockerfile: Dockerfile.configurator
+        volumes:
+            - ./services/configurator/code:/code
+            - ./configs:/service-configs
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - 85:80
+        #    cap_add:
+        #      - SYS_ADMIN
+        #    privileged: true
+        restart: unless-stopped
 
-  email-notification:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/email-notification
-      dockerfile: Dockerfile.email-notification
-    volumes:
-     - ./services/email-notification/code:/code
-     - ./data/email-notification/:/data
-     - ./data/kerberos/capture:/etc/opt/kerberosio/capture
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-     - ./configs:/service-configs:ro
-    restart: unless-stopped
-
-  swarm-watcher:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/swarm-watcher
-      dockerfile: Dockerfile.swarm-watcher
-    volumes:
-     - ./services/swarm-watcher/code:/code
-     - ./data/email-notification/:/data-email-notification
-     - ./data/swarm-watcher/:/data
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-     - ./configs:/service-configs:ro
-    restart: unless-stopped
-
-  ngrok:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/ngrok
-      dockerfile: Dockerfile.ngrok
-    volumes:
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-     - ./configs:/service-configs:ro
-     - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
-    restart: unless-stopped
-
-  health-reporter:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/health-reporter
-      dockerfile: Dockerfile.health-reporter
-    volumes:
-     - ./services/health-reporter/code:/code
-     - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
-     - ./data/services-health-reports:/data-services-health-reports
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-     - ./configs:/service-configs:ro
-    privileged: true
-    restart: unless-stopped
+    #    alpr:
+    #        env_file:
+    #            - configs/environment.conf
+    #        build:
+    #            context: ./services/alpr
+    #            dockerfile: Dockerfile.alpr
+    #        volumes:
+    #            - ./data/kerberos/capture:/etc/opt/kerberosio/capture
+    #            - ./data/alpr/:/data
+    #            - ./data/email-notification/:/data-email-notification
+    #            - ./services/alpr/code:/code
+    #            - /etc/timezone:/etc/timezone:ro
+    #            - /etc/localtime:/etc/localtime:ro
+    #            - ./configs:/service-configs:ro
+    #        restart: unless-stopped
 
 
-  alpr:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/alpr
-      dockerfile: Dockerfile.alpr
-    volumes:
-     - ./data/kerberos/capture:/etc/opt/kerberosio/capture
-     - ./data/alpr/:/data
-     - ./data/email-notification/:/data-email-notification
-     - ./services/alpr/code:/code
-     - /etc/timezone:/etc/timezone:ro
-     - /etc/localtime:/etc/localtime:ro
-     - ./configs:/service-configs:ro
-    restart: unless-stopped
+    #  streamer-rtsp:
+    #    build:
+    #      context: ./services/streamer-rtsp
+    #      dockerfile: Dockerfile.streamer-rtsp
+    #    ports:
+    #      - "9000:9000"
+    #    devices:
+    #      - "/dev/video0"
+    #      - "/dev/vchiq"
+    #      - "/dev/vcsm"
+    #    volumes:
+    #      - "/opt/vc:/opt/vc"
+    #    privileged: true
+
+    #  streamer-mjpg:
+    #    build:
+    #      context: ./services/streamer-mjpeg
+    #      dockerfile: Dockerfile.streamer-mjpg
+    #    ports:
+    #      - "9000:9000"
+    #    privileged: true
+    #    environment:
+    #      - STREAM_PORT=9000
+    #      - STREAM_WIDTH=1280
+    #      - STREAM_HEIGHT=720
+    #      - STREAM_FPS=10
+    #    restart: unless-stopped
 
 
-#  kerberos-dist:
-#    build:
-#      context: ./services/kerberos-dist
-#      dockerfile: Dockerfile.kerberos-dist
-#    ports:
-#      - "80:80"
-#      - "8889:8889"
-#    volumes:
-#      - "./data/config:/etc/opt/kerberosio/config"
-#      - "./data/logs:/etc/opt/kerberosio/logs"
-#      - "./data/capture:/etc/opt/kerberosio/capture"
-#      - "./data/h264:/etc/opt/kerberosio/h264"
-#    privileged: true
-##    links:
-##      - streamer-mjpg
-##    restart: unless-stopped
+    #  webhook-php:
+    #    build:
+    #      context: ./services/webhook-php
+    #      dockerfile: Dockerfile.webhook-php
+    #    ports:
+    #      - "8080:8080"
+    #    volumes:
+    #     - /etc/timezone:/etc/timezone:ro
+    #     - /etc/localtime:/etc/localtime:ro
+    #    restart: unless-stopped
+
+    #  cadvisor:
+    #    image: unibaktr/cadvisor
+    #    ports:
+    #      - "8090:8080"
+    #    privileged: true
+    #    volumes:
+    #     - /:/rootfs:ro
+    #     - /var/run:/var/run:rw
+    #     - /sys:/sys:ro
+    #     - /var/lib/docker/:/var/lib/docker:ro
+    #     - /dev/disk/:/dev/disk:ro
+    #     - /etc/timezone:/etc/timezone:ro
+    #     - /etc/localtime:/etc/localtime:ro
+    #    restart: unless-stopped
+
+    #  mqtt-listener-php:
+    #    build:
+    #      context: ./mqtt-listener-php
+    #      dockerfile: Dockerfile.mqtt-listener-php
+    #    volumes:
+    #     - ./mqtt-listener-php/code:/code
+    #     - /etc/timezone:/etc/timezone:ro
+    #     - /etc/localtime:/etc/localtime:ro
+    #    restart: unless-stopped
 
 
-  #######################################
-  # UI manager for containers
-  # See https://blog.hypriot.com/post/new-docker-ui-portainer/
-  #######################################
-  docker-ui:
-    build:
-      context: ./services/docker-ui
-      dockerfile: Dockerfile.docker-ui
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./data/portainer:/data
-    ports:
-      - 82:9000
-    restart: unless-stopped
+    #  kerberos-dist:
+    #    build:
+    #      context: ./services/kerberos-dist
+    #      dockerfile: Dockerfile.kerberos-dist
+    #    ports:
+    #      - "80:80"
+    #      - "8889:8889"
+    #    volumes:
+    #      - "./data/config:/etc/opt/kerberosio/config"
+    #      - "./data/logs:/etc/opt/kerberosio/logs"
+    #      - "./data/capture:/etc/opt/kerberosio/capture"
+    #      - "./data/h264:/etc/opt/kerberosio/h264"
+    #    privileged: true
+    ##    links:
+    ##      - streamer-mjpg
+    ##    restart: unless-stopped
 
 
-  # UI and "supervisor" to reload the configuration for containers
-  configurator:
-    env_file:
-      - configs/environment.conf
-    build:
-      context: ./services/configurator
-      dockerfile: Dockerfile.configurator
-    volumes:
-      - ./services/configurator/code:/code
-      - ./configs:/service-configs
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 85:80
-#    cap_add:
-#      - SYS_ADMIN
-#    privileged: true
-    restart: unless-stopped
+    #######################################
+    # UI manager for containers
+    # See https://blog.hypriot.com/post/new-docker-ui-portainer/
+    #######################################
+#    docker-ui:
+#        build:
+#            context: ./services/docker-ui
+#            dockerfile: Dockerfile.docker-ui
+#        volumes:
+#            - /var/run/docker.sock:/var/run/docker.sock
+#            - ./data/portainer:/data
+#        ports:
+#            - 82:9000
+#        restart: unless-stopped
+
 
