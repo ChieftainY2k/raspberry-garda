@@ -21,7 +21,9 @@ try {
 
     //create configurator
     $configurator = new Configurator($client);
-    $configurator->showUI();
+    $configurator->checkAccess($_REQUEST);
+    $configurator->processRequestData($_REQUEST);
+    $configurator->showUI($_REQUEST);
 
     $client->disconnect();
 

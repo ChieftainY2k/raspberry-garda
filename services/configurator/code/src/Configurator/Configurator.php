@@ -41,21 +41,56 @@ class Configurator
     }
 
     /**
-     * Show simple UI
+     * @param array $requestData
      */
-    public function showUI()
+    public function checkAccess(array $requestData)
     {
-        if (!empty($_REQUEST['configAsText'])) {
-            $this->saveServicesConfig($_REQUEST['configAsText']);
+        $correctPassword = getenv("KD_CONFIGURATOR_UI_PASSWORD");
+        if ($correctPassword !== $requestData['userPassword']) {
+            echo "
+                <form action='' method='post'>
+                Password: <input type='password' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
+                <input type='submit' value='grant access'>
+                </form>
+            ";
+            exit;
+        }
+    }
+
+
+    /**
+     * Process request data
+     * @param array $requestData
+     * @throws \Exception
+     */
+    public function processRequestData(array $requestData)
+    {
+        if (!empty($requestData['configAsText'])) {
+            $this->saveServicesConfig($requestData['configAsText']);
+        }
+        if (!empty($requestData['doReloadContainers'])) {
             $this->reloadContainers();
         }
+    }
 
+    /**
+     * Show simple UI
+     * @param array $requestData
+     */
+    public function showUI(array $requestData)
+    {
         $currentConfig = file_get_contents("/service-configs/services.conf");
         echo "
-            Current services configuration:<br>
             <form action='' method='post'>
+            
+            Current services configuration:<br>
             <textarea name='configAsText' style='width:100%; height:80%;'>" . htmlspecialchars($currentConfig) . "</textarea>
-            <input type='submit' value='save config and reload services'>
+            
+            <input type='checkbox' name='doReloadContainers' value='1'>reload services after config is updated<br>  
+            <input type='hidden' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
+            
+            <input type='submit' value='save config'>
+            
             </form>
         ";
     }
