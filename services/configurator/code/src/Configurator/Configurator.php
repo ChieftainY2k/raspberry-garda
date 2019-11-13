@@ -133,7 +133,7 @@ class Configurator
         //reload all containers except for the configurator container
         foreach ($containers as $container) {
             $containerNames = join(",", $container->getNames());
-            if (!preg_match("/configurator/", $containerNames)) {
+            if (!preg_match("/configurator|nginx/", $containerNames)) {
                 echo "Restarting container $containerNames ...<br>";
                 $manager->restart($container->getId());
             }

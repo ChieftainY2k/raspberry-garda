@@ -20,6 +20,11 @@ services:
         volumes:
             - /var/run/docker.sock:/tmp/docker.sock:ro
 
+#    gateway:
+#        image: jwilder/whoami
+#        environment:
+#            - VIRTUAL_HOST=gateway.local
+
     kerberos:
         env_file:
             - configs/environment.conf
@@ -120,6 +125,8 @@ services:
     configurator:
         env_file:
             - configs/environment.conf
+#        environment:
+#            - VIRTUAL_HOST=configurator.local
         build:
             context: ./services/configurator
             dockerfile: Dockerfile.configurator

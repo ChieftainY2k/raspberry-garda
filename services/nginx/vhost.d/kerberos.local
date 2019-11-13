@@ -1,0 +1,3 @@
+location /configurator {
+    proxy_pass http://configurator/;
+}
