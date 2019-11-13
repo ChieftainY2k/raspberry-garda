@@ -41,6 +41,7 @@ RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
 USER www-data
 RUN cd /var/www/web && wget https://github.com/kerberos-io/web/releases/download/v2.5.1/web.tar.gz
 RUN cd /var/www/web && tar xvf web.tar.gz .
+RUN cd /var/www/web && rm -f xvf web.tar.gz
 
 USER root
 RUN cd /var/www/web && chown www-data -R storage bootstrap/cache config/kerberos.php

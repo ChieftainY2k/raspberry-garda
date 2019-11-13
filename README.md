@@ -55,21 +55,22 @@ The application will be automatically restarted on reboot, unless you explicitel
 
 * Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
 * Restart the services:
-  * `docker-compose restart`
+  * `./garda.sh restart`
 
 **Configuration (web GUI)**
 
-* The services configurator is available at http://_YOUR_RASPBERRY_PI_ADDRESS_:85   
+* Edit **configs/services.conf** and set the `KD_CONFIGURATOR_UI_PASSWORD` value
+* Go to http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator   
 
 
 **Stop the system**
 `````
-sudo docker-compose stop 
+./garda.sh stop 
 `````
 
 **Start up the system again**
 `````
-sudo docker-compose up -d 
+./garda.sh start 
 `````
 
 The containers will automatically restart on reboot/failure unless explicitly stopped 
@@ -77,26 +78,16 @@ The containers will automatically restart on reboot/failure unless explicitly st
 
 **Show containers output/logs (last 10 lines, then follow the output)**
 `````
-sudo docker-compose logs -f --tail=10
+./garda.sh logs
 `````
 
-**Show kerberos Web Nginx logs**
+**Show kerberos logs**
 `````
-sudo docker-compose exec kerberos bash -c "tail -f /var/log/nginx/*"
-`````
-
-**Show Laravel logs**
-`````
-sudo docker-compose exec kerberos bash -c "tail -f /var/www/web/storage/logs/laravel.log"
-`````
-
-**Show webhook event listener logs**
-`````
-sudo docker-compose logs -f | grep webhook
+./garda.sh kerberos log
 `````
 
 **Run bash inside kerberos container**
 `````
-sudo docker-compose exec kerberos bash
+./garda.sh kerberos bash
 `````
 

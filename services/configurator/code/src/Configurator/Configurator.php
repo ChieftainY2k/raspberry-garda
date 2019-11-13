@@ -50,7 +50,7 @@ class Configurator
             echo "
                 <form action='' method='post'>
                 Password: <input type='password' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
-                <input type='submit' value='grant access'>
+                <input type='submit' value='submit'>
                 </form>
             ";
             exit;
@@ -83,13 +83,13 @@ class Configurator
         echo "
             <form action='' method='post'>
             
-            Current services configuration:<br>
+            Services configuration file:<br>
             <textarea name='configAsText' style='width:100%; height:80%;'>" . htmlspecialchars($currentConfig) . "</textarea>
             
             <input type='checkbox' name='doReloadContainers' value='1'>reload services after config is updated<br>  
             <input type='hidden' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
             
-            <input type='submit' value='save config'>
+            <input type='submit' value='save config' onclick=\"alert('This may take a while...')\">
             
             </form>
         ";
