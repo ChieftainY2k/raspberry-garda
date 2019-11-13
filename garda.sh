@@ -70,7 +70,7 @@ install()
          apt-transport-https ca-certificates \
          curl wget telnet gnupg2 software-properties-common \
          git mc multitail htop jnettop python python-pip joe pydf \
-         build-essential libssl-dev libffi-dev python-dev python3-gpiozero
+         build-essential libssl-dev libffi-dev python-dev
     check_errors $?
 
     log_message "Installing docker..."
@@ -86,10 +86,6 @@ install()
 
     log_message "Checking docker installation..."
     sudo docker run hello-world
-    check_errors $?
-
-    log_message "Checking pinout..."
-    sudo pinout
     check_errors $?
 
     availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
