@@ -28,41 +28,36 @@ Enjoy! :-)
 
 **Installation**
 
-* Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least).
-* (optional) Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
-* Configure your time zone (raspi-config -> localisation -> change timezone)
-* Enable the camera module support (raspi-config -> interfacing -> camera)
-* Set video memory to 128MB (raspi-config -> advanced -> memory split)
-* (optional) Disable the swap space (`sudo systemctl disable dphys-swapfile && sudo reboot`)
-* Clone this repo (git clone REPO_URL), go to the newly created repo directory
-* Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
-* Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
-* Run "**sudo ./garda.sh install**"
+1. Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least, 16GB would be nice).
+1. (optional) Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
+1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
+1. Enable the camera module support (`raspi-config -> interfacing -> camera`)
+1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
+1. (optional) Disable the swap space (`sudo systemctl disable dphys-swapfile && sudo reboot`)
+1. Clone this repo (git clone REPO_URL), go to the newly created repo directory
+1. Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
+1. Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
+1. Run "**sudo ./garda.sh install**"
 
 
 **Starting up**
 
-* Run "**sudo ./garda.sh start**"
- 
-* Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
+1. Run "**sudo ./garda.sh start**"
+1. Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
+1. Check the video stream at http://_YOUR_RASPBERRY_PI_ADDRESS_/stream
 
-* The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_/stream
-
-* Note: The application services will automatically restart on reboot/failure unless explicitly stopped 
-   
-
-The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
+Note: The application services will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
 **Configuration (shell)**
 
-* Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
-* Restart the services:
-  * `./garda.sh restart`
+1. Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
+1. Restart the services:
+  `./garda.sh restart`
 
 **Configuration (web GUI)**
 
-* Edit **configs/services.conf** and set the `KD_CONFIGURATOR_UI_PASSWORD` value with a password of your choice
-* Go to http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator   
+1. Edit **configs/services.conf** and set the `KD_CONFIGURATOR_UI_PASSWORD` value with a password of your choice
+1. Go to http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator   
 
 **Stop the system**
 `````
@@ -73,8 +68,6 @@ The application will be automatically restarted on reboot, unless you explicitel
 `````
 ./garda.sh start 
 `````
-
-
 
 **Show containers output/logs (last 10 lines, then follow the output)**
 `````
