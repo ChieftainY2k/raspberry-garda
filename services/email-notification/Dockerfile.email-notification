@@ -4,8 +4,8 @@ MAINTAINER "ChieftainY2k@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y mc joe multitail curl wget \
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
+    mc joe multitail curl wget \
     php7.0-cli php-zip composer telnet mosquitto-clients \
     git libmosquitto-dev mosquitto-dev php-pear php-dev libcurl3-openssl-dev \
     make cron

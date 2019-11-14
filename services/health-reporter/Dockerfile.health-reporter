@@ -6,8 +6,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Common stuff
 
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y mc joe multitail curl wget telnet libraspberrypi-bin bc mosquitto-clients ffmpeg
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
+    mc joe multitail curl wget telnet libraspberrypi-bin bc mosquitto-clients ffmpeg
 
 # Install scripts
 #

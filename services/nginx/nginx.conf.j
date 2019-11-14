@@ -28,15 +28,11 @@ http {
     client_max_body_size        999M;
 
     server {
-            server_name _;
+            server_name _; # This is just an invalid value which will never trigger on a real hostname.
             listen 80;
             location /configurator {
                 proxy_pass http://configurator/;
             }
-            location / {
-                proxy_pass http://kerberos/;
-            }
     }
 
 }
-

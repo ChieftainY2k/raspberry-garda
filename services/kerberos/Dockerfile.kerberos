@@ -6,7 +6,8 @@ MAINTAINER "ChieftainY2k@gmail.com"
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi" | tee --append /etc/apt/sources.list
-RUN apt-get update && apt-get -y upgrade && apt-get install -y libjpeg62-turbo-dev cmake git mc joe multitail make cmake make \
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
+    libjpeg62-turbo-dev cmake git mc joe multitail make cmake make \
     sudo g++ libav-tools libssl-dev wget curl \
     mosquitto-clients rpi-update cron rsyslog tmpreaper strace
 

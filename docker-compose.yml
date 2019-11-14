@@ -13,23 +13,16 @@ services:
         build:
             context: ./services/nginx
             dockerfile: Dockerfile.nginx
-        environment:
-            - DEFAULT_HOST=kerberos.local
         ports:
             - "80:80"
         volumes:
             - /var/run/docker.sock:/tmp/docker.sock:ro
-
-#    gateway:
-#        image: jwilder/whoami
-#        environment:
-#            - VIRTUAL_HOST=gateway.local
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
 
     kerberos:
         env_file:
             - configs/environment.conf
-        environment:
-            - VIRTUAL_HOST=kerberos.local
         build:
             context: ./services/kerberos
             dockerfile: Dockerfile.kerberos
