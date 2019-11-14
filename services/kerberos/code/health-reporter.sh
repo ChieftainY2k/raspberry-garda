@@ -20,7 +20,7 @@ check_errors()
 
 #check the health of the kerberos stream
 streamFFprobeOutput=$(ffprobe http://localhost:8889 2>&1 | tail -1)
-log_message "FFProbe output = $streamFFprobeOutput"
+log_message "FFProbe output = ${streamFFprobeOutput}"
 
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
@@ -35,5 +35,7 @@ messageJson=$(cat <<EOF
 EOF
 )
 
-log_message "Saving health report: ${messageJson}"
-echo "${messageJson}" > /data-services-health-reports-kerberos/report.json
+outputfile="/data-services-health-reports-kerberos/report.json"
+
+log_message "Saving health report to ${outputfile} , content = ${messageJson}"
+echo "${messageJson}" > ${outputfile}

@@ -1,4 +1,4 @@
-echo "Starting  the health reporter..."
+echo "Starting  the health reporter service..."
 
 # fix permissions
 chmod u+x /code/health-reporter.sh

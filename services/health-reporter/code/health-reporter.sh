@@ -16,7 +16,7 @@ check_errors()
 {
     EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
-        log_message "ERROR: there were some errors, check the ouput for details, press ENTER to continue or Ctrl-C to abort."
+        log_message "ERROR: there were some errors, check the ouput for details."
         exit 1
     fi
 }
@@ -98,8 +98,8 @@ KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
-    "version":"1",
-    "system_name":"$KD_SYSTEM_NAME",
+    "version":"2",
+    "system_name":"${KD_SYSTEM_NAME}",
     "timestamp":"$timestamp",
     "local_time":"$localTime",
     "cpu_temp":"$temp",
@@ -109,9 +109,9 @@ messageJson=$(cat <<EOF
     "disk_space_total_kb":"$totalDiskSpaceKb",
     "images_size_kb":"$totalFilesSizeKb",
     "services":{
-        "alpr":"$KD_ALPR_ENABLED",
-        "email_notification":"$KD_EMAIL_NOTIFICATION_ENABLED",
-        "mqtt_bridge":"$KD_MQTT_BRIDGE_ENABLED",
+        "alpr":{"is_enabled":"${KD_ALPR_ENABLED}"},
+        "email_notification":{"is_enabled":"${KD_EMAIL_NOTIFICATION_ENABLED}"},
+        "mqtt_bridge":{"is_enabled":"${KD_MQTT_BRIDGE_ENABLED}"},
         "ngrok":${NGROK_SERVICE_REPORT_JSON},
         "kerberos":${KERBEROS_SERVICE_REPORT_JSON}
     }

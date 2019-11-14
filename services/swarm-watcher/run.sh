@@ -3,14 +3,11 @@
 printenv | grep -v "no_proxy" >> /etc/environment
 
 # Init crontab and cron process
-#rsyslogd &
 cron &
 
 # Install external libraries
 cd /code
 composer install
-
-#sleep infinity
 
 # run  the listener forever
 while sleep 10; do
@@ -19,4 +16,3 @@ while sleep 10; do
     echo "Swarm watcher MQTT topics collector finished."
 done
 
-#echo "MQTT events listener finished."

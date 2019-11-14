@@ -108,7 +108,7 @@ stop()
     local SERVICE=${1}
 
     log_message "Stopping services containers..."
-    docker-compose ${DOCKER_PARAMS} stop
+    docker-compose ${DOCKER_PARAMS} stop ${SERVICE}
     check_errors $?
 }
 

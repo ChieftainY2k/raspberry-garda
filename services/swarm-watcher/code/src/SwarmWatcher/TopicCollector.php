@@ -66,6 +66,7 @@ class TopicCollector
 
         //subscribe to remote topics with healthchecks from the gardas connected to the swarm
         $this->mqttClient->subscribe('remote/+/healthcheck/report', 2);
+        $this->mqttClient->subscribe('healthcheck/report', 2);
 
     }
 
