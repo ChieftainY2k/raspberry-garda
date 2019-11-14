@@ -46,10 +46,11 @@ class Configurator
     public function checkAccess(array $requestData)
     {
         $correctPassword = getenv("KD_CONFIGURATOR_UI_PASSWORD");
-        if ($correctPassword !== $requestData['userPassword']) {
+        $userPassword = $requestData['userPassword'] ?? null;
+        if ($correctPassword !== $userPassword) {
             echo "
                 <form action='' method='post'>
-                Password: <input type='password' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
+                Password: <input type='password' name='userPassword' value='" . htmlspecialchars($userPassword) . "'>
                 <input type='submit' value='submit'>
                 </form>
             ";
