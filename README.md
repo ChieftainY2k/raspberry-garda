@@ -6,7 +6,7 @@ This project is an attempt at creating universal platform for service-based sens
 
 The goal was to create platform for separated services that can be easily managed/updated/modified/developed/enabled/disabled.
 
-This project was successfully tested with Raspberry Pi 3B+.
+This project was successfully tested with **Raspberry Pi 2** and **Raspberry Pi 3**.
 
 **How the platform works ?**
 
@@ -29,11 +29,11 @@ Enjoy! :-)
 **Installation**
 
 * Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least).
-* Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
+* (optional) Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
 * Configure your time zone (raspi-config -> localisation -> change timezone)
 * Enable the camera module support (raspi-config -> interfacing -> camera)
 * Set video memory to 128MB (raspi-config -> advanced -> memory split)
-* (optional) Disable the swap space (sudo systemctl disable dphys-swapfile && sudo reboot)
+* (optional) Disable the swap space (`sudo systemctl disable dphys-swapfile && sudo reboot`)
 * Clone this repo (git clone REPO_URL), go to the newly created repo directory
 * Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
 * Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
