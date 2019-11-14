@@ -30,6 +30,7 @@ services:
             - ./logs/kerberos:/etc/opt/kerberosio/logs
             - ./data/kerberos/capture:/etc/opt/kerberosio/capture
             - ./data/kerberos/h264:/etc/opt/kerberosio/h264
+            - ./data/services-health-reports/kerberos:/data-services-health-reports-kerberos
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro

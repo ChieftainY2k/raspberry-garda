@@ -3,13 +3,23 @@
 
 # Parts taken from https://gist.githubusercontent.com/ecampidoglio/5009512/raw/2efdb8535b30c2f8f9a391f055216c2a7f37e28b/cpustatus.sh
 
-##helper function
-#logMessage()
-#{
-#    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][health-reporter]"
-#    MESSAGE=$1
-#    echo "$LOGPREFIX $MESSAGE"
-#}
+#helper function
+log_message()
+{
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][healthreporter]"
+    MESSAGE=$1
+    echo "$LOGPREFIX $MESSAGE"
+}
+
+#check for errors
+check_errors()
+{
+    EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: there were some errors, check the ouput for details, press ENTER to continue or Ctrl-C to abort."
+        exit 1
+    fi
+}
 
 function convert_to_MHz {
     let value=$1/1000
@@ -34,18 +44,18 @@ temp=${temp:5:4}
 volts=$(vcgencmd measure_volts)
 volts=${volts:5:4}
 
-if [ $volts != "1.20" ]; then
-    overvolts=$(calculate_overvolts $volts)
+if [[ ${volts} != "1.20" ]]; then
+    overvolts=$(calculate_overvolts ${volts})
 fi
 
 minFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
-minFreq=$(convert_to_MHz $minFreq)
+minFreq=$(convert_to_MHz ${minFreq})
 
 maxFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
-maxFreq=$(convert_to_MHz $maxFreq)
+maxFreq=$(convert_to_MHz ${maxFreq})
 
 freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq)
-freq=$(convert_to_MHz $freq)
+freq=$(convert_to_MHz ${freq})
 
 governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
@@ -54,7 +64,7 @@ DATE=`date '+%Y-%m-%d %H:%M:%S'`
 echo -n "[$DATE] current hardware stats: "
 echo -n "Temperature: $temp C"
 echo -n ", voltage: $volts V"
-[ $overvolts ] && echo -n " (+0.$overvolts overvolt)"
+[[ ${overvolts} ]] && echo -n " (+0.$overvolts overvolt)"
 echo -n ", min speed: $minFreq MHz"
 echo -n ", max speed: $maxFreq MHz"
 echo -n ", current speed: $freq MHz"
@@ -72,14 +82,11 @@ imagedir=/etc/opt/kerberosio/capture/
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
-totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}') # total size of captured files
+totalFilesSizeKb=$(du ${imagedir} | tail -1 | awk '{print $1}') # total size of captured files
 
 #check the health of the kerberos stream
-#streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1 | awk '{ print $1 " " $2 " " $3 " " $4 }')
 streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1)
-echo "[$DATE] FFProbe output = $streamFFprobeOutput"
-#if [ "$streamFFprobeOutput" -ne "Stream #0:0: Video: mjpeg," ]; then
-#fi
+log_message "FFProbe output = $streamFFprobeOutput"
 
 #@FIXME make it universal, do not assume any services' names
 NGROK_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/ngrok/report.json)
@@ -109,15 +116,11 @@ EOF
 )
 
 #messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
-messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
+messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 messageTopic="healthcheck/report"
 
 #publish it
+log_message "Attempting to publish MQTT topic $messageTopic with message $messageJson"
 mosquitto_pub -h mqtt-server --retain -t "$messageTopic" -m "$messageJson"
-EXITCODE=$?
-if [ $EXITCODE -ne 0 ]; then
-    echo "[$DATE] ERROR: there was an error publishing the MQTT topic."
-else
-    echo "[$DATE] published MQTT topic $messageTopic with message $messageJson"
-fi
+check_errors $?
 

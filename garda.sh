@@ -42,7 +42,8 @@ helper()
 
     $0 log <sevice>     - show and track container(s) logs
 
-    $0 kerberos shell - bash console for kerberos container
+    $0 shell <service>  - lauhch bash shell console for container
+
     $0 kerberos log   - show and track application logs inside kerberos container
 
     " | sed "s/^[ \t]*//"
@@ -185,16 +186,18 @@ status()
     docker-compose ${DOCKER_PARAMS} ps
 }
 
+shell()
+{
+    local SERVICE=${1}
+
+    docker-compose ${DOCKER_PARAMS} exec ${SERVICE} bash
+}
 
 kerberos()
 {
     local ARG1=${1}
 
     case ${ARG1} in
-        shell)
-            log_message "Accessing shell in the container..."
-            docker-compose ${DOCKER_PARAMS} exec kerberos bash
-            ;;
         log)
             log_message "Accessing logs in the container..."
             docker-compose ${DOCKER_PARAMS} exec kerberos bash -c "tail -f /var/log/nginx/* /var/www/web/storage/logs/*"
@@ -213,17 +216,17 @@ case ${ARG1} in
     install) install;;
     start)   start ${ARG2};;
     stop)    stop ${ARG2};;
-    restart)    restart ${ARG2};;
+    restart) restart ${ARG2};;
     build)   build ${ARG2};;
-    rebuild)   rebuild ${ARG2};;
+    rebuild) rebuild ${ARG2};;
     log)     log ${ARG2};;
+    shell)   shell ${ARG2};;
     status)  status;;
-    cleanup)  cleanup;;
+    cleanup) cleanup;;
     kerberos)  kerberos ${ARG2};;
     *)
         helper
         exit 1
         ;;
 esac
-
 
