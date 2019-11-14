@@ -11,7 +11,7 @@ if [[ "$KD_NGROK_ENABLED" == "1" ]]; then
     else
         echo "Notice: Authtoken is empty, initializing tunnel as anonymous user."
     fi
-    /sbin/ngrok http -log stdout kerberos:80 &
+    /sbin/ngrok http -log stdout nginx:80 &
     echo "NGROK client initialized, wait..."
     sleep 10
 
