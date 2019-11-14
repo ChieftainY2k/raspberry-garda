@@ -29,12 +29,12 @@ Enjoy! :-)
 **Installation**
 
 1. Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least, 16GB would be nice).
-1. (optional) Run "**sudo apt-get -y update && sudo apt-get -y upgrade && sudo apt-get install -y git**" 
+1. (optional) Update your raspberry: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
 1. Enable the camera module support (`raspi-config -> interfacing -> camera`)
 1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 1. (optional) Disable the swap space (`sudo systemctl disable dphys-swapfile && sudo reboot`)
-1. Clone this repo (git clone REPO_URL), go to the newly created repo directory
+1. Clone this repository do a directory of your choice
 1. Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
 1. Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run "**sudo ./garda.sh install**"

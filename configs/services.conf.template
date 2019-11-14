@@ -11,7 +11,7 @@
 
 # Global namespace (must be alphanumerical, without spaces)
 
-KD_SYSTEM_NAME=MyKerberosName
+KD_SYSTEM_NAME=MyRaspberryPiBox
 
 # Global SMTP server config for all services which send email notifications
 
@@ -45,7 +45,6 @@ KD_ALPR_COUNTRY=eu
 
 KD_NGROK_ENABLED=0
 KD_NGROK_AUTHTOKEN=0
-
 
 # Password for the configurator service to access UI
 
