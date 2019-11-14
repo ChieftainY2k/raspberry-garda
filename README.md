@@ -37,19 +37,21 @@ Enjoy! :-)
 * Clone this repo (git clone REPO_URL), go to the newly created repo directory
 * Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
 * Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
-* Run "**sudo ./garda.sh install**" 
+* Run "**sudo ./garda.sh install**"
+
+
+**Starting up**
+
+* Run "**sudo ./garda.sh start**"
+ 
 * Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
 
-* The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_:8889   
-* The docker containers statistics are at http://_YOUR_RASPBERRY_PI_ADDRESS_:82   
+* The video stream is at http://_YOUR_RASPBERRY_PI_ADDRESS_/stream
+
+* Note: The application services will automatically restart on reboot/failure unless explicitly stopped 
+   
 
 The application will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
-
-**Hardening (optional)**
-
-* Change default passwords
-* Use unattended upgrades
-* Use Fail2Ban 
 
 **Configuration (shell)**
 
@@ -59,9 +61,8 @@ The application will be automatically restarted on reboot, unless you explicitel
 
 **Configuration (web GUI)**
 
-* Edit **configs/services.conf** and set the `KD_CONFIGURATOR_UI_PASSWORD` value
+* Edit **configs/services.conf** and set the `KD_CONFIGURATOR_UI_PASSWORD` value with a password of your choice
 * Go to http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator   
-
 
 **Stop the system**
 `````
@@ -73,7 +74,6 @@ The application will be automatically restarted on reboot, unless you explicitel
 ./garda.sh start 
 `````
 
-The containers will automatically restart on reboot/failure unless explicitly stopped 
 
 
 **Show containers output/logs (last 10 lines, then follow the output)**
@@ -90,4 +90,11 @@ The containers will automatically restart on reboot/failure unless explicitly st
 `````
 ./garda.sh kerberos bash
 `````
+
+**Hardening (optional)**
+
+* Change default passwords
+* Use unattended upgrades
+* Use Fail2Ban 
+* Put your IoT device behind second NAT/router 
 

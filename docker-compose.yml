@@ -1,12 +1,7 @@
 version: '3.2'
 
-# @TODO Make use of the docker compose 'extend' , https://docs.docker.com/compose/extends/
-
 services:
 
-    #######################################
-    # NGINX proxy for virtual hosts
-    #######################################
     nginx:
         env_file:
             - configs/environment.conf
@@ -19,6 +14,7 @@ services:
             - /var/run/docker.sock:/tmp/docker.sock:ro
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
+        restart: unless-stopped
 
     kerberos:
         env_file:
@@ -114,12 +110,9 @@ services:
         privileged: true
         restart: unless-stopped
 
-    # UI and "supervisor" to reload the configuration for containers
     configurator:
         env_file:
             - configs/environment.conf
-#        environment:
-#            - VIRTUAL_HOST=configurator.local
         build:
             context: ./services/configurator
             dockerfile: Dockerfile.configurator
@@ -127,11 +120,6 @@ services:
             - ./services/configurator/code:/code
             - ./configs:/service-configs
             - /var/run/docker.sock:/var/run/docker.sock
-        #        ports:
-        #            - 85:80
-        #    cap_add:
-        #      - SYS_ADMIN
-        #    privileged: true
         restart: unless-stopped
 
     #    alpr:

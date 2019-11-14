@@ -33,14 +33,14 @@ helper()
     $0 check   - check workspace sanity
     $0 status  - show current status of containers and applications
 
-    $0 start   - start containers
-    $0 stop    - stop containers
-    $0 restart - restart containers
+    $0 start   <sevice>  - start container(s)
+    $0 stop    <sevice>  - stop containers(s)
+    $0 restart <sevice> - restart containers(s)
 
-    $0 build   - build containers
-    $0 rebuild - stop + remove + build containers
+    $0 build   <sevice> - build containers(s) image
+    $0 rebuild <sevice> - stop + remove + rebuild containers(s) image
 
-    $0 log     - show and track container logs
+    $0 log <sevice>     - show and track container(s) logs
 
     $0 kerberos shell - bash console for kerberos container
     $0 kerberos log   - show and track application logs inside kerberos container
@@ -104,6 +104,8 @@ install()
 
 stop()
 {
+    local SERVICE=${1}
+
     log_message "Stopping services containers..."
     docker-compose ${DOCKER_PARAMS} stop
     check_errors $?
@@ -111,8 +113,10 @@ stop()
 
 start()
 {
+    local SERVICE=${1}
+
     log_message "Starting up services containers..."
-    docker-compose ${DOCKER_PARAMS} up -d --remove-orphans
+    docker-compose ${DOCKER_PARAMS} up -d --remove-orphans ${SERVICE}
     check_errors $?
 
     cleanup
@@ -134,39 +138,46 @@ cleanup()
 
 restart()
 {
-    stop
-    start
+    local SERVICE=${1}
+    stop ${SERVICE}
+    start ${SERVICE}
 
 }
 
 rebuild()
 {
-    stop
+    local SERVICE=${1}
+
+    stop ${SERVICE}
 
     log_message "Removing containers..."
-    docker-compose ${DOCKER_PARAMS} rm -f
+    docker-compose ${DOCKER_PARAMS} rm -f ${SERVICE}
     check_errors $?
 
-    build
+    build ${SERVICE}
 }
 
 build()
 {
-    log_message "Building containers..."
-    docker-compose ${DOCKER_PARAMS} build
+    local SERVICE=${1}
+
+    log_message "Building images..."
+    docker-compose ${DOCKER_PARAMS} build ${SERVICE}
     check_errors $?
 }
 
 log()
 {
+    local SERVICE=${1}
     log_message "Tracking container logs. Press Ctrl-C to stop."
-    docker-compose ${DOCKER_PARAMS} logs -f --tail=40
+    docker-compose ${DOCKER_PARAMS} logs -f --tail=40 ${SERVICE}
 }
 
 status()
 {
     ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
     raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
+    log_message "Hardware: $raspberryDistro"
     log_message "IP address: $ipAddress"
     log_message "Probing for available disk space..."
     pydf
@@ -200,12 +211,12 @@ ARG2=${2}
 
 case ${ARG1} in
     install) install;;
-    start)   start;;
-    stop)    stop;;
-    restart)    restart;;
-    build)   build;;
-    rebuild)   rebuild;;
-    log)     log;;
+    start)   start ${ARG2};;
+    stop)    stop ${ARG2};;
+    restart)    restart ${ARG2};;
+    build)   build ${ARG2};;
+    rebuild)   rebuild ${ARG2};;
+    log)     log ${ARG2};;
     status)  status;;
     cleanup)  cleanup;;
     kerberos)  kerberos ${ARG2};;
