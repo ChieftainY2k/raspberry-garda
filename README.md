@@ -14,12 +14,13 @@ This project was successfully tested with **Raspberry Pi 2** and **Raspberry Pi 
 * The core services are
   * Kerberos-io motion detection service (https://github.com/kerberos-io/)
   * MQTT server/broker service (https://mosquitto.org/)
-  * Services configurator (web based user interface to change services configuration and restart services)
+  * Configurator (web based user interface to change services configuration and restart services)
+  * Email sender 
 * Docker containers are managed by docker-compose
 * Containers have access to some shared file space (so that they can access media files etc.) 
-* Services communicate with each other using MQTT topics with JSON payloads.
-* A service may interact with some input/output hardware device (like camera, audio output, temperature sensors etc.) 
 * A service may publish MQTT topics or subscribe to a topic to react accordingly. 
+* Services communicate with each other using the local MQTT server (topics with JSON payloads).
+* A service may interact with some input/output hardware device (like camera, audio output, temperature sensors etc.) 
 * A service may use remote services (like external MQTT server, SMTP server, IFTTT server etc.) to get its job done (like sending emails via a SMTP server).
 * Want to know more what a service does ? Check out the /services directory and relevant README files
 
