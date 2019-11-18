@@ -194,9 +194,11 @@ build()
 {
     local SERVICE=${1}
 
-    export RASPBERRY_PLATFORM_FOR_KERBEROS=$(get_raspberry_version_for_kerberos_build)
+    local RASPBERRY_PLATFORM_FOR_KERBEROS=$(get_raspberry_version_for_kerberos_build)
     log_message "Building images..."
-    docker-compose ${DOCKER_PARAMS} build ${SERVICE}
+    docker-compose ${DOCKER_PARAMS} build \
+        --build-arg RASPBERRY_PLATFORM_FOR_KERBEROS=${RASPBERRY_PLATFORM_FOR_KERBEROS} \
+        ${SERVICE}
     check_errors $?
 }
 
