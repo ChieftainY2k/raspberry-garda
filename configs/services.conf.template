@@ -8,10 +8,12 @@
 #
 #
 
-
 # Global namespace (must be alphanumerical, without spaces)
 
 KD_SYSTEM_NAME=MyRaspberryPiBox
+
+KD_UI_USER=raspberry
+KD_UI_PASSWORD=garda
 
 # Global SMTP server config for all services which send email notifications
 
@@ -48,4 +50,3 @@ KD_NGROK_AUTHTOKEN=0
 
 # Password for the configurator service to access UI
 
-KD_CONFIGURATOR_UI_PASSWORD=mypassword

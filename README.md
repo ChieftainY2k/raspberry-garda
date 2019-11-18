@@ -36,29 +36,29 @@ Enjoy! :-)
 1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 1. (optional) Disable the swap space (`sudo systemctl disable dphys-swapfile && sudo reboot`)
 1. Clone this repository do a directory of your choice
-1. Edit the file **configs/environment.conf** and update it with your configuration (raspberry pi hardware version)
-1. Rename the file **configs/services.conf.template** to **configs/services.conf** then edit it and update with your configuration (like SMTP host/password etc.)
-1. Run "**sudo ./garda.sh install**"
+1. Edit the file `configs/environment.conf` and update it with your configuration (raspberry pi hardware version)
+1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
+1. Run `sudo ./garda.sh install`
 
 
 **Starting up**
 
-1. Run "**sudo ./garda.sh start**"
-1. Go to the kerberos installation page at http://_YOUR_RASPBERRY_PI_ADDRESS_
-1. Check the video stream at http://_YOUR_RASPBERRY_PI_ADDRESS_/stream
+1. Run `sudo ./garda.sh start`
+1. Go to the kerberos installation page at `http://_YOUR_RASPBERRY_PI_ADDRESS_`
+1. Check the video stream at `http://_YOUR_RASPBERRY_PI_ADDRESS_/stream`
 
 Note: The application services will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
 **Configuration (shell)**
 
-1. Edit the **configs/services.conf** file (if it doesn't exist then create it and copy the content from **configs/services.conf.template** file)
+1. Edit the `configs/services.conf` file (if it doesn't exist then create it and copy the content from `configs/services.conf.template` file)
 1. Restart the services:
   `./garda.sh restart`
 
 **Configuration (web GUI)**
 
-1. Edit **configs/services.conf** and set the `KD_CONFIGURATOR_UI_PASSWORD` value with a password of your choice
-1. Go to http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator   
+1. Edit `configs/services.conf` and set the `KD_UI_USER` `KD_UI_PASSWORD` values with a password of your choice
+1. Go to `http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator`   
 
 **Stop the system**
 `````

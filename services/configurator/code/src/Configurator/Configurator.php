@@ -45,7 +45,7 @@ class Configurator
      */
     public function checkAccess(array $requestData)
     {
-        $correctPassword = getenv("KD_CONFIGURATOR_UI_PASSWORD");
+        $correctPassword = getenv("KD_UI_PASSWORD");
         $userPassword = $requestData['userPassword'] ?? null;
         if ($correctPassword !== $userPassword) {
             echo "
