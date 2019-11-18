@@ -82,6 +82,8 @@ install()
     log_message "Installing docker..."
     curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
     check_errors $?
+    chmod u+x /tmp/get-docker.sh
+    check_errors $?
     /tmp/get-docker.sh
     check_errors $?
 
