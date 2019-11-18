@@ -49,12 +49,30 @@ helper()
     " | sed "s/^[ \t]*//"
 }
 
+get_raspberry_hardware()
+{
+    raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
+    echo ${raspberryDistro};
+}
+
+get_available_disk_space()
+{
+    availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
+    echo ${availableDiskSpaceKb};
+}
+
+get_ip_address()
+{
+    ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
+    echo ${ipAddress}
+}
+
 
 install()
 {
-    ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
-    raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
-    availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
+    ipAddress=$(get_ip_address)
+    raspberryDistro=$(get_raspberry_hardware)
+    availableDiskSpaceKb=$(get_available_disk_space)
     log_message "Starting installation."
     log_message "IP address: $ipAddress"
     log_message "Available disk space: $availableDiskSpaceKb kb."
@@ -178,8 +196,8 @@ log()
 
 status()
 {
-    ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
-    raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
+    ipAddress=$(get_ip_address)
+    raspberryDistro=$(get_raspberry_hardware)
     log_message "Hardware: $raspberryDistro"
     log_message "IP address: $ipAddress"
     log_message "Probing for available disk space..."
@@ -231,4 +249,5 @@ case ${ARG1} in
         exit 1
         ;;
 esac
+
 
