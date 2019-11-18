@@ -19,8 +19,8 @@ check_errors()
         log_message "ERROR: there were some errors, check the ouput for details, press ENTER to continue or Ctrl-C to abort."
         read
         #exit 1
-    else
-        log_message "OK, operation successfully completed."
+#    else
+#        log_message "OK, operation successfully completed."
     fi
 }
 
