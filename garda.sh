@@ -51,8 +51,20 @@ helper()
 
 get_raspberry_hardware()
 {
-    raspberryDistro=$(tr -d '\0' < /proc/device-tree/model)
-    echo ${raspberryDistro};
+    local raspberryHardware=$(tr -d '\0' < /proc/device-tree/model)
+    echo ${raspberryHardware};
+}
+
+get_raspberry_version_for_kerberos_build()
+{
+    local raspberryHardware=$(get_raspberry_hardware)
+    if [[ "$raspberryHardware" =~ "Raspberry Pi 4 Model" ]]; then
+        echo "3"
+    elif [[ "$raspberryHardware" =~ "Raspberry Pi 3 Model" ]]; then
+        echo "3"
+    else
+        echo "2"
+    fi
 }
 
 get_available_disk_space()
@@ -71,12 +83,12 @@ get_ip_address()
 install()
 {
     ipAddress=$(get_ip_address)
-    raspberryDistro=$(get_raspberry_hardware)
     availableDiskSpaceKb=$(get_available_disk_space)
     log_message "Starting installation."
     log_message "IP address: $ipAddress"
     log_message "Available disk space: $availableDiskSpaceKb kb."
-    log_message "Hardware = $raspberryDistro"
+    log_message "Hardware = $(get_raspberry_hardware)"
+    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
 
     log_message "Updating packages..."
     sudo apt-get update -y
@@ -182,6 +194,7 @@ build()
 {
     local SERVICE=${1}
 
+    export RASPBERRY_PLATFORM_FOR_KERBEROS=$(get_raspberry_version_for_kerberos_build)
     log_message "Building images..."
     docker-compose ${DOCKER_PARAMS} build ${SERVICE}
     check_errors $?
@@ -197,8 +210,9 @@ log()
 status()
 {
     ipAddress=$(get_ip_address)
-    raspberryDistro=$(get_raspberry_hardware)
-    log_message "Hardware: $raspberryDistro"
+    raspberryHardware=$(get_raspberry_hardware)
+    log_message "Hardware: $raspberryHardware"
+    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $ipAddress"
     log_message "Probing for available disk space..."
     pydf

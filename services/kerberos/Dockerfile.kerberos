@@ -1,7 +1,8 @@
 FROM resin/rpi-raspbian:stretch
 
+ARG RASPBERRY_PLATFORM_FOR_KERBEROS=2
+
 MAINTAINER "ChieftainY2k@gmail.com"
-#ARG KD_RASPBERRY_PI_MODEL
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -11,9 +12,6 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     sudo g++ libav-tools libssl-dev wget curl \
     mosquitto-clients rpi-update cron rsyslog tmpreaper strace
 
-#RUN git clone http://github.com/raspberrypi/userland
-#RUN cd ./userland && ./buildme && cp build/bin/* /bin/
-
 #Install VideoCore libraries etc.
 
 RUN echo "y" | rpi-update
@@ -21,15 +19,8 @@ RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
 
-RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi3-machinery-kerberosio-armhf-2.6.1.deb
-RUN cd /tmp && dpkg -i rpi3-machinery-kerberosio-armhf-2.6.1.deb
-
-#RUN cd /tmp && wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi2-machinery-kerberosio-armhf-2.6.1.deb
-#RUN cd /tmp && dpkg -i rpi2-machinery-kerberosio-armhf-2.6.1.deb
-
-#RUN systemctl enable kerberosio
-#RUN chmod go-rw /etc/systemd/system/kerberosio.service
-#RUN chmod a-x /etc/systemd/system/kerberosio.service
+RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.6.1.deb -O /tmp/kerberos.deb
+RUN dpkg -i /tmp/kerberos.deb
 
 #Install WEB
 
@@ -53,11 +44,6 @@ RUN touch /run/php/php7.0-fpm.sock
 RUN chmod a+rwx /run/php/php7.0-fpm.sock
 
 # Install mqtt client
-
-# Add helper scripts
-#
-#ADD ./autoremoval.sh /autoremoval.sh
-#RUN chmod a+x /autoremoval.sh
 
 # Configure cron
 ADD ./crontab.txt /crontab.txt
