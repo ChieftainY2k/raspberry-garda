@@ -93,7 +93,7 @@ install()
     check_errors $?
 
     log_message "Checking docker installation..."
-    sudo docker run hello-world
+    sudo docker run hypriot/armhf-hello-world
     check_errors $?
 
     log_message "IP address: $ipAddress"
