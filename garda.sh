@@ -30,7 +30,7 @@ helper()
     Available options:
     ---------------------------------------------------
     $0 install - install and configure core and services
-    $0 check   - check workspace sanity
+    $0 check   - check workspace and hardware sanity
     $0 status  - show current status of containers and applications
 
     $0 start   <sevice>  - start container(s)
@@ -91,14 +91,14 @@ install()
     log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
 
     log_message "Updating packages..."
-    sudo apt-get update -y
+    apt-get update -y
     check_errors $?
-    sudo apt-get upgrade -y
+    apt-get upgrade -y
     check_errors $?
 
     # Install some required packages first
     log_message "Installing packages..."
-    sudo apt install -y \
+    apt install -y \
          apt-transport-https ca-certificates \
          curl wget telnet gnupg2 software-properties-common \
          git mc multitail htop jnettop python python-pip joe pydf \
@@ -130,18 +130,18 @@ install()
 check()
 {
     log_message "Checking config file..."
-    stat /configs/services.conf
+    stat ./configs/services.conf
     check_errors $?
 
     #load vars
-    export $(grep -v '^#' /configs/services.conf | xargs -d '\n')
+    #    export $(grep -v '^#' /configs/services.conf | xargs -d '\n')
 
     log_message "Checking if camera module is enabled and taking sample picture..."
     raspistill -o /tmp/$(date +%s).jpg
     check_errors $?
 
     log_message "Checking docker installation..."
-    sudo docker run hypriot/armhf-hello-world
+    docker run hypriot/armhf-hello-world
     check_errors $?
 
 }
@@ -261,6 +261,7 @@ ARG2=${2}
 
 case ${ARG1} in
     install) install;;
+    check) check;;
     start)   start ${ARG2};;
     stop)    stop ${ARG2};;
     restart) restart ${ARG2};;
@@ -276,5 +277,4 @@ case ${ARG1} in
         exit 1
         ;;
 esac
-
 
