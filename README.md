@@ -36,9 +36,9 @@ Enjoy! :-)
 1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 1. (optional) Disable the swap space (`sudo systemctl disable dphys-swapfile && sudo reboot`)
 1. Clone this repository do a directory of your choice
-1. Edit the file `configs/environment.conf` and update it with your configuration (raspberry pi hardware version)
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
-1. Run `sudo ./garda.sh install`
+1. Run `sudo ./garda.sh install` to install everything needed
+1. Run `sudo ./garda.sh check` to check environment and hardware
 
 
 **Starting up**

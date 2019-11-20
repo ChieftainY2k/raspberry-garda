@@ -96,10 +96,6 @@ install()
     sudo apt-get upgrade -y
     check_errors $?
 
-    log_message "Checking if camera module is enabled and taking sample picture..."
-    raspistill -o /tmp/$(date +%s).jpg
-    check_errors $?
-
     # Install some required packages first
     log_message "Installing packages..."
     sudo apt install -y \
@@ -133,6 +129,19 @@ install()
     check_errors $?
 
     log_message "Installation completed"
+}
+
+check()
+{
+    log_message "Checking config..."
+    raspistill -o /tmp/$(date +%s).jpg
+
+    export $(grep -v '^#' /configs/services.conf | xargs -d '\n')
+
+    log_message "Checking if camera module is enabled and taking sample picture..."
+    raspistill -o /tmp/$(date +%s).jpg
+    check_errors $?
+
 }
 
 stop()

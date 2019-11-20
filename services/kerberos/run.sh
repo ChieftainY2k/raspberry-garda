@@ -7,7 +7,7 @@ printenv | grep -v "no_proxy" >> /etc/environment
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
-    echo "NOTICE: kerberos service is DISABLED, going to sleep..."
+    echo "NOTICE: KERBEROS service is DISABLED, going to sleep..."
     sleep infinity
     exit
 fi

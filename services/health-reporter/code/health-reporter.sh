@@ -109,11 +109,11 @@ messageJson=$(cat <<EOF
     "disk_space_total_kb":"$totalDiskSpaceKb",
     "images_size_kb":"$totalFilesSizeKb",
     "services":{
-        "alpr":{"is_enabled":"${KD_ALPR_ENABLED}"},
-        "email_notification":{"is_enabled":"${KD_EMAIL_NOTIFICATION_ENABLED}"},
+        "alpr":{"is_enabled":"${KD_ALPR_ENABLED}","report":{}},
+        "email_notification":{"is_enabled":"${KD_EMAIL_NOTIFICATION_ENABLED}","report":{}},
         "mqtt_bridge":{"is_enabled":"${KD_MQTT_BRIDGE_ENABLED}"},
-        "ngrok":${NGROK_SERVICE_REPORT_JSON},
-        "kerberos":${KERBEROS_SERVICE_REPORT_JSON}
+        "ngrok":{"is_enabled":"${KD_NGROK_ENABLED}","report":${NGROK_SERVICE_REPORT_JSON}},
+        "kerberos":{"is_enabled":"${KD_KERBEROS_ENABLED}","report":${KERBEROS_SERVICE_REPORT_JSON}}
     }
 }
 EOF
