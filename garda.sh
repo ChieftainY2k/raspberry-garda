@@ -118,10 +118,6 @@ install()
     pip install docker-compose
     check_errors $?
 
-    log_message "Checking docker installation..."
-    sudo docker run hypriot/armhf-hello-world
-    check_errors $?
-
     log_message "IP address: $ipAddress"
     log_message "Available disk space: $availableDiskSpaceKb kb."
     log_message "Probing for available disk space..."
@@ -133,13 +129,19 @@ install()
 
 check()
 {
-    log_message "Checking config..."
-    raspistill -o /tmp/$(date +%s).jpg
+    log_message "Checking config file..."
+    stat /configs/services.conf
+    check_errors $?
 
+    #load vars
     export $(grep -v '^#' /configs/services.conf | xargs -d '\n')
 
     log_message "Checking if camera module is enabled and taking sample picture..."
     raspistill -o /tmp/$(date +%s).jpg
+    check_errors $?
+
+    log_message "Checking docker installation..."
+    sudo docker run hypriot/armhf-hello-world
     check_errors $?
 
 }
