@@ -6,6 +6,11 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 #modify local config - disable logging to file
 sed -i '/^log_dest/s/^/#/g' /etc/mosquitto/mosquitto.conf
 
+#add extra resolver
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+
 #disable bridge by default
 configFile=/etc/mosquitto/conf.d/bridge.conf
 echo "" > ${configFile}
