@@ -23,8 +23,6 @@ services:
         build:
             context: ./services/kerberos
             dockerfile: Dockerfile.kerberos
-        ports:
-            - "8889:8889"
         volumes:
             - ./services/kerberos/code:/code
             - ./configs/kerberos:/etc/opt/kerberosio/config
@@ -44,8 +42,6 @@ services:
         build:
             context: ./services/mqtt-server
             dockerfile: Dockerfile.mqtt-server
-        ports:
-            - "1883:1883"
         volumes:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro

@@ -3,30 +3,30 @@
 #TODO optimize this script
 
 #helper function
-logMessage()
+log_message()
 {
     LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][autoremove]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
 
-logMessage "cleanup started."
+log_message "cleanup started."
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 #LOGPREFIX="$(date '+%Y-%m-%d %H:%M:%S')[autoremove]"
-imagedir=/etc/opt/kerberosio/capture/
-partition=$(df $imagedir | awk '/^\/dev/ {print $1}')
+imageDir=/etc/opt/kerberosio/capture/
+partition=$(df $imageDir | awk '/^\/dev/ {print $1}')
 
 
 usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
 #spaceTotalKb=$(df --sync $imagedir | tail -1 | awk '{print $1}') # total space (free+used)
-spaceUsedKb=$(df --sync $imagedir | tail -1 | awk '{print $2}') # used space
-spaceAvailableKb=$(df --sync $imagedir | tail -1 | awk '{print $4}') # currently available free space on device
-filesCount=$(find $imagedir| wc -l) # number of captured files
-totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}') # total size of captured files
-logMessage "partition $partition for $imagedir is used in $usedPercent percent ($spaceAvailableKb kb available), capture dir has $filesCount files (using $totalFilesSizeKb kb in total)"
+spaceUsedKb=$(df --sync $imageDir | tail -1 | awk '{print $2}') # used space
+spaceAvailableKb=$(df --sync $imageDir | tail -1 | awk '{print $4}') # currently available free space on device
+filesCount=$(find $imageDir| wc -l) # number of captured files
+totalFilesSizeKb=$(du $imageDir | tail -1 | awk '{print $1}') # total size of captured files
+log_message "partition $partition for $imageDir is used in $usedPercent percent ($spaceAvailableKb kb available), capture dir has $filesCount files (using $totalFilesSizeKb kb in total)"
 
 #max allowed space for files:
 #maximumAllowedSpaceTakenKb=600000 # fixed = how much we allow files to take
@@ -40,17 +40,17 @@ maximumAllowedSpaceTakenKb=$(($spaceAvailableKb-1000000)) # dynamic = related to
 cleanupPerformed=0
 #while [ $totalFilesSizeKb -gt $maximumAllowedSpaceTakenKb ]
 if [[ ${spaceAvailableKb} -lt 1000000 ]]; then
-    logMessage "cleaning up, removing some oldest files in $imagedir ..."
-    find $imagedir -type f | sort | head -n 100 | xargs -r rm -rf;
+    log_message "cleaning up, removing some oldest files in $imageDir ..."
+    find $imageDir -type f | sort | head -n 100 | xargs -r rm -rf;
 
     usedPercent=$(df -h | grep $partition | head -1 | awk -F' ' '{ print $5/1 }' | tr ['%'] ["0"])
 #    spaceTotalKb=$(df --sync $imagedir | tail -1 | awk '{print $1}') # total space (free+used)
-    spaceUsedKb=$(df --sync $imagedir | tail -1 | awk '{print $2}') # used space
-    spaceAvailableKb=$(df --sync $imagedir | tail -1 | awk '{print $4}')
-    filesCount=$(find $imagedir| wc -l)
-    totalFilesSizeKb=$(du $imagedir | tail -1 | awk '{print $1}')
+    spaceUsedKb=$(df --sync $imageDir | tail -1 | awk '{print $2}') # used space
+    spaceAvailableKb=$(df --sync $imageDir | tail -1 | awk '{print $4}')
+    filesCount=$(find $imageDir| wc -l)
+    totalFilesSizeKb=$(du $imageDir | tail -1 | awk '{print $1}')
 
-    logMessage "partition $partition for $imagedir is used in $usedPercent percent ($spaceAvailableKb kb available), capture dir has $filesCount files (using $totalFilesSizeKb kb in total)"
+    log_message "partition $partition for $imageDir is used in $usedPercent percent ($spaceAvailableKb kb available), capture dir has $filesCount files (using $totalFilesSizeKb kb in total)"
 
     #logMessage "totalFilesSizeKb = $totalFilesSizeKb"
     #logMessage "maximumAllowedSpaceTakenKb = $maximumAllowedSpaceTakenKb"
@@ -61,7 +61,7 @@ if [[ ${spaceAvailableKb} -lt 1000000 ]]; then
     cleanupPerformed=1
 fi
 
-logMessage "removing old temporary h264 files."
+log_message "removing old temporary h264 files."
 tmpreaper -v --mtime 4h /etc/opt/kerberosio/h264/
 
 #publish topic
@@ -91,12 +91,12 @@ EOF
     mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
     EXITCODE=$?
     if [[ ${EXITCODE} -ne 0 ]]; then
-        logMessage "ERROR: there was an error publishing the MQTT topic."
+        log_message "ERROR: there was an error publishing the MQTT topic."
     else
-        logMessage "success, published MQTT topic $messageTopic with message $messageJson"
+        log_message "success, published MQTT topic $messageTopic with message $messageJson"
     fi
 
 
 fi
 
-logMessage "cleanup finished."
+log_message "cleanup finished."
