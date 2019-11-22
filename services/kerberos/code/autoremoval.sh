@@ -10,6 +10,17 @@ log_message()
     echo "$LOGPREFIX $MESSAGE"
 }
 
+#check for errors
+check_errors()
+{
+    EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: there were some errors, check the ouput for details."
+        exit 1
+    fi
+}
+
+
 log_message "cleanup started."
 
 #load services configuration
@@ -63,6 +74,7 @@ fi
 
 log_message "removing old temporary h264 files."
 tmpreaper -v --mtime 4h /etc/opt/kerberosio/h264/
+check_errors $?
 
 #publish topic
 if [[ "$cleanupPerformed" = "1" ]]; then
@@ -89,12 +101,7 @@ EOF
 
     #publish it
     mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
-    EXITCODE=$?
-    if [[ ${EXITCODE} -ne 0 ]]; then
-        log_message "ERROR: there was an error publishing the MQTT topic."
-    else
-        log_message "success, published MQTT topic $messageTopic with message $messageJson"
-    fi
+    check_errors $?
 
 
 fi
