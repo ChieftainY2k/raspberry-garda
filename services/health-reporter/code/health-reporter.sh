@@ -79,10 +79,12 @@ echo ", available disk space: $availableDiskSpaceKb kb"
 
 imagedir=/etc/opt/kerberosio/capture/
 
+uptimeInfo=$(uptime)
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
 totalFilesSizeKb=$(du ${imagedir} | tail -1 | awk '{print $1}') # total size of captured files
+
 
 #check the health of the kerberos stream
 #streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1)
@@ -104,6 +106,7 @@ messageJson=$(cat <<EOF
     "local_time":"$localTime",
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",
+    "uptime_info":"${uptimeInfo}",
     "uptime_seconds":"$uptimeSeconds",
     "disk_space_available_kb":"$availableDiskSpaceKb",
     "disk_space_total_kb":"$totalDiskSpaceKb",

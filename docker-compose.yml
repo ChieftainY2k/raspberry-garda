@@ -16,6 +16,10 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - kerberos
 
@@ -37,6 +41,10 @@ services:
             - ./configs:/service-configs:ro
         privileged: true
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - mqtt-server
 
@@ -52,6 +60,10 @@ services:
             - ./data/mqtt-server/db:/var/lib/mosquitto
             - ./configs:/service-configs
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - email-notification
 
@@ -69,6 +81,10 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - swarm-watcher
 
@@ -86,6 +102,10 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - ngrok
 
@@ -101,6 +121,10 @@ services:
             - ./configs:/service-configs:ro
             - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - health-reporter
 
@@ -119,6 +143,10 @@ services:
             - ./configs:/service-configs:ro
         privileged: true
         restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         depends_on:
           - configurator
 
@@ -132,6 +160,10 @@ services:
             - ./services/configurator/code:/code
             - ./configs:/service-configs
             - /var/run/docker.sock:/var/run/docker.sock
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
         restart: unless-stopped
 
     #    alpr:
