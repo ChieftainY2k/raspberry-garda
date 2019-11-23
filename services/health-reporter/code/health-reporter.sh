@@ -106,7 +106,7 @@ messageJson=$(cat <<EOF
     "local_time":"$localTime",
     "cpu_temp":"$temp",
     "cpu_voltage":"$volts",
-    "uptime_info":"${uptimeInfo}",
+    "uptime_output":"${uptimeInfo}",
     "uptime_seconds":"$uptimeSeconds",
     "disk_space_available_kb":"$availableDiskSpaceKb",
     "disk_space_total_kb":"$totalDiskSpaceKb",
