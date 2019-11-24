@@ -12,6 +12,8 @@
 
 KD_SYSTEM_NAME=MyRaspberryPiBox
 
+# Password for the configurator service to access UI
+
 KD_UI_USER=raspberry
 KD_UI_PASSWORD=garda
 
@@ -52,5 +54,7 @@ KD_ALPR_COUNTRY=eu
 KD_NGROK_ENABLED=0
 KD_NGROK_AUTHTOKEN=0
 
-# Password for the configurator service to access UI
 
+# Temperature sensor service
+
+KD_THERMOMETER_ENABLED=0
