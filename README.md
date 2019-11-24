@@ -34,7 +34,7 @@ Enjoy! :-)
 1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
 1. (optional) Enable the camera module support (`raspi-config -> interfacing -> camera`)
 1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
-1. (optional) Increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=200` , reboot)
+1. (only needed if RAM is less than 500MB) Increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=200` , reboot)
 1. Clone this repository do a directory of your choice
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
