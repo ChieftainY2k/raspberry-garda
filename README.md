@@ -32,7 +32,7 @@ Enjoy! :-)
 1. Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least, 16GB would be nice).
 1. (optional) Update your raspberry: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
-1. Enable the camera module support (`raspi-config -> interfacing -> camera`)
+1. (optional) Enable the camera module support (`raspi-config -> interfacing -> camera`)
 1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 1. (optional) Increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=200` , reboot)
 1. Clone this repository do a directory of your choice
