@@ -166,6 +166,26 @@ services:
             - 8.8.4.4
         restart: unless-stopped
 
+    thermometer:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/thermometer
+            dockerfile: Dockerfile.thermometer
+        volumes:
+            - ./services/thermometer/code:/code
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 8.8.8.8
+            - 8.8.4.4
+        depends_on:
+            - configurator
+
+
     #    alpr:
     #        env_file:
     #            - configs/environment.conf

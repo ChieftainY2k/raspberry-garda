@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][swarm-watcher]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][thermometer]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -21,21 +21,18 @@ check_errors()
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
-# Init crontab and cron process
-cron &
-check_errors $?
-
 # Install external libraries
 cd /code
 check_errors $?
 composer install
 check_errors $?
 
-# run  the listener forever
-while sleep 10; do
-    echo "Starting the swarm watcher MQTT topics collector."
-    php -f /code/swarm-watcher-topic-collector.php
-    check_errors $?
-    echo "Swarm watcher MQTT topics collector finished."
-done
+## run  the listener forever
+#while sleep 10; do
+#    echo "Starting the swarm watcher MQTT topics collector."
+#    php -f /code/swarm-watcher-topic-collector.php
+#    echo "Swarm watcher MQTT topics collector finished."
+#done
+#
 
+sleep infinity

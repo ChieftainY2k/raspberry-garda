@@ -11,9 +11,9 @@ log_message()
 #check for errors
 check_errors()
 {
-    EXITCODE=$1
+    local EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
-        log_message "ERROR: there were some errors, check the ouput for details."
+        log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details."
         exit 1
     fi
 }

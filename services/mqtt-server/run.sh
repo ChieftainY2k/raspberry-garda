@@ -1,5 +1,24 @@
 #!/bin/bash
 
+#helper function
+log_message()
+{
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][mqtt-server]"
+    MESSAGE=$1
+    echo "$LOGPREFIX $MESSAGE"
+}
+
+#check for errors
+check_errors()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details."
+        exit 1
+    fi
+}
+
+
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
@@ -30,10 +49,13 @@ fi
 
 # Fix permissions
 chmod a+rwx /var/lib/mosquitto
+check_errors $?
 
-while sleep 3; do
+while sleep 1; do
     echo "Starting the MQTT mosquitto server..."
     mosquitto -v -c /etc/mosquitto/mosquitto.conf
+    check_errors $?
+    sleep 60
 done
 
 #sleep infinity

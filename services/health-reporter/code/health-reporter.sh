@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Parts taken from https://gist.githubusercontent.com/ecampidoglio/5009512/raw/2efdb8535b30c2f8f9a391f055216c2a7f37e28b/cpustatus.sh
 
 #helper function
@@ -14,9 +13,9 @@ log_message()
 #check for errors
 check_errors()
 {
-    EXITCODE=$1
+    local EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
-        log_message "ERROR: there were some errors, check the ouput for details."
+        log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details."
         exit 1
     fi
 }
