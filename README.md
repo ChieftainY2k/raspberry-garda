@@ -33,6 +33,7 @@ Enjoy! :-)
 1. (optional) Update your raspberry: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
 1. (optional) Enable the camera module support (`raspi-config -> interfacing -> camera`)
+1. (optional) Set CPU overclocking to max (`raspi-config -> overclock`)
 1. Set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 1. (only needed if RAM is less than 500MB) Increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=200` , reboot)
 1. Clone this repository do a directory of your choice
