@@ -23,7 +23,7 @@ log_message "starting the ngrok service..."
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
-if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
+if [[ "${KD_NGROK_ENABLED}" != "1" ]]; then
     log_message "NOTICE: NGROK service is DISABLED, going to sleep..."
     sleep infinity
     exit
