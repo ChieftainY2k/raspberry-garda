@@ -84,17 +84,13 @@ timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
 totalFilesSizeKb=$(du ${imagedir} | tail -1 | awk '{print $1}') # total size of captured files
 
-
-#check the health of the kerberos stream
-#streamFFprobeOutput=$(ffprobe http://kerberos:8889 2>&1 | tail -1)
-#log_message "FFProbe output = $streamFFprobeOutput"
-
-#@FIXME make it universal, do not assume any services' names
 NGROK_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/ngrok/report.json)
 NGROK_SERVICE_REPORT_JSON=${NGROK_SERVICE_REPORT_JSON:-"{}"}
 
 KERBEROS_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/kerberos/report.json)
 KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
+
+#TODO move images_size_kb to kerberos service health reporter
 
 # prepare JSON message
 messageJson=$(cat <<EOF
