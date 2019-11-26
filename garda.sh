@@ -16,9 +16,10 @@ check_errors()
 {
     EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
-        log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details, press ENTER to continue or Ctrl-C to abort."
+#        log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details, press ENTER to continue or Ctrl-C to abort."
+        log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details."
         read
-        #exit 1
+        exit 1
 #    else
 #        log_message "OK, operation successfully completed."
     fi
@@ -42,7 +43,8 @@ helper()
 
     $0 log <sevice>     - show and track container(s) logs
 
-    $0 shell <service>  - lauhch bash shell console for container
+    $0 shell <service>         - launch bash shell console for container
+    $0 exec <sevice> <command> - execute a command inside service container
 
     $0 kerberos log   - show and track application logs inside kerberos container
 
@@ -134,14 +136,22 @@ check()
     check_errors $?
 
     #load vars
-    #    export $(grep -v '^#' /configs/services.conf | xargs -d '\n')
+    . ./configs/services.conf
 
-    log_message "Checking if camera module is enabled and taking sample picture..."
-    raspistill -o /tmp/$(date +%s).jpg
-    check_errors $?
+    if [[ "${KD_KERBEROS_ENABLED}" == "1" ]]; then
+        log_message "Checking if camera module is enabled and taking sample picture..."
+        raspistill -o /tmp/$(date +%s).jpg
+        check_errors $?
+    fi
+
+    if [[ "${KD_THERMOMETER_ENABLED}" == "1" ]]; then
+        log_message "Checking if we can read from 1-wire temperature sensor..."
+        cat /sys/bus/w1/devices/28*/w1_slave
+        check_errors $?
+    fi
 
     log_message "Checking docker installation..."
-    docker run hypriot/armhf-hello-world
+    docker run --rm hypriot/armhf-hello-world
     check_errors $?
 
 }
@@ -213,6 +223,16 @@ build()
     check_errors $?
 }
 
+execute()
+{
+    local SERVICE=${1}
+    local COMMAND=${2}
+
+    log_message "Executing command..."
+    docker-compose ${DOCKER_PARAMS} exec ${SERVICE} ${COMMAND}
+    check_errors $?
+}
+
 log()
 {
     local SERVICE=${1}
@@ -258,6 +278,7 @@ kerberos()
 
 ARG1=${1}
 ARG2=${2}
+ARG3=${3}
 
 case ${ARG1} in
     install) install;;
@@ -269,6 +290,7 @@ case ${ARG1} in
     rebuild) rebuild ${ARG2};;
     log)     log ${ARG2};;
     shell)   shell ${ARG2};;
+    exec)   execute ${ARG2} ${ARG3};;
     status)  status;;
     cleanup) cleanup;;
     kerberos)  kerberos ${ARG2};;
