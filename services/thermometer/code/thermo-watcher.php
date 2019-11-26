@@ -7,7 +7,7 @@
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
-echo "[" . date("Y-m-d H:i:s") . "] Starting temp sensors watcher.\n";
+echo "[" . date("Y-m-d H:i:s") . "] starting temp sensors watcher.\n";
 require(__DIR__ . "/bootstrap.php");
 
 
@@ -44,6 +44,8 @@ function readSensons()
             }
         }
 
+        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $sensorFile . " = " . json_encode($rawContent) . "\n";
+
         $topicName = "thermometer/" . $sensorName . "/report";
         $messageData = [
             "system_name" => getenv("KD_SYSTEM_NAME"),
@@ -62,8 +64,6 @@ function readSensons()
         $mqttClient->connect("mqtt-server", 1883, 60);
 
         $mqttClient->publish($topicName, json_encode($messageData), 1, false);
-
-        //clean up
         $mqttClient->disconnect();
 
     }

@@ -45,11 +45,9 @@ composer install
 check_errors $?
 
 ## run  the listener forever
-#while sleep 1; do
-#    php -f /code/thermo-watcher.php
-#    sleep 30
-#done
-#
-
+while sleep 1; do
+    php -f /code/thermo-watcher.php
+    sleep 30
+done
 
 sleep infinity
