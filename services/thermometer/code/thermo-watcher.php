@@ -67,6 +67,8 @@ function readSensons()
         $mqttClient->disconnect();
 
 
+        //@TODO save health report
+
         //@TODO publish event if temperature increase over given time window is over a given threshold
 
     }
