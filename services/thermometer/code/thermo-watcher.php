@@ -13,6 +13,9 @@ require(__DIR__ . "/bootstrap.php");
 
 function readSensons()
 {
+    //load the services configuration
+    (new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
+
     $sensorFiles = glob("/sys/bus/w1/devices/28*/w1_slave");
     foreach ($sensorFiles as $sensorFile) {
         $rawContent = file_get_contents($sensorFile);
@@ -41,10 +44,28 @@ function readSensons()
             }
         }
 
-        var_dump($sensorName);
-        var_dump($temperatureCelcius);
+        $topicName = "thermometer/" . $sensorName . "/report";
+        $messageData = [
+            "system_name" => getenv("KD_SYSTEM_NAME"),
+            "timestamp" => time(),
+            "local_time" => date("Y-m-d H:i:s"),
+            "sensor_name" => $sensorName,
+            "sensor_reading" => [
+                "celcius" => $temperatureCelcius,
+                "raw" => $rawContent
+            ]
+        ];
 
-        //var_dump($match);
+        //mqtt client
+        $mqttClientId = basename(__FILE__) . "-" . uniqid("");
+        $mqttClient = new Mosquitto\Client($mqttClientId);
+        $mqttClient->connect("mqtt-server", 1883, 60);
+
+        $mqttClient->publish($topicName, json_encode($messageData), 1, false);
+
+        //clean up
+        $mqttClient->disconnect();
+
     }
 }
 
