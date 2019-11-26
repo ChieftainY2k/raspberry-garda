@@ -45,10 +45,9 @@ composer install
 check_errors $?
 
 ## run  the listener forever
-#while sleep 10; do
-#    echo "Starting the swarm watcher MQTT topics collector."
-#    php -f /code/swarm-watcher-topic-collector.php
-#    echo "Swarm watcher MQTT topics collector finished."
+#while sleep 1; do
+#    php -f /code/thermo-watcher.php
+#    sleep 30
 #done
 #
 
