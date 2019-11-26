@@ -90,7 +90,10 @@ NGROK_SERVICE_REPORT_JSON=${NGROK_SERVICE_REPORT_JSON:-"{}"}
 KERBEROS_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/kerberos/report.json)
 KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
 
-#TODO move images_size_kb to kerberos service health reporter
+THERMOMETER_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/thermometer/report.json)
+THERMOMETER_SERVICE_REPORT_JSON=${THERMOMETER_SERVICE_REPORT_JSON:-"{}"}
+
+#@TODO move images_size_kb to kerberos service health reporter
 
 # prepare JSON message
 messageJson=$(cat <<EOF
@@ -112,6 +115,7 @@ messageJson=$(cat <<EOF
         "mqtt_bridge":{"is_enabled":"${KD_MQTT_BRIDGE_ENABLED}"},
         "ngrok":{"is_enabled":"${KD_NGROK_ENABLED}","report":${NGROK_SERVICE_REPORT_JSON}},
         "kerberos":{"is_enabled":"${KD_KERBEROS_ENABLED}","report":${KERBEROS_SERVICE_REPORT_JSON}}
+        "thermometer":{"is_enabled":"${KD_THERMOMETER_ENABLED}","report":${THERMOMETER_SERVICE_REPORT_JSON}}
     }
 }
 EOF

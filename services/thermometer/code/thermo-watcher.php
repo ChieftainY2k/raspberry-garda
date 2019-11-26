@@ -66,6 +66,9 @@ function readSensons()
         $mqttClient->publish($topicName, json_encode($messageData), 1, false);
         $mqttClient->disconnect();
 
+
+        //@TODO publish event if temperature increase over given time window is over a given threshold
+
     }
 }
 
