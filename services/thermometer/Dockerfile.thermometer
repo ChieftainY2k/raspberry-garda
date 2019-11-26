@@ -8,7 +8,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     mc joe multitail curl wget \
     php7.0-cli php-zip composer telnet mosquitto-clients \
     git libmosquitto-dev mosquitto-dev php-pear php-dev libcurl3-openssl-dev \
-    make cron python3-gpiozero
+    make cron python3-gpiozero strace less
 
 
 # Enable mosquitto lib in PHP

@@ -185,6 +185,7 @@ services:
             - 8.8.4.4
         depends_on:
             - configurator
+        privileged: true
 
 
     #    alpr:
