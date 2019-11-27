@@ -16,6 +16,7 @@ function readSensons()
     //load the services configuration
     (new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
 
+    $sensorsList = [];
     $sensorFiles = glob("/sys/bus/w1/devices/28*/w1_slave");
     foreach ($sensorFiles as $sensorFile) {
         $rawContent = file_get_contents($sensorFile);
@@ -66,15 +67,36 @@ function readSensons()
         $mqttClient->publish($topicName, json_encode($messageData), 1, false);
         $mqttClient->disconnect();
 
-
-        //@TODO save health report
-
         //@TODO publish event if temperature increase over given time window is over a given threshold
 
+        //save in senrors list for service health report
+        $sensorsList[] = [
+            "sensor_name" => $sensorName,
+            "sensor_reading" => [
+                "celcius" => $temperatureCelcius,
+                "raw" => $rawContent
+            ]
+        ];
+
     }
+
+    //save service health report
+    $healthReportFile = "/data-services-health-reports-thermometer/report.json";
+    $healthReportData = [
+        "timestamp" => time(),
+        "local_time" => date("Y-m-d H:i:s"),
+        "sensors" => $sensorsList
+    ];
+
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] saving health report to " . $healthReportFile . " , report = " . json_encode($healthReportData) . "\n";
+
+    if (!file_put_contents($healthReportFile, json_encode($healthReportData), LOCK_EX)) {
+        throw new \Exception("Cannot save data to file " . $healthReportFile);
+    }
+
 }
 
-readSensons();;
+readSensons();
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
 

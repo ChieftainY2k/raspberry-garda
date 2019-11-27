@@ -177,6 +177,7 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
+            - ./data/services-health-reports/thermometer:/data-services-health-reports-thermometer
         restart: unless-stopped
         dns:
             - 1.1.1.1

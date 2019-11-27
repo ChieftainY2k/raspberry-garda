@@ -24,18 +24,19 @@ log_message "starting the health reporter service..."
 chmod u+x /code/health-reporter.sh
 check_errors $?
 
-while sleep 10; do
+#wait for external service
+until nc -z -w30 mqtt-server 1883
+do
+    log_message "waiting for the mqtt server to be accessible... "
+    sleep 10
+done
 
-    until nc -z -w30 mqtt-server 1883
-    do
-        log_message "waiting for the mqtt server to be accessible... "
-        sleep 10
-    done
+while sleep 10; do
 
     log_message "executing the health reporter script..."
     /code/health-reporter.sh
     check_errors $?
-    sleep 100
+    sleep 120
 
 done
 

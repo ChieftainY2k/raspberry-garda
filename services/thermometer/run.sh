@@ -44,8 +44,16 @@ check_errors $?
 composer install
 check_errors $?
 
-## run  the listener forever
+#wait for external service
+until nc -z -w30 mqtt-server 1883
+do
+    log_message "waiting for the mqtt server to be accessible... "
+    sleep 10
+done
+
+# run  the listener forever
 while sleep 1; do
+
     php -f /code/thermo-watcher.php
     sleep 30
 done
