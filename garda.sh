@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export COMPOSE_HTTP_TIMEOUT=1200
+export COMPOSE_HTTP_TIMEOUT=3600
 DOCKER_PARAMS="-f docker-compose.yml -p garda"
 
 #helper function

@@ -56,5 +56,6 @@ KD_NGROK_AUTHTOKEN=0
 
 
 # Temperature sensor service
-
 KD_THERMOMETER_ENABLED=0
+# Aliases may contain only only a-z 0-9 _ characters, no spaces allowed
+KD_THERMOMETER_ALIASES=28-0516a03222ff,sensor_1;28-0516a038b5ff,sensor_2
