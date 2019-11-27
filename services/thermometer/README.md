@@ -7,7 +7,15 @@
 **Service configuration**
 
 * `KD_THERMOMETER_ENABLED=0` to disable service 
-* `KD_THERMOMETER_ENABLED=1` to enable service 
+* `KD_THERMOMETER_ENABLED=1` to enable service
+* `KD_THERMOMETER_ALIASES` - JSON key-value table for sensor human readable alisaes
+
+**Service configuration example**
+
+`````
+KD_THERMOMETER_ENABLED=1
+KD_THERMOMETER_ALIASES={"28-0516a03222ff":"sensor_1","28-0516a038b5ff":"sensor_2"}
+````` 
 
 **Hardware preparation**
 
