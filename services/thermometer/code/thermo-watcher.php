@@ -46,7 +46,7 @@ function readSensons()
 
         echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $sensorFile . " = " . json_encode($rawContent) . "\n";
 
-        $topicName = "thermometer/" . $sensorName . "/report";
+        $topicName = "thermometer/" . $sensorName . "/reading";
         $messageData = [
             "system_name" => getenv("KD_SYSTEM_NAME"),
             "timestamp" => time(),

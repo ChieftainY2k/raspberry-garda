@@ -111,7 +111,7 @@ class ReportAnalyzer
 
             $emailHtmlBody .= "
                 <br>
-                System local time: " . date("Y-m-d H:i:s")."
+                System local time: " . date("Y-m-d H:i:s") . "
             ";
 
             //create email data
@@ -195,8 +195,8 @@ class ReportAnalyzer
 
 
     /**
-     * @throws \Exception
      * @return array warnings table
+     * @throws \Exception
      */
     public function getWarningsFromLatestHealthReports()
     {
@@ -219,17 +219,18 @@ class ReportAnalyzer
 
             //$this->log("processing $queueItemFileName");
 
-            $reportData = file_get_contents($this->healthReportsRootPath . "/" . $queueItemFileName);
-            if (empty($reportData)) {
+            $reportDataRaw = file_get_contents($this->healthReportsRootPath . "/" . $queueItemFileName);
+            if (empty($reportDataRaw)) {
                 throw new \Exception("Cannot get content of file " . $this->healthReportsRootPath . "/" . $queueItemFileName);
             }
             //$this->log("content =  " . $reportData . "");
-            $reportData = json_decode($reportData, true);
+            $reportData = json_decode($reportDataRaw, true);
+            //var_dump($reportData);
             //print_r($reportData); //exit;
 
             if (empty($reportData['payload']['system_name'])) {
                 //throw new \Exception("Invalid payload data");
-                $this->log("Warning: invalid payload data, skipping this report and moving on.");
+                $this->log("WARNING: invalid payload data, skipping this report and moving on. file = " . $queueItemFileName . ", raw data = " . $reportDataRaw);
                 continue;
             }
 
@@ -237,7 +238,7 @@ class ReportAnalyzer
             $reportTimestamp = $reportData['payload']['timestamp'];
             $reportLocalTime = $reportData['payload']['local_time'];
             $reportSystemName = $reportData['payload']['system_name'];
-            $reportVideoStreamStatus = $reportData['payload']['video_stream'];
+            $reportVideoStreamStatus = $reportData['payload']['video_stream'] ?? null;
 
             //check report age
             $maxReportAge = 60 * 15;
@@ -262,4 +263,5 @@ class ReportAnalyzer
     }
 
 }
+
 
