@@ -11,7 +11,26 @@ echo "[" . date("Y-m-d H:i:s") . "] starting temp sensors watcher.\n";
 require(__DIR__ . "/bootstrap.php");
 
 
-function readSensons()
+function getSensorAlias($sensorName)
+{
+    $aliasesConfigJson = getenv("KD_THERMOMETER_ALIASES") ?? "[]";
+    if (!empty($aliasesConfigJson)) {
+        $aliasesTable = json_decode($aliasesConfigJson, true);
+        if (empty($aliasesTable)) {
+            echo "WARNING: invalid sensor's aliases definition. data = " . $aliasesTable . "\n";
+        }
+    }
+    $alias = $aliasesTable[$sensorName] ?? $sensorName;
+    if (!preg_match('/^[a-z0-9-_]+$/i', $alias)) {
+        echo "WARNING: invalid characters in alias name for sensor " . $sensorName . ", alias = " . $alias . "\n";
+        $alias = $sensorName;
+    }
+
+    return $alias;
+
+}
+
+function readSensors()
 {
     //load the services configuration
     (new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
@@ -37,6 +56,8 @@ function readSensons()
             throw new Exception("Unknown format of sensor file name: $sensorFile");
         }
 
+        $sensorNameAlias = getSensorAlias($sensorName);
+
         //@TODO add some format checks, report if CRC is invalid
         $temperatureCelcius = null;
         if (preg_match("/crc=[0-9a-f]{2} YES/m", $rawContent, $match)) {
@@ -47,12 +68,13 @@ function readSensons()
 
         echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $sensorFile . " = " . json_encode($rawContent) . "\n";
 
-        $topicName = "thermometer/" . $sensorName . "/reading";
+        $topicName = "thermometer/" . $sensorNameAlias . "/reading";
         $messageData = [
             "system_name" => getenv("KD_SYSTEM_NAME"),
             "timestamp" => time(),
             "local_time" => date("Y-m-d H:i:s"),
-            "sensor_name" => $sensorName,
+            "sensor_name" => $sensorNameAlias,
+            "sensor_name_original" => $sensorName,
             "sensor_reading" => [
                 "celcius" => $temperatureCelcius,
                 "raw" => $rawContent
@@ -71,7 +93,8 @@ function readSensons()
 
         //save in senrors list for service health report
         $sensorsList[] = [
-            "sensor_name" => $sensorName,
+            "sensor_name" => $sensorNameAlias,
+            "sensor_name_original" => $sensorName,
             "sensor_reading" => [
                 "celcius" => $temperatureCelcius,
                 "raw" => $rawContent
@@ -96,7 +119,7 @@ function readSensons()
 
 }
 
-readSensons();
+readSensors();
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
 
