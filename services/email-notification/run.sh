@@ -21,6 +21,13 @@ check_errors()
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+chmod u+x /code/queue-test-email.sh
+check_errors $?
+
+#send test email
+/code/queue-test-email.sh
+check_errors $?
+
 # Init crontab and cron process
 #rsyslogd &
 cron &
