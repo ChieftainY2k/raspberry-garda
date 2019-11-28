@@ -21,12 +21,14 @@ check_errors()
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
+localTime=$(date '+%Y-%m-%d %H:%M:%S')
+
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
     "recipients":["${KD_EMAIL_NOTIFICATION_RECIPIENT}"],
-    "subject":"${KD_SYSTEM_NAME} email service started",
-    "htmlBody":"${KD_SYSTEM_NAME} email service started",
+    "subject":"${KD_SYSTEM_NAME} email-notification service started",
+    "htmlBody":"<b>${KD_SYSTEM_NAME}</b>: <b>email-notification</b> service started at local time <b>${localTime}</b>",
     "attachments":[]
 }
 EOF
