@@ -21,14 +21,14 @@ check_errors()
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
-# Init crontab and cron process
-cron &
-check_errors $?
-
 # Install external libraries
 cd /code
 check_errors $?
 composer install
+check_errors $?
+
+# Init crontab and cron process
+cron &
 check_errors $?
 
 # run  the listener forever
