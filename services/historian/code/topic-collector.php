@@ -23,7 +23,6 @@ $localSystemName = getenv("KD_SYSTEM_NAME");
 
 $databaseFile = "/data-historian/mqtt-history.sqlite";
 
-
 //@TODO use db adapter layer, not PDO directly
 $pdo = new \PDO("sqlite:" . $databaseFile);
 if (empty($pdo)) {
