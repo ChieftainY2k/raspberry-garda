@@ -70,14 +70,6 @@ class TopicCollector
         }
 
         $stmt = "
-            CREATE INDEX IF NOT EXISTS index_timestamp
-            ON mqtt_events(timestamp);
-        ";
-        if ($this->pdo->exec($stmt) === false) {
-            throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
-        }
-
-        $stmt = "
             CREATE INDEX IF NOT EXISTS index_topic
             ON mqtt_events(topic);
         ";
