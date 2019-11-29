@@ -25,5 +25,12 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+# Install external libraries
+cd /code
+check_errors $?
+composer install
+check_errors $?
+
+log_message "historian service started."
 
 sleep infinity

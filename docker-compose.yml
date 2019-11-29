@@ -147,6 +147,7 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
             - ./data/services-health-reports/historian:/data-services-health-reports-historian
+            - ./data/historian:/data-historian
         restart: unless-stopped
 
 

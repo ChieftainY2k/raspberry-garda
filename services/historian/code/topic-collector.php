@@ -15,11 +15,27 @@ $clientId = basename(__FILE__) . "-" . uniqid("");
 echo "[" . date("Y-m-d H:i:s") . "] starting the mqtt client, clientId = $clientId\n";
 $client = new Mosquitto\Client($clientId);
 
-//queue root path
-$topicQueuePath = "/data/email-queues";
+if (empty(getenv("KD_SYSTEM_NAME"))) {
+    throw new \Exception("Empty environment variable KD_SYSTEM_NAME");
+}
+
+$localSystemName = getenv("KD_SYSTEM_NAME");
+
+$databaseFile = "/data-historian/topics-history.sqlite";
+
+
+//@TODO use db adapter layer, not PDO directly
+$pdo = new \PDO("sqlite:" . $databaseFile);
+if (empty($pdo)) {
+    throw new Exception("Cannot create PDO instance");
+}
+
+echo "OK";
+exit;
+
 
 //init topics collector with the mqtt client
-$topicsCollector = new \Historian\TopicCollector($client,$topicQueuePath);
+$topicsCollector = new \Historian\TopicCollector($client, $localSystemName);
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);

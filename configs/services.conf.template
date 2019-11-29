@@ -54,8 +54,12 @@ KD_ALPR_COUNTRY=eu
 KD_NGROK_ENABLED=0
 KD_NGROK_AUTHTOKEN=0
 
-
 # Temperature sensor service
 KD_THERMOMETER_ENABLED=0
 # Sensors' aliases: simple JSON KEY->VALUE object
 KD_THERMOMETER_ALIASES={"28-0516a03222ff":"sensor_1","28-0516a038b5ff":"sensor_2"}
+
+
+# Historian service
+
+KD_HISTORIAN_ENABLED=1
