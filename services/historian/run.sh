@@ -57,3 +57,5 @@ check_errors $?
 
 log_message "historian service started."
 sleep infinity
+
+#@TODO add service health reporter (db size, count of stored entries etc.)

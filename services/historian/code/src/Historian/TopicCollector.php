@@ -54,7 +54,7 @@ class TopicCollector
             CREATE TABLE IF NOT EXISTS mqtt_events (
                 timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
                 topic TEXT NOT NULL,
-                payload TEXT NOT NULL
+                payload BLOB NOT NULL
             )
         ";
         if ($this->pdo->exec($stmt) === false) {
@@ -139,7 +139,7 @@ class TopicCollector
             $result = $stmt->execute([
                 ":timestamp" => $payload['timestamp'],
                 ":topic" => $message->topic,
-                ":payload" => $message->payload
+                ":payload" => gzcompress($message->payload,9)
             ]);
             if ($result !== true) {
                 $this->log("WARNING: Cannot execute query " . json_encode($sql) . " , error = " . json_encode($this->pdo->errorInfo()));
