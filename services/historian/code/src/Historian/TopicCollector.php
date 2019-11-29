@@ -9,9 +9,7 @@ use Mosquitto\Message;
 /**
  *
  * @TODO remove old events
- * @TODO enable data compression for events' payloads ?
  *
- * @use logger object
  */
 class TopicCollector
 {
