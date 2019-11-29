@@ -15,7 +15,7 @@ This service saves all local and remove MQTT events in local sqlite database
 
 **Own shared resources**
 
-* /data/historian/topics-history.sqlite   
+* /data/historian/mqtt-history.sqlite   
 
 **Configuration files**
 

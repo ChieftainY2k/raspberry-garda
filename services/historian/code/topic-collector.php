@@ -21,7 +21,7 @@ if (empty(getenv("KD_SYSTEM_NAME"))) {
 
 $localSystemName = getenv("KD_SYSTEM_NAME");
 
-$databaseFile = "/data-historian/topics-history.sqlite";
+$databaseFile = "/data-historian/mqtt-history.sqlite";
 
 
 //@TODO use db adapter layer, not PDO directly
