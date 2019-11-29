@@ -14,7 +14,6 @@ check_errors()
     local EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
         log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details."
-        exit 1
     fi
 }
 
