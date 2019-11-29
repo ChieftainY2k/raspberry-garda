@@ -1,4 +1,10 @@
 <?php
+/**
+ *
+ * @TODO this is just MVP/PoC, refactor it , use DI!
+ *
+ * @use logger object
+ */
 
 require(__DIR__ . "/bootstrap.php");
 
