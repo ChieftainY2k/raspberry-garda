@@ -33,4 +33,22 @@ check_errors $?
 
 log_message "historian service started."
 
-sleep infinity
+#wait for external service
+until nc -z -w30 mqtt-server 1883
+do
+    log_message "waiting for the mqtt server to be accessible... "
+    sleep 10
+done
+
+
+# run  the listener forever
+while sleep 10; do
+
+    echo "starting the MQTT topics collector."
+    php ./topic-collector.php
+    check_errors $?
+
+done
+
+
+#sleep infinity
