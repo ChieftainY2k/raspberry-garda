@@ -17,13 +17,19 @@ check_errors()
     fi
 }
 
-log_message "starting historian service..."
-
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
+
+if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
+    log_message "NOTICE: historian service is DISABLED, going to sleep..."
+    sleep infinity
+    exit
+fi
+
+log_message "starting historian service..."
 
 # Install external libraries
 cd /code
@@ -31,7 +37,6 @@ check_errors $?
 composer install
 check_errors $?
 
-log_message "historian service started."
 
 #wait for external service
 until nc -z -w30 mqtt-server 1883
@@ -40,15 +45,15 @@ do
     sleep 10
 done
 
+# Init web interface
+log_message "starting web interface... "
+php -S 0.0.0.0:80 /code/web-interface.php &
+check_errors $?
 
 # run  the listener forever
-while sleep 10; do
+echo "starting the MQTT topics collector..."
+php /code/topic-collector.php
+check_errors $?
 
-    echo "starting the MQTT topics collector."
-    php ./topic-collector.php
-    check_errors $?
-
-done
-
-
-#sleep infinity
+log_message "historian service started."
+sleep infinity

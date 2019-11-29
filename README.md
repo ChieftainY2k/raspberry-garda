@@ -30,17 +30,18 @@ Enjoy! :-)
 **Raspberry Pi preparation**
 
 1. Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least, 16GB would be nice).
-1. (optional) Update your raspberry: `sudo apt-get -y update && sudo apt-get -y upgrade` 
+1. Update your raspberry: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
-1. (optional) Enable the camera module support (`raspi-config -> interfacing -> camera`)
-1. (optional) Set CPU overclocking to max (`raspi-config -> overclock`)
-1. if RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
-1. if camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
-1. if RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400` , reboot)
+1. If you want to use camera then enable the camera module support (`raspi-config -> interfacing -> camera`)
+1. You may set CPU overclocking to max available value (`raspi-config -> overclock`)
+1. If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
+1. If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
+1. If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
+1. Reboot
 
 **Garda Installation**
 
-1. Clone this repository do a directory of your choice
+1. Clone this repository to a directory of your choice (preferably `$HOME/raspberry-garda/`)
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
