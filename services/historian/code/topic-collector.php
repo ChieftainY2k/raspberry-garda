@@ -30,12 +30,8 @@ if (empty($pdo)) {
     throw new Exception("Cannot create PDO instance");
 }
 
-echo "OK";
-exit;
-
-
 //init topics collector with the mqtt client
-$topicsCollector = new \Historian\TopicCollector($client, $localSystemName);
+$topicsCollector = new \Historian\TopicCollector($client, $localSystemName, $pdo);
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);
