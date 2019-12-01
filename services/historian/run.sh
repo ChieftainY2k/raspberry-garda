@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][historian]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][runner]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -51,11 +51,16 @@ php -S 0.0.0.0:80 /code/web-interface.php &
 check_errors $?
 
 # run  the listener forever
-echo "starting the MQTT topics collector..."
-php /code/topic-collector.php
-check_errors $?
+while sleep 10; do
 
-log_message "historian service started."
+    echo "starting the MQTT topics collector."
+    php /code/topic-collector.php
+    check_errors $?
+
+    echo "MQTT topics collector terminated, restarting..."
+
+done
+
 sleep infinity
 
 #@TODO add service health reporter (db size, count of stored entries etc.)

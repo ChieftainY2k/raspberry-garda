@@ -47,11 +47,21 @@ class TopicCollector
         $this->localSystemName = $localSystemName;
         $this->pdo = $pdo;
 
+        $this->initDatabase();
+    }
+
+    private function initDatabase()
+    {
         //init database
         $stmt = "
             CREATE TABLE IF NOT EXISTS mqtt_events (
                 timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
                 topic TEXT NOT NULL,
+                topic1 TEXT NULL,
+                topic2 TEXT NULL,
+                topic3 TEXT NULL,
+                topic4 TEXT NULL,
+                topic5 TEXT NULL,
                 payload BLOB NOT NULL
             )
         ";
@@ -69,12 +79,11 @@ class TopicCollector
 
         $stmt = "
             CREATE INDEX IF NOT EXISTS index_topic
-            ON mqtt_events(topic);
+            ON mqtt_events(topic,topic1,topic2,topic3,topic4,topic5);
         ";
         if ($this->pdo->exec($stmt) === false) {
             throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
         }
-
     }
 
     /**
@@ -131,13 +140,23 @@ class TopicCollector
         } else {
 
             //save to db, if an event has timestamp+topic already recorded then it will replaced with new payload
-            $sql = "REPLACE INTO mqtt_events(timestamp, topic,payload) values(:timestamp,:topic,:payload)";
+            $sql = "
+                REPLACE INTO 
+                mqtt_events(timestamp, topic, topic1, topic2, topic3, topic4, topic5,payload) 
+                values(:timestamp,:topic,:topic1,:topic2,:topic3,:topic4,:topic5,:payload)";
+
+            $topicParts = explode("/", $message->topic);
 
             $stmt = $this->pdo->prepare($sql);
             $result = $stmt->execute([
                 ":timestamp" => $payload['timestamp'],
                 ":topic" => $message->topic,
-                ":payload" => gzcompress($message->payload,9)
+                ":topic1" => $topicParts[0] ?? null,
+                ":topic2" => $topicParts[1] ?? null,
+                ":topic3" => $topicParts[2] ?? null,
+                ":topic4" => $topicParts[3] ?? null,
+                ":topic5" => $topicParts[4] ?? null,
+                ":payload" => gzcompress($message->payload, 9)
             ]);
             if ($result !== true) {
                 $this->log("WARNING: Cannot execute query " . json_encode($sql) . " , error = " . json_encode($this->pdo->errorInfo()));
