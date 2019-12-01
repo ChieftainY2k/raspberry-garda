@@ -45,6 +45,13 @@ do
     sleep 10
 done
 
+# Init crontab and cron process
+rsyslogd &
+check_errors $?
+cron &
+check_errors $?
+
+
 # Init web interface
 log_message "starting web interface... "
 php -S 0.0.0.0:80 /code/web-interface.php &

@@ -118,18 +118,24 @@ class Configurator
             } elseif (preg_match("/^#.*$/i", $line)) {
                 //comment
                 return;
-            } elseif (preg_match("/^([a-z0-9_]+)[=]([a-z0-9@_.-]+[ ]*)(#.*)?$/i", $line, $matches)) {
+            } elseif (preg_match("/^([a-z0-9_]+)[=]([a-z0-9@_.-]+[ ]*)(#.*)?$/i", $line, $match)) {
                 //key=val without quotes and possible comment at the end
-                $key = $matches[1];
-                $value = $matches[2];
-            } elseif (preg_match("/^([a-z0-9_]+)[=][\"]([a-z0-9@_. -]+)[\"][ ]*(#.*)?$/i", $line, $matches)) {
+                $key = $match[1];
+                $value = $match[2];
+            } elseif (preg_match("/^([a-z0-9_]+)[=][\"]([a-z0-9@_. -]+)[\"][ ]*(#.*)?$/i", $line, $match)) {
                 //key=val without quotes and possible comment at the end
-                $key = $matches[1];
-                $value = $matches[2];
+                $key = $match[1];
+                $value = $match[2];
+            } elseif (preg_match("/^([a-z0-9_]+)[=]({.*})$/i", $line, $match)) {
+                //value is json object or json array
+                $key = $match[1];
+                $value = $match[2];
+                if (is_null(json_decode($value))) {
+                    throw new \InvalidArgumentException("Invalid format for line $line , invalid JSON value");
+                }
             } else {
-
                 //line format unrecognized
-                throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\" or # (comment)");
+                throw new \InvalidArgumentException("Invalid format for line $line , must be KEY=VAL or KEY=\"VAL\" or # (comment) or valid JSON");
             }
 
             //specific key/value validation
@@ -169,9 +175,11 @@ class Configurator
         //reload all containers except for the configurator container
         foreach ($containers as $container) {
             $containerNames = join(",", $container->getNames());
-            if (!preg_match("/configurator|nginx/", $containerNames)) {
+            if (!preg_match("#configurator|nginx|ngrok#i", $containerNames)) {
                 echo "Restarting container $containerNames ...<br>";
                 $manager->restart($container->getId());
+            } else {
+                echo "Skipping container $containerNames ...<br>";
             }
 
         }

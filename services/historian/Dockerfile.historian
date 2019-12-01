@@ -9,7 +9,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     php7.0-cli php-zip composer telnet mosquitto-clients \
     sqlite3 php-sqlite3 \
     git libmosquitto-dev mosquitto-dev php-pear php-dev libcurl3-openssl-dev \
-    netcat make cron
+    netcat make cron rsyslog
 
 # Enable mosquitto lib in PHP
 
