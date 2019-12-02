@@ -21,10 +21,14 @@ function getSensorAlias($sensorName)
         }
     }
     $alias = $aliasesTable[$sensorName] ?? $sensorName;
-    if (!preg_match('/^[a-z0-9-_]+$/i', $alias)) {
-        echo "WARNING: invalid characters in alias name for sensor " . $sensorName . ", alias = " . $alias . "\n";
-        $alias = $sensorName;
-    }
+
+    //sanitize the name
+    $alias = preg_replace('/[^a-z0-9-_]/i', "_", $alias);
+
+    //if (!preg_match('/^[a-z0-9-_]+$/i', $alias)) {
+    //    echo "WARNING: invalid characters in alias name for sensor " . $sensorName . ", alias = " . $alias . "\n";
+    //    $alias = $sensorName;
+    //}
 
     return $alias;
 

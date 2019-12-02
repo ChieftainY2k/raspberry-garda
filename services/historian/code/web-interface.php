@@ -24,16 +24,15 @@ function getGraphData()
     //$sql = "select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;";
 
     //@TODO pagination
+    //@TODO support both remote and local readings
     $sql = "
-    select
-        strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')) date,
-        topic, payload
+    select *
     from mqtt_events
     where 
         (
             (topic1='remote' and topic3='thermometer')
         )
-        and (timestamp > '" . (time() - 3600 * 24 * 2) . "')
+        and (timestamp > '" . (time() - 3600 * 12) . "')
     order by timestamp desc
 ";
     //
@@ -51,7 +50,9 @@ function getGraphData()
     foreach ($events as $event) {
         //print_r($row['topic']);
         $payload = (json_decode(gzuncompress($event['payload']), true));
-        $sensorName = $payload['sensor_name'];
+
+        $isRemote = ($event['topic1'] == "remote");
+        $sensorName = $payload['system_name'] . "(" . $payload['sensor_name'] . ")";
 
         //init sensor table
         if (!isset($graphDataSensors[$sensorName])) {
@@ -73,34 +74,7 @@ function getGraphData()
         ];
         $graphDataSensors[$sensorName]['lastTimestamp'] = $payload['timestamp'];
 
-        //
-        //    remote/Thermo/thermometer/2_powietrze/readingArray
-        //    (
-        //        [system_name] => Thermo
-        //    [timestamp] => 1575279411
-        //    [local_time] => 2019-12-02 10:36:51
-        //    [sensor_name] => 2_powietrze
-        //    [sensor_name_original] => 28-0516a038b5ff
-        //    [sensor_reading] => Array
-        //    (
-        //        [celcius] => 18.062
-        //            [raw] => 21 01 4b 46 7f ff 0c 10 1e : crc=1e YES
-        //21 01 4b 46 7f ff 0c 10 1e t=18062
-        //
-        //        )
-        //
-        //)
-
-
     }
-
-    //print_r($graphDataSensors);
-    //exit;
-    //
-    //$graphDatasets[] = [
-    //    "label" => "powietrze 1",
-    //    "data" => $graphDataPoints,
-    //];
 
     //convert to datasets table
     $graphDatasets = [];
@@ -108,10 +82,10 @@ function getGraphData()
         $graphDatasets[] = $sensor;
     }
 
-    //assign background colors
+    //assign background colors to each dataset
     for ($i = 0; isset($graphDatasets[$i]); $i++) {
         $graphDatasets[$i]['backgroundColor'] = [
-            '#ffbbbb', '#bbffbb', '#bbbbff', '#efefef', '#ffffbb', "#bbffff"
+            '#ffbbbb', '#bbffbb', '#bbbbff', '#efefef', '#ffffbb', "#bbffff", 'yellow', 'red', 'blue'
         ][$i];
     }
 
@@ -131,14 +105,12 @@ $graphDatasets = getGraphData();
 </head>
 <body>
 
-<div style="width:95%; height: 95%; border-color: #efefef; padding: 10px;">
+<div style="width:95%; height: 95%; border: solid 1px #aaaaaa; padding: 1px;">
     <canvas id="myChart" width="100%" height="100%"></canvas>
 </div>
 
 <script>
-    //var graphDataPoints = <?php //echo json_encode($graphDataPoints); ?>//;
     var graphDatasets = <?php echo json_encode($graphDatasets); ?>;
-    //var graphDataLabels = <?php //echo json_encode($graphDataLabels); ?>//;
 </script>
 
 <script>
@@ -148,23 +120,6 @@ $graphDatasets = getGraphData();
         type: 'line',
         data: {
             datasets: graphDatasets
-            // datasets: [
-            //     {
-            //         label: 'Temperature',
-            //         data: graphDataPoints,
-            //         // data: [{
-            //         //     x: "2019-12-02 01:00:00",
-            //         //     y: 1
-            //         // }, {
-            //         //     x: "2019-12-02 01:00:30",
-            //         //     y: 10
-            //         // }, {
-            //         //     x: "2019-12-02 01:02:00",
-            //         //     y: 5
-            //         // }
-            //         // ],
-            //         //borderWidth: 1
-            //     }]
         },
         options: {
             // responsive: false,
@@ -179,54 +134,10 @@ $graphDatasets = getGraphData();
                 xAxes: [{
                     type: 'time',
                     display: false,
-                    time: {
-                        unit: 'second'
-                    }
                 }]
             }
         }
     });
-
-    // var myChart = new Chart(ctx, {
-    //     type: 'line',
-    //     data: {
-    //         // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-    //         labels: graphDataLabels,
-    //         datasets: [{
-    //             label: 'Temperature',
-    //             data: graphDataPoints,
-    //             //data: [12, 19, 3, 5, 2, 3],
-    //             // backgroundColor: [
-    //             //     'rgba(255, 99, 132, 0.2)',
-    //             //     'rgba(54, 162, 235, 0.2)',
-    //             //     'rgba(255, 206, 86, 0.2)',
-    //             //     'rgba(75, 192, 192, 0.2)',
-    //             //     'rgba(153, 102, 255, 0.2)',
-    //             //     'rgba(255, 159, 64, 0.2)'
-    //             // ],
-    //             // borderColor: [
-    //             //     'rgba(255, 99, 132, 1)',
-    //             //     'rgba(54, 162, 235, 1)',
-    //             //     'rgba(255, 206, 86, 1)',
-    //             //     'rgba(75, 192, 192, 1)',
-    //             //     'rgba(153, 102, 255, 1)',
-    //             //     'rgba(255, 159, 64, 1)'
-    //             // ],
-    //             borderWidth: 1
-    //         }]
-    //     },
-    //     options: {
-    //         // responsive: false,
-    //         maintainAspectRatio: false,
-    //         scales: {
-    //             yAxes: [{
-    //                 ticks: {
-    //                     beginAtZero: true
-    //                 }
-    //             }]
-    //         }
-    //     }
-    // });
 </script>
 
 </body>
