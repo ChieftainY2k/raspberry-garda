@@ -7,7 +7,13 @@
 
 require(__DIR__ . "/bootstrap.php");
 
-function getGraphData()
+/**
+ * @param int $timeWindowHours
+ * @param int $granulationMinutes
+ * @return array
+ * @throws Exception
+ */
+function getGraphData($timeWindowHours, $granulationMinutes)
 {
     //echo "Historian web interface.<br><br>";
 
@@ -32,9 +38,9 @@ function getGraphData()
         (
             (topic1='remote' and topic3='thermometer')
         )
-        and (timestamp > '" . (time() - 3600 * 12) . "')
+        and (timestamp > '" . (time() - (3600 * $timeWindowHours)) . "') 
     order by timestamp desc
-";
+    ";
     //
 
     $result = $pdo->query($sql);
@@ -45,6 +51,7 @@ function getGraphData()
     $events = $result->fetchAll();
 
     $graphDataSensors = [];
+    $colorsTable = ['green', 'red', 'blue', 'orange', 'pink', 'darkgrey', 'yellow', 'brown', 'cyan',];
 
     $lastTimestamp = null;
     foreach ($events as $event) {
@@ -59,12 +66,13 @@ function getGraphData()
             $graphDataSensors[$sensorName] = [
                 "label" => $sensorName,
                 "lastTimestamp" => null,
-                //"backgroundColor" => "red",
+                "fill" => false,
+                "backgroundColor" => $colorsTable[count($graphDataSensors)], //pick a color from color table
                 "data" => [],
             ];
         }
 
-        if (abs($payload['timestamp'] - $graphDataSensors[$sensorName]['lastTimestamp']) < 60 * 5) {
+        if (abs($payload['timestamp'] - $graphDataSensors[$sensorName]['lastTimestamp']) < (60 * $granulationMinutes)) {
             continue;
         }
 
@@ -76,26 +84,19 @@ function getGraphData()
 
     }
 
-    //convert to datasets table
+    //convert to chartjs datasets table
     $graphDatasets = [];
     foreach ($graphDataSensors as $sensor) {
         $graphDatasets[] = $sensor;
     }
 
-    //assign background colors to each dataset
-    for ($i = 0; isset($graphDatasets[$i]); $i++) {
-        $graphDatasets[$i]['backgroundColor'] = [
-            '#ffbbbb', '#bbffbb', '#bbbbff', '#efefef', '#ffffbb', "#bbffff", 'yellow', 'red', 'blue'
-        ][$i];
-    }
-
-    //print_r($graphDatasets); exit;
-
     return $graphDatasets;
 }
 
+$timeWindowHours = intval($_GET['timeWindowHours'] ?? 24);
+$granulationMinutes = intval($_GET['granulationMinutes'] ?? 10);
 
-$graphDatasets = getGraphData();
+$graphDatasets = getGraphData($timeWindowHours, $granulationMinutes);
 
 ?>
 <html>
@@ -105,6 +106,13 @@ $graphDatasets = getGraphData();
 </head>
 <body>
 
+<div style="width:95%; border: solid 1px #aaaaaa; background: #efefef; padding: 10px; vertical-align: middle">
+    <form style="display: inline">
+        Show last <input type="text" name="timeWindowHours" value="<?php echo htmlspecialchars($timeWindowHours) ?>"> hour(s),
+        every <input type="text" name="granulationMinutes" value="<?php echo htmlspecialchars($granulationMinutes) ?>"> minute(s)
+        <input type="submit" value="OK">
+    </form>
+</div>
 <div style="width:95%; height: 95%; border: solid 1px #aaaaaa; padding: 1px;">
     <canvas id="myChart" width="100%" height="100%"></canvas>
 </div>
