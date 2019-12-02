@@ -148,12 +148,14 @@ check()
 
     #@FIXME move this check to the service ?
     if [[ "${KD_THERMOMETER_ENABLED}" == "1" ]]; then
+        log_message "Checking sensors' kernel files..."
+        ls -la /sys/bus/w1/devices/28*/w1_slave
         log_message "Checking if we can read from 1-wire temperature sensor..."
         cat /sys/bus/w1/devices/28*/w1_slave
         check_errors $?
     fi
 
-    log_message "Checking docker installation..."
+    log_message "Checking docker installation, attempting to run a simple container..."
     docker run --rm hypriot/armhf-hello-world
     check_errors $?
 
