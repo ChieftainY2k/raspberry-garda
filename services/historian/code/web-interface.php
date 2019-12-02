@@ -9,11 +9,11 @@ require(__DIR__ . "/bootstrap.php");
 
 /**
  * @param int $timeWindowHours
- * @param int $granulationMinutes
+ * @param int $minDensityMinutes
  * @return array
  * @throws Exception
  */
-function getGraphData($timeWindowHours, $granulationMinutes)
+function getGraphData($timeWindowHours, $minDensityMinutes)
 {
     //echo "Historian web interface.<br><br>";
 
@@ -30,13 +30,16 @@ function getGraphData($timeWindowHours, $granulationMinutes)
     //$sql = "select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;";
 
     //@TODO pagination
-    //@TODO support both remote and local readings
+
+    //get thermometer readings - both local and remote events
     $sql = "
     select *
     from mqtt_events
     where 
         (
-            (topic1='remote' and topic3='thermometer')
+            (topic1='thermometer' and topic3='reading')
+            or 
+            (topic1='remote' and topic3='thermometer' and topic5='reading')
         )
         and (timestamp > '" . (time() - (3600 * $timeWindowHours)) . "') 
     order by timestamp desc
@@ -53,13 +56,15 @@ function getGraphData($timeWindowHours, $granulationMinutes)
     $graphDataSensors = [];
     $colorsTable = ['green', 'red', 'blue', 'orange', 'pink', 'darkgrey', 'yellow', 'brown', 'cyan',];
 
+    $systemName = getenv("KD_SYSTEM_NAME");
+
     $lastTimestamp = null;
     foreach ($events as $event) {
         //print_r($row['topic']);
         $payload = (json_decode(gzuncompress($event['payload']), true));
 
         $isRemote = ($event['topic1'] == "remote");
-        $sensorName = $payload['system_name'] . "(" . $payload['sensor_name'] . ")";
+        $sensorName = ($payload['system_name'] == $systemName ? "Me: " : "") . $payload['system_name'] . "(" . $payload['sensor_name'] . ")";
 
         //init sensor table
         if (!isset($graphDataSensors[$sensorName])) {
@@ -72,7 +77,7 @@ function getGraphData($timeWindowHours, $granulationMinutes)
             ];
         }
 
-        if (abs($payload['timestamp'] - $graphDataSensors[$sensorName]['lastTimestamp']) < (60 * $granulationMinutes)) {
+        if (abs($payload['timestamp'] - $graphDataSensors[$sensorName]['lastTimestamp']) < (60 * $minDensityMinutes)) {
             continue;
         }
 
@@ -94,9 +99,9 @@ function getGraphData($timeWindowHours, $granulationMinutes)
 }
 
 $timeWindowHours = intval($_GET['timeWindowHours'] ?? 24);
-$granulationMinutes = intval($_GET['granulationMinutes'] ?? 10);
+$minDensityMinutes = intval($_GET['minDensityMinutes'] ?? 10);
 
-$graphDatasets = getGraphData($timeWindowHours, $granulationMinutes);
+$graphDatasets = getGraphData($timeWindowHours, $minDensityMinutes);
 
 ?>
 <html>
@@ -109,7 +114,7 @@ $graphDatasets = getGraphData($timeWindowHours, $granulationMinutes);
 <div style="width:95%; border: solid 1px #aaaaaa; background: #efefef; padding: 10px; vertical-align: middle">
     <form style="display: inline">
         Show last <input type="text" name="timeWindowHours" value="<?php echo htmlspecialchars($timeWindowHours) ?>"> hour(s),
-        every <input type="text" name="granulationMinutes" value="<?php echo htmlspecialchars($granulationMinutes) ?>"> minute(s)
+        every <input type="text" name="minDensityMinutes" value="<?php echo htmlspecialchars($minDensityMinutes) ?>"> minute(s)
         <input type="submit" value="OK">
     </form>
 </div>

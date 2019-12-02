@@ -106,6 +106,8 @@ class Configurator
     {
         echo "Updating services config...<br>";
 
+        //@TODO Make sure local system is not "remote" (reserved name)
+
         //split to lines, normalize, strip empty space, validate
         $configAsTextLines = explode("\n", $configAsText);
         array_walk($configAsTextLines, function (&$line) {

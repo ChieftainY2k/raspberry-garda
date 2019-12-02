@@ -16,6 +16,10 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
+        depends_on:
+          - kerberos
+          - historian
+          - configurator
 
     kerberos:
         env_file:
