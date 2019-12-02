@@ -8,9 +8,9 @@
 
 * `KD_THERMOMETER_ENABLED=0` to disable service 
 * `KD_THERMOMETER_ENABLED=1` to enable service
-* `KD_THERMOMETER_ALIASES` - JSON key-value table for sensor human readable alisaes
+* `KD_THERMOMETER_ALIASES` - JSON key-value table for sensor human readable aliases
 
-**Service configuration example**
+**Service configuration examples**
 
 `````
 KD_THERMOMETER_ENABLED=1
@@ -41,15 +41,3 @@ Check it out: https://www.google.com/search?q=DS18B20+raspberry+pi+installation
 `````
 ./garda.sh check
 `````
-
-**Configuration files**
-
-...TBD...
-
-**Published MQTT topics**
-
-...TBD...
-
-**Shared files**
-
-...TBD...
