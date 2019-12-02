@@ -2,8 +2,7 @@
   "minimum-stability": "dev",
   "require": {
     "nakard/mosquitto-php-stub": "dev-master",
-    "vlucas/phpdotenv": "^2.4",
-    "jpgraph/jpgraph": "^4.0"
+    "vlucas/phpdotenv": "^2.4"
   },
   "autoload": {
     "psr-4": {
