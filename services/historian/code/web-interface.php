@@ -27,9 +27,14 @@ $sql = "
         strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')) date,
         topic, payload
     from mqtt_events
-    where timestamp < '" . (time() - 60 * 5) . "'
-    order by timestamp asc
+    where 
+        (
+            (topic1='remote' and topic3='thermometer' and topic4='2_powietrze')
+        )
+        and (timestamp < '" . (time() - 60 * 5) . "')
+    
 ";
+//order by timestamp asc
 
 $result = $pdo->query($sql);
 if (empty($result)) {
@@ -38,17 +43,47 @@ if (empty($result)) {
 $result->setFetchMode(PDO::FETCH_ASSOC);
 $rows = $result->fetchAll();
 
-$graphDataPoints = [1, 2, 3, 4, 5, 6];
-$graphDataLabels = [1, 2, 3, 4, 5, 6];
+$graphDataPoints = [];
+//$graphDataLabels = [];
 
+$lastTimestamp = null;
 foreach ($rows as $row) {
-    print_r($row['topic']);
-    print_r(json_decode(gzuncompress($row['payload'])));
-    exit;
+    //print_r($row['topic']);
+    $payload = (json_decode(gzuncompress($row['payload']), true));
+
+    if (abs($payload['timestamp'] - $lastTimestamp) < 60*10) {
+        continue;
+    }
+
+    $graphDataPoints[] = [
+        "x" => $payload['local_time'],
+        "y" => $payload['sensor_reading']['celcius'],
+    ];
+    $lastTimestamp = $payload['timestamp'];
+
+    //
+    //    remote/Thermo/thermometer/2_powietrze/readingArray
+    //    (
+    //        [system_name] => Thermo
+    //    [timestamp] => 1575279411
+    //    [local_time] => 2019-12-02 10:36:51
+    //    [sensor_name] => 2_powietrze
+    //    [sensor_name_original] => 28-0516a038b5ff
+    //    [sensor_reading] => Array
+    //    (
+    //        [celcius] => 18.062
+    //            [raw] => 21 01 4b 46 7f ff 0c 10 1e : crc=1e YES
+    //21 01 4b 46 7f ff 0c 10 1e t=18062
+    //
+    //        )
+    //
+    //)
+
+
 }
 
-print_r($rows);
-exit;
+//print_r($rows);
+//exit;
 
 //\JpGraph\JpGraph::load();
 //$graph = new Graph(1024,760);
@@ -83,7 +118,7 @@ exit;
 
 <script>
     var graphDataPoints = <?php echo json_encode($graphDataPoints); ?>;
-    var graphDataLabels = <?php echo json_encode($graphDataLabels); ?>;
+    //var graphDataLabels = <?php //echo json_encode($graphDataLabels); ?>//;
 </script>
 
 <script>
@@ -92,25 +127,32 @@ exit;
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            datasets: [{
-                label: 'Temperature',
-                data: [{
-                    x: new Date("2019-12-02 01:00:00"),
-                    y: 1
-                }, {
-                    x: new Date("2019-12-02 01:00:30"),
-                    y: 10
-                }],
-                borderWidth: 1
-            }]
+            datasets: [
+                {
+                    label: 'Temperature',
+                    data: graphDataPoints,
+                    // data: [{
+                    //     x: "2019-12-02 01:00:00",
+                    //     y: 1
+                    // }, {
+                    //     x: "2019-12-02 01:00:30",
+                    //     y: 10
+                    // }, {
+                    //     x: "2019-12-02 01:02:00",
+                    //     y: 5
+                    // }
+                    // ],
+                    borderWidth: 1
+                }]
         },
         options: {
             // responsive: false,
             maintainAspectRatio: false,
+            display: false,
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: false
                     }
                 }],
                 xAxes: [{
@@ -122,6 +164,7 @@ exit;
             }
         }
     });
+
     // var myChart = new Chart(ctx, {
     //     type: 'line',
     //     data: {
