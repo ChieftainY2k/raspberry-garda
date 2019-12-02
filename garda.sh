@@ -139,14 +139,14 @@ check()
     . ./configs/services.conf
 
 
-    #@FIXME move this check to the service
+    #@FIXME move this check to the service ?
     if [[ "${KD_KERBEROS_ENABLED}" == "1" ]]; then
         log_message "Checking if camera module is enabled and taking sample picture (if you get errors here make sure your camera is not used by any other application)..."
         raspistill -o /tmp/$(date +%s).jpg
         check_errors $?
     fi
 
-    #@FIXME move this check to the service
+    #@FIXME move this check to the service ?
     if [[ "${KD_THERMOMETER_ENABLED}" == "1" ]]; then
         log_message "Checking if we can read from 1-wire temperature sensor..."
         cat /sys/bus/w1/devices/28*/w1_slave

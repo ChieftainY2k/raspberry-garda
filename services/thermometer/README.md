@@ -22,6 +22,7 @@ KD_THERMOMETER_ALIASES={"28-0516a03222ff":"sensor_1","28-0516a038b5ff":"sensor_2
 * Step 1: Enable support for 1-Wire
 
 `````
+echo "dtoverlay=w1-gpio" >> /boot/config.txt
 echo "w1-gpio" >> /etc/modules
 echo "w1-therm" >> /etc/modules
 reboot
