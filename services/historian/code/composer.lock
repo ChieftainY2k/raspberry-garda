@@ -4,49 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a7908208cfd4b2459dcbd55706f7b12e",
-    "content-hash": "2ba7a408dc571209618b09f8e89c2066",
+    "hash": "bb002128f45e94ce673bc265eeb5b876",
+    "content-hash": "4674eac2467cb851cd2ef3445027be8d",
     "packages": [
-        {
-            "name": "jpgraph/jpgraph",
-            "version": "4.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ztec/JpGraph.git",
-                "reference": "674f761543d9af114897d32cfd88ea4fe806bfb7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ztec/JpGraph/zipball/674f761543d9af114897d32cfd88ea4fe806bfb7",
-                "reference": "674f761543d9af114897d32cfd88ea4fe806bfb7",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "lib/JpGraph.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "QPL 1.0"
-            ],
-            "authors": [
-                {
-                    "name": "JpGraph team"
-                }
-            ],
-            "description": "jpGraph, library to make graphs and charts",
-            "homepage": "http://jpgraph.net/",
-            "keywords": [
-                "chart",
-                "data",
-                "graph",
-                "jpgraph",
-                "pie"
-            ],
-            "time": "2017-03-29 23:34:57"
-        },
         {
             "name": "nakard/mosquitto-php-stub",
             "version": "dev-master",
