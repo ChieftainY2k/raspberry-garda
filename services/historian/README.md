@@ -19,6 +19,6 @@ This service saves all local and remove MQTT events in local sqlite database
 
 * /data/historian/mqtt-history.sqlite   
 
-**Example of working bridge publishing topics to remote server**
+**Example of historian charts**
 
 ![Screenshot](./docs/images/historian-charts.png "Screenshot")
