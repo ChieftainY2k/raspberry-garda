@@ -7,102 +7,121 @@
 
 require(__DIR__ . "/bootstrap.php");
 
-//echo "Historian web interface.<br><br>";
+function getGraphData()
+{
+    //echo "Historian web interface.<br><br>";
 
-//select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;
+    //select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;
 
-$databaseFile = "/data-historian/mqtt-history.sqlite";
+    $databaseFile = "/data-historian/mqtt-history.sqlite";
 
-//@TODO use db adapter layer, not PDO directly
-$pdo = new \PDO("sqlite:" . $databaseFile);
-if (empty($pdo)) {
-    throw new Exception("Cannot create PDO instance");
-}
+    //@TODO use db adapter layer, not PDO directly
+    $pdo = new \PDO("sqlite:" . $databaseFile);
+    if (empty($pdo)) {
+        throw new Exception("Cannot create PDO instance");
+    }
 
-//$sql = "select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;";
+    //$sql = "select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;";
 
-//@TODO pagination
-$sql = "
+    //@TODO pagination
+    $sql = "
     select
         strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')) date,
         topic, payload
     from mqtt_events
     where 
         (
-            (topic1='remote' and topic3='thermometer' and topic4='2_powietrze')
+            (topic1='remote' and topic3='thermometer')
         )
-        and (timestamp < '" . (time() - 60 * 5) . "')
-    
+        and (timestamp > '" . (time() - 3600 * 24 * 2) . "')
+    order by timestamp desc
 ";
-//order by timestamp asc
+    //
 
-$result = $pdo->query($sql);
-if (empty($result)) {
-    throw new Exception("Cannot execute query " . $sql);
-}
-$result->setFetchMode(PDO::FETCH_ASSOC);
-$rows = $result->fetchAll();
+    $result = $pdo->query($sql);
+    if (empty($result)) {
+        throw new Exception("Cannot execute query " . $sql);
+    }
+    $result->setFetchMode(PDO::FETCH_ASSOC);
+    $events = $result->fetchAll();
 
-$graphDataPoints = [];
-//$graphDataLabels = [];
+    $graphDataSensors = [];
 
-$lastTimestamp = null;
-foreach ($rows as $row) {
-    //print_r($row['topic']);
-    $payload = (json_decode(gzuncompress($row['payload']), true));
+    $lastTimestamp = null;
+    foreach ($events as $event) {
+        //print_r($row['topic']);
+        $payload = (json_decode(gzuncompress($event['payload']), true));
+        $sensorName = $payload['sensor_name'];
 
-    if (abs($payload['timestamp'] - $lastTimestamp) < 60*10) {
-        continue;
+        //init sensor table
+        if (!isset($graphDataSensors[$sensorName])) {
+            $graphDataSensors[$sensorName] = [
+                "label" => $sensorName,
+                "lastTimestamp" => null,
+                //"backgroundColor" => "red",
+                "data" => [],
+            ];
+        }
+
+        if (abs($payload['timestamp'] - $graphDataSensors[$sensorName]['lastTimestamp']) < 60 * 5) {
+            continue;
+        }
+
+        $graphDataSensors[$sensorName]['data'][] = [
+            "x" => $payload['local_time'],
+            "y" => $payload['sensor_reading']['celcius'],
+        ];
+        $graphDataSensors[$sensorName]['lastTimestamp'] = $payload['timestamp'];
+
+        //
+        //    remote/Thermo/thermometer/2_powietrze/readingArray
+        //    (
+        //        [system_name] => Thermo
+        //    [timestamp] => 1575279411
+        //    [local_time] => 2019-12-02 10:36:51
+        //    [sensor_name] => 2_powietrze
+        //    [sensor_name_original] => 28-0516a038b5ff
+        //    [sensor_reading] => Array
+        //    (
+        //        [celcius] => 18.062
+        //            [raw] => 21 01 4b 46 7f ff 0c 10 1e : crc=1e YES
+        //21 01 4b 46 7f ff 0c 10 1e t=18062
+        //
+        //        )
+        //
+        //)
+
+
     }
 
-    $graphDataPoints[] = [
-        "x" => $payload['local_time'],
-        "y" => $payload['sensor_reading']['celcius'],
-    ];
-    $lastTimestamp = $payload['timestamp'];
-
+    //print_r($graphDataSensors);
+    //exit;
     //
-    //    remote/Thermo/thermometer/2_powietrze/readingArray
-    //    (
-    //        [system_name] => Thermo
-    //    [timestamp] => 1575279411
-    //    [local_time] => 2019-12-02 10:36:51
-    //    [sensor_name] => 2_powietrze
-    //    [sensor_name_original] => 28-0516a038b5ff
-    //    [sensor_reading] => Array
-    //    (
-    //        [celcius] => 18.062
-    //            [raw] => 21 01 4b 46 7f ff 0c 10 1e : crc=1e YES
-    //21 01 4b 46 7f ff 0c 10 1e t=18062
-    //
-    //        )
-    //
-    //)
+    //$graphDatasets[] = [
+    //    "label" => "powietrze 1",
+    //    "data" => $graphDataPoints,
+    //];
 
+    //convert to datasets table
+    $graphDatasets = [];
+    foreach ($graphDataSensors as $sensor) {
+        $graphDatasets[] = $sensor;
+    }
 
+    //assign background colors
+    for ($i = 0; isset($graphDatasets[$i]); $i++) {
+        $graphDatasets[$i]['backgroundColor'] = [
+            '#ffbbbb', '#bbffbb', '#bbbbff', '#efefef', '#ffffbb', "#bbffff"
+        ][$i];
+    }
+
+    //print_r($graphDatasets); exit;
+
+    return $graphDatasets;
 }
 
-//print_r($rows);
-//exit;
 
-//\JpGraph\JpGraph::load();
-//$graph = new Graph(1024,760);
-//// Slightly larger than normal margins at the bottom to have room for
-//// the x-axis labels
-//$graph->SetMargin(40,40,30,130);
-//// Fix the Y-scale to go between [0,100] and use date for the x-axis
-//$graph->SetScale('datlin',0,100);
-//$graph->title->Set("Example on Date scale");
-//// Set the angle for the labels to 90 degrees
-//$graph->xaxis->SetLabelAngle(90);
-//$line = new LinePlot($data,$xdata);
-//$line->SetLegend('Year 2005');
-//$line->SetFillColor('lightblue@0.5');
-//$graph->Add($line);
-//$graph->Stroke();
-
-//$graphDataPoints = [1, 2, 3, 4, 5, 6];
-//$graphDataLabels = [1, 2, 3, 4, 5, 6];
+$graphDatasets = getGraphData();
 
 ?>
 <html>
@@ -117,7 +136,8 @@ foreach ($rows as $row) {
 </div>
 
 <script>
-    var graphDataPoints = <?php echo json_encode($graphDataPoints); ?>;
+    //var graphDataPoints = <?php //echo json_encode($graphDataPoints); ?>//;
+    var graphDatasets = <?php echo json_encode($graphDatasets); ?>;
     //var graphDataLabels = <?php //echo json_encode($graphDataLabels); ?>//;
 </script>
 
@@ -127,23 +147,24 @@ foreach ($rows as $row) {
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            datasets: [
-                {
-                    label: 'Temperature',
-                    data: graphDataPoints,
-                    // data: [{
-                    //     x: "2019-12-02 01:00:00",
-                    //     y: 1
-                    // }, {
-                    //     x: "2019-12-02 01:00:30",
-                    //     y: 10
-                    // }, {
-                    //     x: "2019-12-02 01:02:00",
-                    //     y: 5
-                    // }
-                    // ],
-                    borderWidth: 1
-                }]
+            datasets: graphDatasets
+            // datasets: [
+            //     {
+            //         label: 'Temperature',
+            //         data: graphDataPoints,
+            //         // data: [{
+            //         //     x: "2019-12-02 01:00:00",
+            //         //     y: 1
+            //         // }, {
+            //         //     x: "2019-12-02 01:00:30",
+            //         //     y: 10
+            //         // }, {
+            //         //     x: "2019-12-02 01:02:00",
+            //         //     y: 5
+            //         // }
+            //         // ],
+            //         //borderWidth: 1
+            //     }]
         },
         options: {
             // responsive: false,
@@ -152,11 +173,12 @@ foreach ($rows as $row) {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: false
+                        beginAtZero: true
                     }
                 }],
                 xAxes: [{
                     type: 'time',
+                    display: false,
                     time: {
                         unit: 'second'
                     }
