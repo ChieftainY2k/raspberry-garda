@@ -54,11 +54,10 @@ function getGraphData($timeWindowHours, $minDensityMinutes)
     $events = $result->fetchAll();
 
     $graphDataSensors = [];
-    $colorsTable = ['green', 'red', 'blue', 'orange', 'pink', 'darkgrey', 'yellow', 'brown', 'cyan',];
+    $colorsTable = ['lightblue', 'lightgreen', 'lightred', 'green', 'red', 'blue', 'orange', 'pink', 'grey', 'yellow', 'brown', 'cyan',];
 
     $systemName = getenv("KD_SYSTEM_NAME");
 
-    $lastTimestamp = null;
     foreach ($events as $event) {
         //print_r($row['topic']);
         $payload = (json_decode(gzuncompress($event['payload']), true));
@@ -113,8 +112,8 @@ $graphDatasets = getGraphData($timeWindowHours, $minDensityMinutes);
 
 <div style="width:95%; border: solid 1px #aaaaaa; background: #efefef; padding: 10px; vertical-align: middle">
     <form style="display: inline">
-        Show last <input type="text" name="timeWindowHours" value="<?php echo htmlspecialchars($timeWindowHours) ?>"> hour(s),
-        every <input type="text" name="minDensityMinutes" value="<?php echo htmlspecialchars($minDensityMinutes) ?>"> minute(s)
+        Show last <input type="text" name="timeWindowHours" style="width:50px" value="<?php echo htmlspecialchars($timeWindowHours) ?>"> hour(s),
+        with minimum density of <input type="text" name="minDensityMinutes" style="width:50px" value="<?php echo htmlspecialchars($minDensityMinutes) ?>"> minute(s)
         <input type="submit" value="OK">
     </form>
 </div>
