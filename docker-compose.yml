@@ -265,7 +265,6 @@ services:
         build:
             context: ./services/portainer
             dockerfile: Dockerfile.portainer
-        command: --admin-password-file=/data/admin_password.txt
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./data/portainer:/data
