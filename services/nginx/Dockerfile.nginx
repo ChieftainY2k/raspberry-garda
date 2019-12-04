@@ -5,13 +5,13 @@ MAINTAINER "ChieftainY2k@gmail.com"
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get -y upgrade && apt-get install -y \
-    apt-utils git mc joe multitail wget curl telnet git nginx apache2-utils
-
-COPY nginx.conf /etc/nginx/nginx.conf
+    apt-utils git mc joe multitail wget curl telnet git nginx apache2-utils psmisc
 
 ADD ./run.sh /run.sh
 RUN chmod a+x /run.sh
 CMD /run.sh
+
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 

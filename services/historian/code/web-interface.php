@@ -105,6 +105,7 @@ $graphDatasets = getGraphData($timeWindowHours, $minDensityMinutes);
 ?>
 <html>
 <head>
+    <title>Historian (<?php echo htmlspecialchars(getenv("KD_SYSTEM_NAME")); ?>)</title>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 </head>

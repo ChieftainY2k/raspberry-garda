@@ -40,6 +40,7 @@ helper()
 
     $0 build   <sevice> - build containers(s) image
     $0 rebuild <sevice> - stop + remove + rebuild containers(s) image
+    $0 rebuildstart <sevice> - stop + remove + rebuild + start containers(s) image
 
     $0 log <sevice>     - show and track container(s) logs
 
@@ -216,6 +217,14 @@ rebuild()
     build ${SERVICE}
 }
 
+rebuildstart()
+{
+    local SERVICE=${1}
+
+    rebuild ${SERVICE}
+    start ${SERVICE}
+}
+
 build()
 {
     local SERVICE=${1}
@@ -293,6 +302,7 @@ case ${ARG1} in
     restart) restart ${ARG2};;
     build)   build ${ARG2};;
     rebuild) rebuild ${ARG2};;
+    rebuildstart) rebuildstart ${ARG2};;
     log)     log ${ARG2};;
     shell)   shell ${ARG2};;
     exec)   execute ${ARG2} ${ARG3};;
