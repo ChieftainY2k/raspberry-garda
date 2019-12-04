@@ -5,6 +5,13 @@ namespace Configurator;
 use Docker\Docker;
 use Mosquitto\Client;
 
+
+/**
+ * Class Configurator
+ * @package Configurator
+ *
+ * @FIXME This is just a proof of concept, refactor it!
+ */
 class Configurator
 {
 
