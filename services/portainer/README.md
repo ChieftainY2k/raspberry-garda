@@ -4,5 +4,8 @@ This service is based on the Portainer-io image (https://portainer.io/) and may 
 
 **Overview**
 
-* Accessible at **http://RASPBERRY_IP:82**  
+**User interface**
+
+* Go to `http://_YOUR_RASPBERRY_PI_ADDRESS_/portainer`
+  
 

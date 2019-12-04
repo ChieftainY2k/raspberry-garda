@@ -265,10 +265,9 @@ services:
         build:
             context: ./services/portainer
             dockerfile: Dockerfile.portainer
-        command: --admin-password=$$2y$$12$$87k9HWtLxIpQX8ibFZMDyOtZoBw5pYAhPEpQMTQfZE/Ze0bRahzza
+        command: --admin-password-file=/data/admin_password.txt
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            #- ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./data/portainer:/data
         restart: unless-stopped
 
