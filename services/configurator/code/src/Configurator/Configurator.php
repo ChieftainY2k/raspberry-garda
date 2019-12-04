@@ -49,10 +49,16 @@ class Configurator
         $userPassword = $requestData['userPassword'] ?? null;
         if ($correctPassword !== $userPassword) {
             echo "
-                <form action='' method='post'>
-                Password: <input type='password' name='userPassword' value='" . htmlspecialchars($userPassword) . "'>
-                <input type='submit' value='submit'>
-                </form>
+                <html>
+                <head>
+                    <title>Configurator (" . getenv("KD_SYSTEM_NAME") . ")</title>
+                </head>
+                <body>
+                    <form action='' method='post'>
+                    Password: <input type='password' name='userPassword' value='" . htmlspecialchars($userPassword) . "'>
+                    <input type='submit' value='submit'>
+                    </form>
+                </body>
             ";
             exit;
         }
@@ -82,17 +88,24 @@ class Configurator
     {
         $currentConfig = file_get_contents("/service-configs/services.conf");
         echo "
-            <form action='' method='post'>
-            
-            Services configuration file:<br>
-            <textarea name='configAsText' style='width:100%; height:80%;'>" . htmlspecialchars($currentConfig) . "</textarea>
-            
-            <input type='checkbox' name='doReloadContainers' value='1'>reload services after config is updated<br>  
-            <input type='hidden' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
-            
-            <input type='submit' value='save config' onclick=\"alert('This may take a while...')\">
-            
-            </form>
+            <html>
+            <head>
+                <title>Configurator (" . getenv("KD_SYSTEM_NAME") . ")</title>
+            </head>
+            <body>
+                <form action='' method='post'>
+                
+                Services configuration file:<br>
+                <textarea name='configAsText' style='width:100%; height:80%;'>" . htmlspecialchars($currentConfig) . "</textarea>
+                
+                <input type='checkbox' name='doReloadContainers' value='1'>reload services after config is updated<br>  
+                <input type='hidden' name='userPassword' value='" . htmlspecialchars($requestData['userPassword']) . "'>
+                
+                <input type='submit' value='save config' onclick=\"alert('This may take a while...')\">
+                
+                </form>
+            </body>
+            </html>
         ";
     }
 
