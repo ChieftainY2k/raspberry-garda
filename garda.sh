@@ -18,7 +18,7 @@ check_errors()
     if [[ ${EXITCODE} -ne 0 ]]; then
 #        log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details, press ENTER to continue or Ctrl-C to abort."
         log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details."
-        read
+#        read
         exit 1
 #    else
 #        log_message "OK, operation successfully completed."

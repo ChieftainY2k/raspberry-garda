@@ -260,15 +260,15 @@ services:
     # UI manager for containers
     # See https://blog.hypriot.com/post/new-docker-ui-portainer/
     #######################################
-#    docker-ui:
-#        build:
-#            context: ./services/docker-ui
-#            dockerfile: Dockerfile.docker-ui
-#        volumes:
-#            - /var/run/docker.sock:/var/run/docker.sock
-#            - ./data/portainer:/data
-#        ports:
-#            - 82:9000
-#        restart: unless-stopped
+    portainer:
+        build:
+            context: ./services/portainer
+            dockerfile: Dockerfile.portainer
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./data/portainer:/data
+        ports:
+            - 82:9000
+        restart: unless-stopped
 
 
