@@ -30,14 +30,16 @@ if [[ "${KD_NGROK_ENABLED}" != "1" ]]; then
 fi
 
 if [[ "$KD_NGROK_AUTHTOKEN" != "" ]]; then
-    log_message "Notice: Authtoken is empty, initializing tunnel as anonymous user."
+    log_message "Using authtoken ..."
     /sbin/ngrok authtoken ${KD_NGROK_AUTHTOKEN}
     check_errors $?
 else
-    log_message "Notice: Authtoken is empty, initializing tunnel as anonymous user."
+    log_message "NOTICE: Authtoken is empty, initializing tunnel as anonymous user."
 fi
+
+log_message "Starting the ngrok process..."
 /sbin/ngrok http -log stdout nginx:80 &
-log_message "NGROK client initialized, wait..."
+check_errors $?
 sleep 10
 
 log_message "NGROK status for all tunnels:"
@@ -62,10 +64,10 @@ while sleep 1; do
 EOF
 )
 
-    #save ngrok service health report
+    #save health report
     reportFile="/mydata/health-report.json"
     messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
-    log_message "Saving health report: ${messageJson}"
+    log_message "Saving health report to file ${reportFile} , report = ${messageJson}"
     echo "${messageJson}" > ${reportFile}
 
     sleep 600

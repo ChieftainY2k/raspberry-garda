@@ -207,17 +207,6 @@ services:
     #    restart: unless-stopped
 
 
-    #  webhook-php:
-    #    build:
-    #      context: ./services/webhook-php
-    #      dockerfile: Dockerfile.webhook-php
-    #    ports:
-    #      - "8080:8080"
-    #    volumes:
-    #     - /etc/timezone:/etc/timezone:ro
-    #     - /etc/localtime:/etc/localtime:ro
-    #    restart: unless-stopped
-
     #  cadvisor:
     #    image: unibaktr/cadvisor
     #    ports:
