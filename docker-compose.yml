@@ -159,21 +159,21 @@ services:
         restart: unless-stopped
 
 
-    #    alpr:
-    #        env_file:
-    #            - configs/environment.conf
-    #        build:
-    #            context: ./services/alpr
-    #            dockerfile: Dockerfile.alpr
-    #        volumes:
-    #            - ./data/kerberos/capture:/etc/opt/kerberosio/capture
-    #            - ./data/alpr/:/data
-    #            - ./data/email-notification/:/data-email-notification
-    #            - ./services/alpr/code:/code
-    #            - /etc/timezone:/etc/timezone:ro
-    #            - /etc/localtime:/etc/localtime:ro
-    #            - ./configs:/service-configs:ro
-    #        restart: unless-stopped
+    alpr:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/alpr
+            dockerfile: Dockerfile.alpr
+        volumes:
+            - ./data/kerberos/capture:/etc/opt/kerberosio/capture
+            - ./data/alpr/:/data
+            - ./data/email-notification/:/data-email-notification
+            - ./services/alpr/code:/code
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        restart: unless-stopped
 
 
     #  streamer-rtsp:
