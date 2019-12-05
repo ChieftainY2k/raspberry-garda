@@ -20,6 +20,24 @@ check_errors()
 
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
+check_errors $?
+
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+check_errors $?
+
+if [[ "${KD_SWARM_WATCHER_ENABLED}" != "1" ]]; then
+    log_message "NOTICE: Swarm watcher service is DISABLED, going to sleep..."
+    sleep infinity
+    exit
+fi
+
+if [[ "${KD_EMAIL_NOTIFICATION_ENABLED}" != "1" ]]; then
+    log_message "WARNING: Email notification service required to send messages is DISABLED, email messages will not be sent."
+fi
+
+
+
 
 # Install external libraries
 cd /code
@@ -32,10 +50,11 @@ cron &
 check_errors $?
 
 # run  the listener forever
-while sleep 10; do
+while sleep 1; do
     echo "Starting the swarm watcher MQTT topics collector."
     php -f /code/swarm-watcher-topic-collector.php
     check_errors $?
-    echo "Swarm watcher MQTT topics collector finished."
+    echo "Swarm watcher MQTT topics collector finished, sleeping and starting again..."
+    sleep 20
 done
 

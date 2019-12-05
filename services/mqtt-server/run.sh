@@ -21,18 +21,21 @@ check_errors()
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+check_errors $?
 
 #modify local config - disable logging to file
 sed -i '/^log_dest/s/^/#/g' /etc/mosquitto/mosquitto.conf
+check_errors $?
 
 #disable bridge by default
-configFile=/etc/mosquitto/conf.d/bridge.conf
+configFile="/etc/mosquitto/conf.d/bridge.conf"
 echo "" > ${configFile}
+check_errors $?
 
 #prepare bridge configuration if bridge is enabled
 if [[ "$KD_MQTT_BRIDGE_ENABLED" == "1" ]]; then
 
-    echo "Creating the bridge config $configFile"
+    log_message "Creating the bridge config $configFile"
     echo "connection bridge-to-therabithia" >> ${configFile}
     echo "address $KD_MQTT_BRIDGE_REMOTE_HOST:$KD_MQTT_BRIDGE_REMOTE_PORT" >> ${configFile}
     echo "remote_clientid $KD_SYSTEM_NAME" >> ${configFile}
@@ -40,10 +43,11 @@ if [[ "$KD_MQTT_BRIDGE_ENABLED" == "1" ]]; then
     echo "remote_password $KD_MQTT_BRIDGE_REMOTE_PASSWORD" >> ${configFile}
     echo "topic # out 1 \"\" $KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX/" >> ${configFile}
     echo "topic # in 1" remote/ \"\">> ${configFile}
+    check_errors $?
 
 else
 
-    echo "MQTT bridge is DISABLED."
+    log_message "WARNING: MQTT bridge is DISABLED, local MQTT messages will not leave local server."
 
 fi
 
@@ -52,9 +56,9 @@ chmod a+rwx /var/lib/mosquitto
 check_errors $?
 
 while sleep 1; do
-    echo "Starting the MQTT mosquitto server..."
+    log_message "Starting the MQTT mosquitto server..."
     mosquitto -v -c /etc/mosquitto/mosquitto.conf
-    check_errors $?
+    log_message "MQTT mosquitto server stopped, sleeping and starting again..."
     sleep 60
 done
 

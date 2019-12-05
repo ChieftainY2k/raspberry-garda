@@ -44,6 +44,10 @@ KD_MQTT_BRIDGE_REMOTE_USER=
 KD_MQTT_BRIDGE_REMOTE_PASSWORD=
 KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX=
 
+# Swarm Watcher service
+
+KD_SWARM_WATCHER_ENABLED=0
+
 # ALPR service configuration (see http://doc.openalpr.com/opensource.html)
 
 KD_ALPR_ENABLED=0
