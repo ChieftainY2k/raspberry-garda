@@ -63,9 +63,10 @@ EOF
 )
 
     #save ngrok service health report
+    reportFile="/mydata/health-report.json"
     messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
     log_message "Saving health report: ${messageJson}"
-    echo "${messageJson}" > /data-services-health-reports-ngrok/report.json
+    echo "${messageJson}" > ${reportFile}
 
     sleep 600
 done

@@ -7,10 +7,7 @@
 
 use Configurator\Configurator;
 
-require(__DIR__ . "/vendor/autoload.php");
-
-//load services config
-(new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
+require(__DIR__ . "/bootstrap.php");
 
 try {
 

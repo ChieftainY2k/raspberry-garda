@@ -11,10 +11,10 @@ echo "[" . date("Y-m-d H:i:s") . "] Starting topics analyzer.\n";
 require(__DIR__ . "/bootstrap.php");
 
 //queue root path
-$healthReportsRootPath = "/data/health-reports";
+$healthReportsRootPath = "/mydata/health-reports";
 //email queue root path
 $emailQueuePath = "/data-email-notification/email-queues/default";
-$localCacheRootPath = "/data/cache";
+$localCacheRootPath = "/mydata/cache";
 
 //init topics collector with the mqtt client
 $reportAnalyzer = new \SwarmWatcher\ReportAnalyzer($healthReportsRootPath, $emailQueuePath, $localCacheRootPath);

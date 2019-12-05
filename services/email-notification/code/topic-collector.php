@@ -16,7 +16,7 @@ echo "[" . date("Y-m-d H:i:s") . "] starting the mqtt client, clientId = $client
 $client = new Mosquitto\Client($clientId);
 
 //queue root path
-$topicQueuePath = "/data/email-queues";
+$topicQueuePath = "/mydata/email-queues";
 
 //init topics collector with the mqtt client
 $topicsCollector = new \EmailNotifier\TopicCollector($client,$topicQueuePath);

@@ -35,7 +35,7 @@ messageJson=$(cat <<EOF
 EOF
 )
 
-outputfile="/data-services-health-reports-kerberos/report.json"
+outputfile="/mydata/health-report.json"
 
 log_message "Saving health report to ${outputfile} , content = ${messageJson}"
 echo "${messageJson}" > ${outputfile}

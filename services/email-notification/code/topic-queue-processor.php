@@ -12,8 +12,8 @@ try {
     require(__DIR__ . "/bootstrap.php");
 
     //queue root path
-    $topicQueuePath = "/data/topics-queue";
-    $emailQueuePath = "/data/email-queues/default";
+    $topicQueuePath = "/mydata/topics-queue";
+    $emailQueuePath = "/mydata/email-queues/default";
     $lastHealthReportFile = "/tmp/health-report.json";
     $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 

@@ -22,8 +22,8 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
-entriesCount=$(/usr/bin/sqlite3 /data-historian/mqtt-history.sqlite "select count(*) from mqtt_events")
-databaseFileSizeBytes=$(stat --printf="%s" /data-historian/mqtt-history.sqlite)
+entriesCount=$(/usr/bin/sqlite3 /mydata/mqtt-history.sqlite "select count(*) from mqtt_events")
+databaseFileSizeBytes=$(stat --printf="%s" /mydata/mqtt-history.sqlite)
 
 
 # prepare JSON message
@@ -37,7 +37,7 @@ messageJson=$(cat <<EOF
 EOF
 )
 
-outputfile="/data-services-health-reports-historian/report.json"
+outputfile="/mydata/health-report.json"
 
 log_message "Saving health report to ${outputfile} , content = ${messageJson}"
 echo "${messageJson}" > ${outputfile}

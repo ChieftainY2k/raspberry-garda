@@ -44,8 +44,8 @@ echo "[" . date("Y-m-d H:i:s") . "] starting queue processing.\n";
 //exit;
 
 
-$localQueueDirName = "/data/topics-queue";
-$recognizedPlatesDatabaseDirName = "/data/recognized-numbers";
+$localQueueDirName = "/mydata/topics-queue";
+$recognizedPlatesDatabaseDirName = "/mydata/recognized-numbers";
 $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 $emailQueuePath = "/data-email-notification/email-queues/default";
 
