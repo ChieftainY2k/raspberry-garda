@@ -29,7 +29,7 @@ RUN dpkg -i /tmp/kerberos.deb
 RUN apt-get update && apt-get install -y -t stretch \
     nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 RUN rm -f /etc/nginx/sites-enabled/default
-ADD ./nginx-kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
+ADD ./resources/nginx-kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
 RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
 
 USER www-data
@@ -45,10 +45,15 @@ RUN mkdir /run/php
 RUN touch /run/php/php7.0-fpm.sock
 RUN chmod a+rwx /run/php/php7.0-fpm.sock
 
-# Install mqtt client
+# Copy kerberos initial config
+
+# RUN mkdir -p /etc/opt/kerberosio/config
+# RUN ADD ./resources/kerberos-configs /etc/opt/kerberosio/config
+
+# Install mqtt reporter
 
 # Configure cron
-ADD ./crontab.txt /crontab.txt
+ADD ./resources/crontab.txt /crontab.txt
 RUN crontab /crontab.txt
 
 # Add startup script
