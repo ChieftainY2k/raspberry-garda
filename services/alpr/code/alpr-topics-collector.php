@@ -8,7 +8,6 @@
 
 //@TODO this is just MVP/PoC, refactor it !
 
-
 echo "[" . date("Y-m-d H:i:s") . "] starting the collector.\n";
 require(__DIR__ . "/bootstrap.php");
 

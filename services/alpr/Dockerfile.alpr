@@ -10,7 +10,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     git libmosquitto-dev mosquitto-dev libcurl3-openssl-dev \
     openalpr openalpr-daemon openalpr-utils libopenalpr-dev libraspberrypi0 \
     php7.0-cli php-zip composer telnet mosquitto-clients \
-    php-pear php-dev
+    php-pear php-dev netcat
 
 RUN apt-get install -y make
 

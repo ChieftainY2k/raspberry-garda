@@ -20,7 +20,31 @@ services:
           - kerberos
           - historian
           - configurator
-#          - portainer
+
+    configurator:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/configurator
+            dockerfile: Dockerfile.configurator
+        volumes:
+            - ./services/configurator/code:/code
+            - ./configs:/service-configs
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: unless-stopped
+
+    mqtt-server:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/mqtt-server
+            dockerfile: Dockerfile.mqtt-server
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./data/mqtt-server/db:/var/lib/mosquitto
+            - ./configs:/service-configs
+        restart: unless-stopped
 
     kerberos:
         env_file:
@@ -42,19 +66,6 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         privileged: true
-        restart: unless-stopped
-
-    mqtt-server:
-        env_file:
-            - configs/environment.conf
-        build:
-            context: ./services/mqtt-server
-            dockerfile: Dockerfile.mqtt-server
-        volumes:
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
-            - ./data/mqtt-server/db:/var/lib/mosquitto
-            - ./configs:/service-configs
         restart: unless-stopped
 
     email-notification:
@@ -114,18 +125,6 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         privileged: true
-        restart: unless-stopped
-
-    configurator:
-        env_file:
-            - configs/environment.conf
-        build:
-            context: ./services/configurator
-            dockerfile: Dockerfile.configurator
-        volumes:
-            - ./services/configurator/code:/code
-            - ./configs:/service-configs
-            - /var/run/docker.sock:/var/run/docker.sock
         restart: unless-stopped
 
     thermometer:

@@ -197,7 +197,7 @@ class Configurator
         //reload all containers except for the configurator container
         foreach ($containers as $container) {
             $containerNames = join(",", $container->getNames());
-            if (!preg_match("#configurator|nginx|ngrok|portainer#i", $containerNames)) {
+            if (!preg_match("#configurator|ngrok#i", $containerNames)) {
                 echo "Restarting container $containerNames ...<br>";
                 $manager->restart($container->getId());
             } else {
