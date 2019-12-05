@@ -14,7 +14,7 @@ require(__DIR__ . "/bootstrap.php");
 
 //@TODO make it shared
 $clientId = basename(__FILE__) . "-" . uniqid("");
-$localQueueDirName = "/data/topics-queue";
+$localQueueDirName = "/mydata/topics-queue";
 
 if (!file_exists($localQueueDirName)) {
     if (!mkdir($localQueueDirName)) {

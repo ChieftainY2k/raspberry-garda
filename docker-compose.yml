@@ -46,6 +46,24 @@ services:
             - ./configs:/service-configs
         restart: unless-stopped
 
+    health-reporter:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/health-reporter
+            dockerfile: Dockerfile.health-reporter
+        volumes:
+            - ./services/health-reporter/code:/code
+#            - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
+#            - ./data/services-health-reports:/data-services-health-reports
+            - ./data/:/data-all:ro
+            - ./data/health-reporter/:/mydata
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+        privileged: true
+        restart: unless-stopped
+
     kerberos:
         env_file:
             - configs/environment.conf
@@ -61,7 +79,8 @@ services:
             - ./data/kerberos/capture:/etc/opt/kerberosio/capture
             - ./data/kerberos/h264:/etc/opt/kerberosio/h264
             - ./data/kerberos/web-storage-sessions:/var/www/web/storage/framework/sessions
-            - ./data/services-health-reports/kerberos:/data-services-health-reports-kerberos
+#            - ./data/services-health-reports/kerberos:/data-services-health-reports-kerberos
+            - ./data/kerberos:/mydata
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
@@ -76,7 +95,7 @@ services:
             dockerfile: Dockerfile.email-notification
         volumes:
             - ./services/email-notification/code:/code
-            - ./data/email-notification/:/data
+            - ./data/email-notification/:/mydata
             - ./data/kerberos/capture:/etc/opt/kerberosio/capture
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
@@ -92,7 +111,7 @@ services:
         volumes:
             - ./services/swarm-watcher/code:/code
             - ./data/email-notification/:/data-email-notification
-            - ./data/swarm-watcher/:/data
+            - ./data/swarm-watcher/:/mydata
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
@@ -108,23 +127,8 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
-            - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
-        restart: unless-stopped
-
-    health-reporter:
-        env_file:
-            - configs/environment.conf
-        build:
-            context: ./services/health-reporter
-            dockerfile: Dockerfile.health-reporter
-        volumes:
-            - ./services/health-reporter/code:/code
-            - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
-            - ./data/services-health-reports:/data-services-health-reports
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
-            - ./configs:/service-configs:ro
-        privileged: true
+#            - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
+            - ./data/ngrok:/mydata
         restart: unless-stopped
 
     thermometer:
@@ -138,7 +142,7 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
-            - ./data/services-health-reports/thermometer:/data-services-health-reports-thermometer
+            - ./data/thermometer:/mydata
         restart: unless-stopped
         privileged: true
 
@@ -153,8 +157,7 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
-            - ./data/services-health-reports/historian:/data-services-health-reports-historian
-            - ./data/historian:/data-historian
+            - ./data/historian:/mydata
         restart: unless-stopped
 
 
@@ -166,7 +169,7 @@ services:
             dockerfile: Dockerfile.alpr
         volumes:
             - ./data/kerberos/capture:/etc/opt/kerberosio/capture
-            - ./data/alpr/:/data
+            - ./data/alpr/:/mydata
             - ./data/email-notification/:/data-email-notification
             - ./services/alpr/code:/code
             - /etc/timezone:/etc/timezone:ro

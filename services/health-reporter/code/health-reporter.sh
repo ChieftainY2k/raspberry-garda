@@ -76,27 +76,26 @@ totalDiskSpaceKb=$(df /  | tail -1 | awk '{print $2}')
 echo -n ", total disk space: $totalDiskSpaceKb kb"
 echo ", available disk space: $availableDiskSpaceKb kb"
 
-imagedir=/etc/opt/kerberosio/capture/
+#imagedir=/etc/opt/kerberosio/capture/
 
 uptimeInfo=$(uptime)
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
-totalFilesSizeKb=$(du ${imagedir} | tail -1 | awk '{print $1}') # total size of captured files
+#totalFilesSizeKb=$(du ${imagedir} | tail -1 | awk '{print $1}') # total size of captured files
 
-NGROK_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/ngrok/report.json)
+NGROK_SERVICE_REPORT_JSON=$(cat /data-all/ngrok/health-report.json)
 NGROK_SERVICE_REPORT_JSON=${NGROK_SERVICE_REPORT_JSON:-"{}"}
 
-KERBEROS_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/kerberos/report.json)
+KERBEROS_SERVICE_REPORT_JSON=$(cat /data-all/kerberos/health-report.json)
 KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
 
-THERMOMETER_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/thermometer/report.json)
+THERMOMETER_SERVICE_REPORT_JSON=$(cat /data-all/thermometer/health-report.json)
 THERMOMETER_SERVICE_REPORT_JSON=${THERMOMETER_SERVICE_REPORT_JSON:-"{}"}
 
-HISTORIAN_SERVICE_REPORT_JSON=$(cat /data-services-health-reports/historian/report.json)
+HISTORIAN_SERVICE_REPORT_JSON=$(cat /data-all/historian/health-report.json)
 HISTORIAN_SERVICE_REPORT_JSON=${HISTORIAN_SERVICE_REPORT_JSON:-"{}"}
 
-#@TODO move images_size_kb to kerberos service health reporter
 
 # prepare JSON message
 messageJson=$(cat <<EOF
@@ -111,7 +110,6 @@ messageJson=$(cat <<EOF
     "uptime_seconds":"${uptimeSeconds}",
     "disk_space_available_kb":"${availableDiskSpaceKb}",
     "disk_space_total_kb":"${totalDiskSpaceKb}",
-    "images_size_kb":"${totalFilesSizeKb}",
     "services":{
         "alpr":{"is_enabled":"${KD_ALPR_ENABLED}","report":{}},
         "email_notification":{"is_enabled":"${KD_EMAIL_NOTIFICATION_ENABLED}","report":{}},
@@ -125,12 +123,21 @@ messageJson=$(cat <<EOF
 EOF
 )
 
+#@TODO move images_size_kb to kerberos service health reporter
+
+#    "images_size_kb":"${totalFilesSizeKb}",
+
+
 #messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 messageTopic="healthcheck/report"
 
 #publish it
-log_message "Attempting to publish MQTT topic $messageTopic with message $messageJson"
+log_message "Attempting to publish MQTT topic $messageTopic with message $messageJson "
 mosquitto_pub -h mqtt-server --retain -t "$messageTopic" -m "$messageJson"
 check_errors $?
 
+#save in local file
+log_message "Saving last report to file."
+echo ${messageJson} > /mydata/last-report.json
+check_errors $?

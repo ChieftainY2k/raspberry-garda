@@ -37,5 +37,5 @@ EOF
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 
 log_message "Creating new email in queue , content = ${messageJson}"
-echo "${messageJson}" > /data/email-queues/default/health-reporter-startup.json
+echo "${messageJson}" > /mydata/email-queues/default/health-reporter-startup.json
 

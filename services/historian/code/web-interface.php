@@ -19,7 +19,7 @@ function getGraphData($timeWindowHours, $minDensityMinutes)
 
     //select strftime('%Y-%m-%d %H:%M:%S',datetime(timestamp,'unixepoch')), topic from mqtt_events order by timestamp asc;
 
-    $databaseFile = "/data-historian/mqtt-history.sqlite";
+    $databaseFile = "/mydata/mqtt-history.sqlite";
 
     //@TODO use db adapter layer, not PDO directly
     $pdo = new \PDO("sqlite:" . $databaseFile);

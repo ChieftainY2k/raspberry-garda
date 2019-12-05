@@ -34,7 +34,7 @@ try {
     $mailer->Port = getenv("KD_REMOTE_SMTP_PORT");                                    // TCP port to connect to
 
     //queue root path
-    $emailQueuePath = "/data/email-queues";
+    $emailQueuePath = "/mydata/email-queues";
 
     //queue processor
     $queueProcessor = new \EmailNotifier\EmailQueueProcessor($mailer, $mqttClient, $emailQueuePath);

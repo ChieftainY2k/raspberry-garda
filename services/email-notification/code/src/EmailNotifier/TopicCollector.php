@@ -86,7 +86,7 @@ class TopicCollector
         $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
 
         //@TODO make it as construcor params or SPL file/dir for better testing
-        $localQueueDirName = "/data/topics-queue";
+        $localQueueDirName = "/mydata/topics-queue";
 
         if (!file_exists($localQueueDirName)) {
             if (!mkdir($localQueueDirName)) {

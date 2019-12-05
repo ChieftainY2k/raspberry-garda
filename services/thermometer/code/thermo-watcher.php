@@ -108,7 +108,7 @@ function readSensors()
     }
 
     //save service health report
-    $healthReportFile = "/data-services-health-reports-thermometer/report.json";
+    $healthReportFile = "/mydata/health-report.json";
     $healthReportData = [
         "timestamp" => time(),
         "local_time" => date("Y-m-d H:i:s"),
