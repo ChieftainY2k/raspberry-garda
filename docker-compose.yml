@@ -30,10 +30,12 @@ services:
             dockerfile: Dockerfile.kerberos
         volumes:
             - ./services/kerberos/code:/code
+            - ./services/kerberos/resources:/resources
             - ./configs/kerberos:/etc/opt/kerberosio/config
             - ./logs/kerberos:/etc/opt/kerberosio/logs
             - ./data/kerberos/capture:/etc/opt/kerberosio/capture
             - ./data/kerberos/h264:/etc/opt/kerberosio/h264
+            - ./data/kerberos/config:/etc/opt/kerberosio/config
             - ./data/services-health-reports/kerberos:/data-services-health-reports-kerberos
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
