@@ -257,11 +257,19 @@ class Configurator
         $manager = $docker->getContainerManager();
         $containers = $manager->findAll();
 
+        //@FIXME reload containers in an async way, when hginx and ngrok are reloaded the process is terminated.
+        $nginxContainerId = null;
+        $ngrokContainerId = null;
+
         //reload all containers except for the configurator container
         foreach ($containers as $container) {
             $containerNames = join(",", $container->getNames());
             echo "Container: <b>" . htmlspecialchars($containerNames) . "</b> : ";
-            if (!preg_match("#configurator|ngrok#i", $containerNames)) {
+            if (preg_match("#nginx#i", $containerNames)) {
+                $nginxContainerId = $container->getId();
+            } elseif (preg_match("#ngrok#i", $containerNames)) {
+                $ngrokContainerId = $container->getId();
+            } elseif (!preg_match("#configurator#i", $containerNames)) {
                 echo "restarting.";
                 $manager->restart($container->getId());
             } else {
@@ -269,6 +277,16 @@ class Configurator
             }
 
         }
+
+        //reload nginx as the last one
+        if (!empty($ngrokContainerId)) {
+            $manager->restart($ngrokContainerId);
+        }
+        //reload nginx as the last one
+        if (!empty($nginxContainerId)) {
+            $manager->restart($nginxContainerId);
+        }
+
         echo "<br>Containers successfully reloaded.<hr>";
 
         //sleep for a while so that services are available again @FIXME
