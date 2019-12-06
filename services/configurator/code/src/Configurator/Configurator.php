@@ -157,10 +157,10 @@ class Configurator
             $containerNames = join(",", $container->getNames());
             echo "
                 <tr>
-                <td>" . $containerNames . "</td>
-                <td>" . $container->getState() . "</td>
-                <td>" . $container->getImage() . "</td>
-                <td>" . htmlspecialchars(json_encode($this->getHealthReportForContainer($containerNames))) . "</td>
+                <td nowrap='1'>" . $containerNames . "</td>
+                <td nowrap='1'>" . $container->getState() . "</td>
+                <td nowrap='1'>" . $container->getImage() . "</td>
+                <td style='font-size:10px;'>" . htmlspecialchars(json_encode($this->getHealthReportForContainer($containerNames))) . "</td>
                 </tr>";
         }
         echo "
