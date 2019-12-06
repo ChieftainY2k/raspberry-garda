@@ -11,7 +11,7 @@ echo "[" . date("Y-m-d H:i:s") . "] Starting topics analyzer.\n";
 require(__DIR__ . "/bootstrap.php");
 
 //queue root path
-$healthReportsRootPath = "/mydata/health-reports";
+$healthReportsRootPath = "/mydata/collected-health-reports";
 //email queue root path
 $emailQueuePath = "/data-email-notification/email-queues/default";
 $localCacheRootPath = "/mydata/cache";

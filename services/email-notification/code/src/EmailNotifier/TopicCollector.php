@@ -122,7 +122,7 @@ class TopicCollector
 
             //health report updated
 
-            $lastHealthReportFile = "/tmp/health-report.json";
+            $lastHealthReportFile = "/tmp/system-last-health-report.json";
             $lastHealthReportFileTmp = $lastHealthReportFile . ".tmp";
             //@TODO use DTO here
             if (!file_put_contents($lastHealthReportFileTmp, json_encode([

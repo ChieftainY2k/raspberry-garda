@@ -14,7 +14,7 @@ try {
     //queue root path
     $topicQueuePath = "/mydata/topics-queue";
     $emailQueuePath = "/mydata/email-queues/default";
-    $lastHealthReportFile = "/tmp/health-report.json";
+    $lastHealthReportFile = "/tmp/system-last-health-report.json";
     $pathToCapturedImages = "/etc/opt/kerberosio/capture";
 
     //queue processor

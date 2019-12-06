@@ -25,7 +25,7 @@ $mqttClientId = basename(__FILE__) . "-" . uniqid("");
 $mqttClient = new Mosquitto\Client($mqttClientId);
 
 //queue root path
-$healthReportsRootPath = "/mydata/health-reports";
+$healthReportsRootPath = "/mydata/collected-health-reports";
 
 //init $loggertopics collector with the mqtt client
 $topicsCollector = new \SwarmWatcher\TopicCollector($mqttClient, $healthReportsRootPath, $logger);
