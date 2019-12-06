@@ -95,19 +95,6 @@ get_container_health_report()
 
 }
 
-#NGROK_SERVICE_REPORT_JSON=$(cat /data-all/ngrok/health-report.json)
-#NGROK_SERVICE_REPORT_JSON=${NGROK_SERVICE_REPORT_JSON:-"{}"}
-#
-#KERBEROS_SERVICE_REPORT_JSON=$(cat /data-all/kerberos/health-report.json)
-#KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
-#
-#THERMOMETER_SERVICE_REPORT_JSON=$(cat /data-all/thermometer/health-report.json)
-#THERMOMETER_SERVICE_REPORT_JSON=${THERMOMETER_SERVICE_REPORT_JSON:-"{}"}
-#
-#HISTORIAN_SERVICE_REPORT_JSON=$(cat /data-all/historian/health-report.json)
-#HISTORIAN_SERVICE_REPORT_JSON=${HISTORIAN_SERVICE_REPORT_JSON:-"{}"}
-
-
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
@@ -128,7 +115,8 @@ messageJson=$(cat <<EOF
         "ngrok":{"is_enabled":"${KD_NGROK_ENABLED}","report":$(get_container_health_report ngrok)},
         "kerberos":{"is_enabled":"${KD_KERBEROS_ENABLED}","report":$(get_container_health_report kerberos)},
         "thermometer":{"is_enabled":"${KD_THERMOMETER_ENABLED}","report":$(get_container_health_report thermometer)},
-        "historian":{"is_enabled":"${KD_HISTORIAN_ENABLED}","report":$(get_container_health_report historian)}
+        "historian":{"is_enabled":"${KD_HISTORIAN_ENABLED}","report":$(get_container_health_report historian)},
+        "health-reporter":{"is_enabled":"1","report":$(get_container_health_report health-reporter)}
     }
 }
 EOF
