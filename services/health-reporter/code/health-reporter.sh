@@ -116,7 +116,8 @@ messageJson=$(cat <<EOF
         "kerberos":{"is_enabled":"${KD_KERBEROS_ENABLED}","report":$(get_container_health_report kerberos)},
         "thermometer":{"is_enabled":"${KD_THERMOMETER_ENABLED}","report":$(get_container_health_report thermometer)},
         "historian":{"is_enabled":"${KD_HISTORIAN_ENABLED}","report":$(get_container_health_report historian)},
-        "health-reporter":{"is_enabled":"1","report":$(get_container_health_report health-reporter)}
+        "health-reporter":{"is_enabled":"1","report":$(get_container_health_report health-reporter)},
+        "swarm-watcher":{"is_enabled":"${KD_SWARM_WATCHER_ENABLED}","report":$(get_container_health_report swarm-watcher)}
     }
 }
 EOF
