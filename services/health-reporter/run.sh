@@ -3,13 +3,22 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][health-reporter]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][run]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
 
 #check for errors
-check_errors()
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details, moving on..."
+    fi
+}
+
+#check for errors
+check_errors_sleep()
 {
     local EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
@@ -22,7 +31,7 @@ log_message "starting the health reporter service..."
 
 # fix permissions
 chmod u+x /code/health-reporter.sh
-check_errors $?
+check_errors_warning $?
 
 #wait for external service
 until nc -z -w30 mqtt-server 1883
@@ -31,11 +40,11 @@ do
     sleep 10
 done
 
-while sleep 10; do
+while sleep 15; do
 
     log_message "executing the health reporter script..."
     /code/health-reporter.sh
-    check_errors $?
+    check_errors_warning $?
     sleep 120
 
 done
