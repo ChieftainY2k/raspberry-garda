@@ -22,7 +22,7 @@ class TopicCollector
     /**
      * @var string
      */
-    private $healthReportsRootPath;
+    private $collectedHealthReportsRootPath;
 
     /**
      * @var LoggerInterface
@@ -32,10 +32,10 @@ class TopicCollector
     /**
      *
      * @param Client $mqttSubscriber
-     * @param string $healthReportsRootPath
+     * @param string $collectedHealthReportsRootPath
      * @param LoggerInterface $logger
      */
-    function __construct(Client $mqttSubscriber, string $healthReportsRootPath, LoggerInterface $logger)
+    function __construct(Client $mqttSubscriber, string $collectedHealthReportsRootPath, LoggerInterface $logger)
     {
         $this->mqttClient = $mqttSubscriber;
         $this->mqttClient->onSubscribe([$this, "onSubscribe"]);
@@ -43,7 +43,7 @@ class TopicCollector
         $this->mqttClient->onDisconnect([$this, "onDisconnect"]);
         $this->mqttClient->onMessage([$this, "onMessage"]);
 
-        $this->healthReportsRootPath = $healthReportsRootPath;
+        $this->collectedHealthReportsRootPath = $collectedHealthReportsRootPath;
 
         $this->logger = $logger;
     }
@@ -87,7 +87,7 @@ class TopicCollector
         $this->logger->debug("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
 
         //save topic do the dedicated file
-        $filePath = $this->healthReportsRootPath . "/" . (md5($message->topic)) . ".json";
+        $filePath = $this->collectedHealthReportsRootPath . "/" . (md5($message->topic)) . ".json";
         $filePathTmp = $filePath . ".tmp";
         //@TODO use DTO here
         if (!file_put_contents($filePathTmp, json_encode([

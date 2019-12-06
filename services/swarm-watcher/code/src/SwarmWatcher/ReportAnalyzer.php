@@ -17,7 +17,12 @@ class ReportAnalyzer
     /**
      * @var string
      */
-    private $healthReportsRootPath;
+    private $collectedHealthReportsRootPath;
+
+    /**
+     * @var string
+     */
+    private $myHealthReportFile;
 
     /**
      * @var string
@@ -31,14 +36,16 @@ class ReportAnalyzer
 
     /**
      * ReportAnalyzer constructor.
-     * @param $healthReportsRootPath string
+     * @param $collectedHealthReportsRootPath string
      * @param $emailQueuePath string
      * @param $localCacheRootPath string
+     * @param $myHealthReportFile
      * @throws \Exception
      */
-    function __construct($healthReportsRootPath, $emailQueuePath, $localCacheRootPath)
+    function __construct($collectedHealthReportsRootPath, $emailQueuePath, $localCacheRootPath, $myHealthReportFile)
     {
-        $this->healthReportsRootPath = $healthReportsRootPath;
+        $this->collectedHealthReportsRootPath = $collectedHealthReportsRootPath;
+        $this->myHealthReportFile = $myHealthReportFile;
         $this->emailQueuePath = $emailQueuePath;
         $this->localCacheRootPath = $localCacheRootPath;
 
@@ -61,6 +68,28 @@ class ReportAnalyzer
         echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
     }
 
+
+    /**
+     *
+     */
+    public function updateMyHealthReport()
+    {
+        $reportFiles = scandir($this->collectedHealthReportsRootPath);
+
+        //save service health report
+        $healthReportFile = $this->myHealthReportFile;
+        $healthReportData = [
+            "timestamp" => (string)time(),
+            "local_time" => date("Y-m-d H:i:s"),
+            "collected_report_files_count" => count($reportFiles),
+        ];
+
+        $this->log("saving health report to " . $healthReportFile . " , report = " . json_encode($healthReportData) . "");
+
+        if (!file_put_contents($healthReportFile, json_encode($healthReportData), LOCK_EX)) {
+            throw new \Exception("Cannot save data to file " . $healthReportFile);
+        }
+    }
 
     /**
      * @throws \Exception
@@ -202,9 +231,9 @@ class ReportAnalyzer
     {
 
         //scan directory for queued topics data, sort it by name, ascending
-        $files = scandir($this->healthReportsRootPath);
+        $files = scandir($this->collectedHealthReportsRootPath);
         if ($files === false) {
-            throw new \Exception("Cannot open directory " . $this->healthReportsRootPath . "");
+            throw new \Exception("Cannot open directory " . $this->collectedHealthReportsRootPath . "");
         }
 
         //warnings table with current warnings based on the report
@@ -219,9 +248,9 @@ class ReportAnalyzer
 
             //$this->log("processing $queueItemFileName");
 
-            $reportDataRaw = file_get_contents($this->healthReportsRootPath . "/" . $queueItemFileName);
+            $reportDataRaw = file_get_contents($this->collectedHealthReportsRootPath . "/" . $queueItemFileName);
             if (empty($reportDataRaw)) {
-                throw new \Exception("Cannot get content of file " . $this->healthReportsRootPath . "/" . $queueItemFileName);
+                throw new \Exception("Cannot get content of file " . $this->collectedHealthReportsRootPath . "/" . $queueItemFileName);
             }
             //$this->log("content =  " . $reportData . "");
             $reportData = json_decode($reportDataRaw, true);
