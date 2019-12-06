@@ -110,7 +110,7 @@ function readSensors()
     //save service health report
     $healthReportFile = "/mydata/health-report.json";
     $healthReportData = [
-        "timestamp" => time(),
+        "timestamp" => (string)time(),
         "local_time" => date("Y-m-d H:i:s"),
         "sensors" => $sensorsList
     ];

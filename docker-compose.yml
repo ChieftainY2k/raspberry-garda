@@ -30,6 +30,7 @@ services:
         volumes:
             - ./services/configurator/code:/code
             - ./configs:/service-configs
+            - ./data/:/data-all:ro
             - /var/run/docker.sock:/var/run/docker.sock
         restart: unless-stopped
 
@@ -54,8 +55,6 @@ services:
             dockerfile: Dockerfile.health-reporter
         volumes:
             - ./services/health-reporter/code:/code
-#            - ./data/kerberos/capture:/etc/opt/kerberosio/capture:ro
-#            - ./data/services-health-reports:/data-services-health-reports
             - ./data/:/data-all:ro
             - ./data/health-reporter/:/mydata
             - /etc/timezone:/etc/timezone:ro

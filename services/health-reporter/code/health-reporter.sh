@@ -84,17 +84,28 @@ timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
 #totalFilesSizeKb=$(du ${imagedir} | tail -1 | awk '{print $1}') # total size of captured files
 
-NGROK_SERVICE_REPORT_JSON=$(cat /data-all/ngrok/health-report.json)
-NGROK_SERVICE_REPORT_JSON=${NGROK_SERVICE_REPORT_JSON:-"{}"}
+# get content of a container health report
+get_container_health_report()
+{
+    local SERVICE=${1}
 
-KERBEROS_SERVICE_REPORT_JSON=$(cat /data-all/kerberos/health-report.json)
-KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
+    REPORT_JSON=$(cat /data-all/${SERVICE}/health-report.json)
+    REPORT_JSON=${REPORT_JSON:-"{}"}
+    echo ${REPORT_JSON}
 
-THERMOMETER_SERVICE_REPORT_JSON=$(cat /data-all/thermometer/health-report.json)
-THERMOMETER_SERVICE_REPORT_JSON=${THERMOMETER_SERVICE_REPORT_JSON:-"{}"}
+}
 
-HISTORIAN_SERVICE_REPORT_JSON=$(cat /data-all/historian/health-report.json)
-HISTORIAN_SERVICE_REPORT_JSON=${HISTORIAN_SERVICE_REPORT_JSON:-"{}"}
+#NGROK_SERVICE_REPORT_JSON=$(cat /data-all/ngrok/health-report.json)
+#NGROK_SERVICE_REPORT_JSON=${NGROK_SERVICE_REPORT_JSON:-"{}"}
+#
+#KERBEROS_SERVICE_REPORT_JSON=$(cat /data-all/kerberos/health-report.json)
+#KERBEROS_SERVICE_REPORT_JSON=${KERBEROS_SERVICE_REPORT_JSON:-"{}"}
+#
+#THERMOMETER_SERVICE_REPORT_JSON=$(cat /data-all/thermometer/health-report.json)
+#THERMOMETER_SERVICE_REPORT_JSON=${THERMOMETER_SERVICE_REPORT_JSON:-"{}"}
+#
+#HISTORIAN_SERVICE_REPORT_JSON=$(cat /data-all/historian/health-report.json)
+#HISTORIAN_SERVICE_REPORT_JSON=${HISTORIAN_SERVICE_REPORT_JSON:-"{}"}
 
 
 # prepare JSON message
@@ -114,10 +125,10 @@ messageJson=$(cat <<EOF
         "alpr":{"is_enabled":"${KD_ALPR_ENABLED}","report":{}},
         "email_notification":{"is_enabled":"${KD_EMAIL_NOTIFICATION_ENABLED}","report":{}},
         "mqtt_bridge":{"is_enabled":"${KD_MQTT_BRIDGE_ENABLED}"},
-        "ngrok":{"is_enabled":"${KD_NGROK_ENABLED}","report":${NGROK_SERVICE_REPORT_JSON}},
-        "kerberos":{"is_enabled":"${KD_KERBEROS_ENABLED}","report":${KERBEROS_SERVICE_REPORT_JSON}},
-        "thermometer":{"is_enabled":"${KD_THERMOMETER_ENABLED}","report":${THERMOMETER_SERVICE_REPORT_JSON}},
-        "historian":{"is_enabled":"${KD_HISTORIAN_ENABLED}","report":${HISTORIAN_SERVICE_REPORT_JSON}}
+        "ngrok":{"is_enabled":"${KD_NGROK_ENABLED}","report":$(get_container_health_report ngrok)},
+        "kerberos":{"is_enabled":"${KD_KERBEROS_ENABLED}","report":$(get_container_health_report kerberos)},
+        "thermometer":{"is_enabled":"${KD_THERMOMETER_ENABLED}","report":$(get_container_health_report thermometer)},
+        "historian":{"is_enabled":"${KD_HISTORIAN_ENABLED}","report":$(get_container_health_report historian)}
     }
 }
 EOF
@@ -128,7 +139,6 @@ EOF
 #    "images_size_kb":"${totalFilesSizeKb}",
 
 
-#messageJson=$(echo $messageJson | sed -z 's/\n/ /g' | sed -z 's/\"/\\\"/g')
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 messageTopic="healthcheck/report"
 
@@ -138,6 +148,24 @@ mosquitto_pub -h mqtt-server --retain -t "$messageTopic" -m "$messageJson"
 check_errors $?
 
 #save in local file
-log_message "Saving last report to file."
-echo ${messageJson} > /mydata/last-report.json
+reportFile="/mydata/system-health-report.json"
+log_message "Saving SYSTEM health report to file ${reportFile} , report = ${messageJson}"
+echo ${messageJson} > ${reportFile}
 check_errors $?
+
+# prepare health report
+timestamp=$(date +%s)
+localTime=$(date '+%Y-%m-%d %H:%M:%S')
+messageJson=$(cat <<EOF
+{
+    "timestamp":"${timestamp}",
+    "local_time":"${localTime}"
+}
+EOF
+)
+
+#save health report
+reportFile="/mydata/health-report.json"
+messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
+log_message "Saving container health report to file ${reportFile} , report = ${messageJson}"
+echo "${messageJson}" > ${reportFile}
