@@ -61,6 +61,8 @@ while sleep 1; do
     echo "Starting the MQTT topics collector."
     php -f /code/topic-collector.php
     check_errors_warning $?
+
+    echo "MQTT topics collector terminated, restarting..."
     sleep 60
 
 done

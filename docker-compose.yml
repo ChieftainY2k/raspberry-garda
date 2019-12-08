@@ -221,16 +221,6 @@ services:
     #     - /etc/localtime:/etc/localtime:ro
     #    restart: unless-stopped
 
-    #  mqtt-listener-php:
-    #    build:
-    #      context: ./mqtt-listener-php
-    #      dockerfile: Dockerfile.mqtt-listener-php
-    #    volumes:
-    #     - ./mqtt-listener-php/code:/code
-    #     - /etc/timezone:/etc/timezone:ro
-    #     - /etc/localtime:/etc/localtime:ro
-    #    restart: unless-stopped
-
     #######################################
     # UI manager for containers
     # See https://blog.hypriot.com/post/new-docker-ui-portainer/

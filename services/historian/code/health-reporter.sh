@@ -41,3 +41,4 @@ outputfile="/mydata/health-report.json"
 
 log_message "Saving health report to ${outputfile} , content = ${messageJson}"
 echo "${messageJson}" > ${outputfile}
+check_errors $?

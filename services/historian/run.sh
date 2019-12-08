@@ -18,6 +18,15 @@ check_errors()
     fi
 }
 
+#check for errors
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details, moving on..."
+    fi
+}
+
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
@@ -39,13 +48,6 @@ composer install
 check_errors $?
 
 
-#wait for external service
-until nc -z -w30 mqtt-server 1883
-do
-    log_message "waiting for the mqtt server to be accessible... "
-    sleep 10
-done
-
 # Init crontab and cron process
 rsyslogd &
 check_errors $?
@@ -58,14 +60,22 @@ log_message "starting web interface... "
 php -S 0.0.0.0:80 /code/web-interface.php &
 check_errors $?
 
+#wait for external service
+until nc -z -w30 mqtt-server 1883
+do
+    log_message "waiting for the mqtt server to be accessible... "
+    sleep 10
+done
+
 # run  the listener forever
-while sleep 10; do
+while sleep 1; do
 
     echo "starting the MQTT topics collector."
     php /code/topic-collector.php
-    check_errors $?
+    check_errors_warning $?
 
     echo "MQTT topics collector terminated, restarting..."
+    sleep 60
 
 done
 
