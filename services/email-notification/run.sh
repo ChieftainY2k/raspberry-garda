@@ -48,8 +48,6 @@ check_errors $?
 composer install
 check_errors $?
 
-#sleep infinity
-
 #wait for external service
 until nc -z -w30 mqtt-server 1883
 do
@@ -66,5 +64,3 @@ while sleep 1; do
     sleep 60
 
 done
-
-#echo "MQTT events listener finished."
