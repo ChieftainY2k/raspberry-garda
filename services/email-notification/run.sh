@@ -18,6 +18,15 @@ check_errors()
     fi
 }
 
+#check for errors
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details, moving on..."
+    fi
+}
+
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
@@ -49,11 +58,13 @@ do
 done
 
 # run  the listener forever
-while sleep 10; do
+while sleep 1; do
 
     echo "Starting the MQTT topics collector."
     php -f /code/topic-collector.php
-    check_errors $?
+    check_errors_warning $?
+    sleep 60
+
 done
 
 #echo "MQTT events listener finished."
