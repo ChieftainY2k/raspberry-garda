@@ -81,15 +81,31 @@ Note: The application services will be automatically restarted on reboot, unless
 ./garda.sh logs
 `````
 
-**Show kerberos logs**
+**Show service logs**
 `````
-./garda.sh kerberos log
+./garda.sh log [SERVICE]
+`````
+Example:
+`````
+./garda.sh log kerberos
 `````
 
-**Run bash inside kerberos container**
+
+**Run bash inside SERVICE container**
 `````
-./garda.sh kerberos bash
+./garda.sh shell [SERVICE]
 `````
+Example:
+`````
+./garda.sh shell kerberos
+`````
+
+**Rebooting on network loss**
+
+````
+crontab -e
+*/15 * * * * /home/pi/raspberry-garda/scripts/wathdog_reboot.sh >> /var/log/wathdog_reboot.log
+````
 
 **Hardening (optional)**
 
