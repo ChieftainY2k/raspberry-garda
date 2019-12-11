@@ -47,7 +47,7 @@ else
     if [[ $? != 0 ]]
     then
         log_message "CRITICAL: still no network connection, rebooting..."
-        sbin/shutdown -r now "Rebooting on network loss."
+        /sbin/shutdown -r now "Rebooting on network loss."
     fi
 
 fi
