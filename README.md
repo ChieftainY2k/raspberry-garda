@@ -100,7 +100,7 @@ Example:
 ./garda.sh shell kerberos
 `````
 
-**Rebooting on network loss**
+**Rebooting on a network connection loss**
 
 ````
 sudo chmod u+x /home/pi/raspberry-garda/scripts/watchdog_reboot.sh
