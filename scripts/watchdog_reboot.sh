@@ -25,7 +25,7 @@ ping -c5 1.1.1.1
 if [[ $? == 0 ]]
 then
 
-    echo "OK, network connection is working"
+    log_message "OK, network connection is working"
 
 else
 

@@ -105,7 +105,7 @@ Example:
 ````
 sudo chmod u+x /home/pi/raspberry-garda/scripts/watchdog_reboot.sh
 sudo crontab -e
-*/15 * * * * /home/pi/raspberry-garda/scripts/watchdog_reboot.sh 2>&1 >> /home/pi/raspberry-garda/logs/watchdog_reboot.log
+*/15 * * * * /home/pi/raspberry-garda/scripts/watchdog_reboot.sh 2>&1 >> /home/pi/raspberry-garda/logs/watchdog_reboot.$(date "+\%Y\%m\%d").log
 ````
 
 **Hardening (optional)**
