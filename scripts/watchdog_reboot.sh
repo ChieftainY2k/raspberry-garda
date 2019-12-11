@@ -29,8 +29,18 @@ then
 
 else
 
-    log_message "NOTICE: no network connection, restarting interfaces"
-    service networking restart
+    log_message "NOTICE: no network connection!"
+
+    log_message "restarting WLAN interfaces..."
+    sudo ifconfig wlan0 down
+    sleep 10
+    sudo ifconfig wlan0 up
+
+    log_message "restarting ETH interfaces..."
+    sudo ifconfig eth0 down
+    sleep 10
+    sudo ifconfig eth0 up
+
     log_message "NOTICE: waiting for interfaces..."
     sleep 120
 
