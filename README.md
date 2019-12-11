@@ -103,8 +103,9 @@ Example:
 **Rebooting on network loss**
 
 ````
-crontab -e
-*/15 * * * * /home/pi/raspberry-garda/scripts/wathdog_reboot.sh >> /var/log/wathdog_reboot.log
+sudo chmod u+x /home/pi/raspberry-garda/scripts/watchdog_reboot.sh
+sudo crontab -e
+*/15 * * * * /home/pi/raspberry-garda/scripts/watchdog_reboot.sh 2>&1 >> /home/pi/raspberry-garda/logs/watchdog_reboot.log
 ````
 
 **Hardening (optional)**
