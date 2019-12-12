@@ -39,6 +39,11 @@ function readSensors()
     //load the services configuration
     (new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
 
+    //mqtt client
+    $mqttClientId = basename(__FILE__) . "-" . uniqid("");
+    $mqttClient = new Mosquitto\Client($mqttClientId);
+    $mqttClient->connect("mqtt-server", 1883, 60);
+
     $sensorsList = [];
     $sensorFiles = glob("/sys/bus/w1/devices/28*/w1_slave");
     foreach ($sensorFiles as $sensorFile) {
@@ -85,13 +90,7 @@ function readSensors()
             ]
         ];
 
-        //mqtt client
-        $mqttClientId = basename(__FILE__) . "-" . uniqid("");
-        $mqttClient = new Mosquitto\Client($mqttClientId);
-        $mqttClient->connect("mqtt-server", 1883, 60);
-
-        $mqttClient->publish($topicName, json_encode($messageData), 1, false);
-        $mqttClient->disconnect();
+        $mqttClient->publish($topicName, json_encode($messageData), 0, false);
 
         //@TODO publish event if temperature increase over given time window is over a given threshold
 
@@ -106,6 +105,8 @@ function readSensors()
         ];
 
     }
+
+    $mqttClient->disconnect();
 
     //save service health report
     $healthReportFile = "/mydata/health-report.json";
