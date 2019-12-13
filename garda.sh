@@ -34,6 +34,9 @@ helper()
     $0 check   - check workspace and hardware sanity
     $0 status  - show current status of containers and applications
 
+    $0 watchdog install - install watchdog checks in the host cron table
+    $0 watchdog check   - run watchdog checks
+
     $0 start   <sevice>  - start container(s)
     $0 stop    <sevice>  - stop containers(s)
     $0 restart <sevice> - restart containers(s)
@@ -261,10 +264,15 @@ status()
     log_message "Hardware: $raspberryHardware"
     log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $ipAddress"
+
     log_message "Probing for available disk space..."
     pydf
+
     log_message "Probing for container status..."
     docker-compose ${DOCKER_PARAMS} ps
+
+    log_message "checking cron for watchdog..."
+    crontab -l | grep watchdog
 }
 
 shell()
@@ -290,12 +298,62 @@ kerberos()
     esac
 }
 
+watchdog()
+{
+    local ARG1=${1}
+
+    case ${ARG1} in
+        install)
+            log_message "installing cron script for watchdog..."
+            crontab -l | grep -v "garda.sh watchdog run" > /tmp/garda-crontab.txt
+            check_errors $?
+            BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
+            echo "*/15 * * * * ${BASEDIR}/garda.sh watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            cat /tmp/garda-crontab.txt | crontab
+            check_errors $?
+            log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
+            ;;
+        run)
+            log_message "checking internet connection..."
+            ping -c5 1.1.1.1
+            if [[ $? == 0 ]]
+            then
+                log_message "OK, network connection is working"
+            else
+                log_message "WARNING: no network connection!"
+                log_message "stopping interfaces..."
+                sudo ifconfig wlan0 down
+                sudo ifconfig eth0 down
+                log_message "starting interfaces..."
+                sudo ifconfig wlan0 up
+                sudo ifconfig eth0 up
+                log_message "waiting for interfaces..."
+                sleep 180
+                ping -c5 1.1.1.1
+                if [[ $? != 0 ]]
+                then
+                    log_message "CRITICAL: still no network connection, rebooting..."
+                    /sbin/shutdown -r now "Rebooting on network loss."
+                fi
+
+            fi
+            ;;
+        *)
+            helper
+            exit 1
+            ;;
+    esac
+}
+
 ARG1=${1}
 ARG2=${2}
 ARG3=${3}
 
 case ${ARG1} in
     install) install;;
+    watchdog) watchdog ${ARG2};;
+#    watchdog-install) watchdog_install;;
+#    watchdog-check) watchdog_check;;
     check) check;;
     start)   start ${ARG2};;
     stop)    stop ${ARG2};;

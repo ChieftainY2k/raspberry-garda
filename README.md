@@ -45,6 +45,7 @@ Enjoy! :-)
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
+1. (optional) Install watchdog script `sudo ./garda.sh watchdog_install` to reboot host when something's wrong (i.e. internet connection is lost)
 
 
 **Starting up**
@@ -99,14 +100,6 @@ Example:
 `````
 ./garda.sh shell kerberos
 `````
-
-**Rebooting on a network connection loss**
-
-````
-sudo chmod u+x /home/pi/raspberry-garda/scripts/watchdog_reboot.sh
-sudo crontab -e
-*/15 * * * * /home/pi/raspberry-garda/scripts/watchdog_reboot.sh 2>&1 >> /home/pi/raspberry-garda/logs/watchdog_reboot.$(date "+\%Y\%m\%d").log
-````
 
 **Hardening (optional)**
 
