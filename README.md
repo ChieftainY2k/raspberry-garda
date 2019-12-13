@@ -45,7 +45,7 @@ Enjoy! :-)
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
-1. (optional) Install watchdog script `sudo ./garda.sh watchdog_install` to reboot host when something's wrong (i.e. internet connection is lost)
+1. (optional) Install watchdog script `sudo ./garda.sh watchdog_install` to reboot host or perform some "last resort" tasks when something is wrong (i.e. internet connection is lost)
 
 
 **Starting up**
