@@ -308,7 +308,7 @@ watchdog()
             crontab -l | grep -v "garda.sh watchdog run" > /tmp/garda-crontab.txt
             check_errors $?
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
-            echo "*/15 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/garda.sh watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            echo "*/20 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/garda.sh watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
