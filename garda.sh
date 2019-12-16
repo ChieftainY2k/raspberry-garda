@@ -75,7 +75,7 @@ get_raspberry_version_for_kerberos_build()
 
 get_available_disk_space()
 {
-    availableDiskSpaceKb=$(df | grep /dev/root | awk '{print $4/1}')
+    availableDiskSpaceKb=$(df / | grep /dev/root | awk '{print $4/1}')
     echo ${availableDiskSpaceKb};
 }
 
