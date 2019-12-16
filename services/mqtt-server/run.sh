@@ -18,6 +18,15 @@ check_errors()
     fi
 }
 
+#check for errors
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details."
+    fi
+}
+
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
@@ -58,6 +67,7 @@ check_errors $?
 while sleep 1; do
     log_message "Starting the MQTT mosquitto server..."
     mosquitto -v -c /etc/mosquitto/mosquitto.conf
+    check_errors_warning $?
     log_message "MQTT mosquitto server stopped, sleeping and starting again..."
     sleep 60
 done
