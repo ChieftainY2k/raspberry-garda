@@ -29,7 +29,7 @@ Enjoy! :-)
 
 **Raspberry Pi preparation**
 
-1. Grab the newest Raspbian (Stretch Lite) from https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/ , install it on a SD card (8GB at least, 16GB would be nice).
+1. Grab the newest Raspbian (Buster Lite) from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
 1. Update your raspberry: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
 1. If you want to use camera then enable the camera module support (`raspi-config -> interfacing -> camera`)

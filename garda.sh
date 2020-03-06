@@ -121,7 +121,7 @@ install()
 
     # Install Docker Compose from pip
     log_message "Installing docker-compose..."
-    pip install docker-compose
+    apt-get install -y docker-compose
     check_errors $?
 
     log_message "IP address: $ipAddress"
@@ -306,7 +306,6 @@ watchdog()
         install)
             log_message "installing cron script for watchdog..."
             crontab -l | grep -v "garda.sh watchdog run" > /tmp/garda-crontab.txt
-            check_errors $?
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
             echo "*/20 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/garda.sh watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
