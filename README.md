@@ -37,7 +37,8 @@ Enjoy! :-)
 1. If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
 1. If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 1. If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
-1. (optional) Make raspberry check filesystem on every boot (put `fsck.mode=force` at the end of line in in `/boot/cmdline.txt`) 
+1. (optional) Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
+1. (optional) Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`) 
 1. Reboot
 
 **Garda Installation**
