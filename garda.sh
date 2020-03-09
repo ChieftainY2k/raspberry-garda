@@ -81,20 +81,19 @@ get_available_disk_space()
 
 get_ip_address()
 {
-    ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
+#    ipAddress=$(ip route get 1 | awk '{print $NF;exit}')
+    ipAddress=$(ip route get 1)
     echo ${ipAddress}
 }
 
 
 install()
 {
-    ipAddress=$(get_ip_address)
-    availableDiskSpaceKb=$(get_available_disk_space)
-    log_message "Starting installation."
-    log_message "IP address: $ipAddress"
-    log_message "Available disk space: $availableDiskSpaceKb kb."
-    log_message "Hardware = $(get_raspberry_hardware)"
+    log_message "Hardware: $(get_raspberry_hardware)"
+    log_message "Kernel: $(uname -a)"
+    log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
     log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
+    log_message "IP address: $(get_ip_address)"
 
     log_message "Updating packages..."
     apt-get update -y
@@ -259,12 +258,11 @@ log()
 
 status()
 {
-    ipAddress=$(get_ip_address)
-    raspberryHardware=$(get_raspberry_hardware)
+    log_message "Hardware: $(get_raspberry_hardware)"
+    log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
-    log_message "Hardware: $raspberryHardware"
     log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
-    log_message "IP address: $ipAddress"
+    log_message "IP address: $(get_ip_address)"
 
     log_message "Probing for available disk space..."
     pydf
