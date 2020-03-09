@@ -261,6 +261,7 @@ status()
 {
     ipAddress=$(get_ip_address)
     raspberryHardware=$(get_raspberry_hardware)
+    log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
     log_message "Hardware: $raspberryHardware"
     log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $ipAddress"
