@@ -89,8 +89,15 @@ get_container_health_report()
 {
     local SERVICE=${1}
 
-    REPORT_JSON=$(cat /data-all/${SERVICE}/health-report.json)
-    REPORT_JSON=${REPORT_JSON:-"{}"}
+    REPORT_FILE="/data-all/${SERVICE}/health-report.json"
+
+    if [[ -f "$REPORT_FILE" ]]; then
+        REPORT_JSON=$(cat ${REPORT_FILE})
+    else
+        #REPORT_JSON=${REPORT_JSON:-"{}"}
+        REPORT_JSON="{}"
+    fi
+
     echo ${REPORT_JSON}
 
 }
