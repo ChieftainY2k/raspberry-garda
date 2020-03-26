@@ -304,9 +304,9 @@ watchdog()
     case ${ARG1} in
         install)
             log_message "installing cron script for watchdog..."
-            crontab -l | grep -v "garda.sh watchdog run" > /tmp/garda-crontab.txt
+            crontab -l | grep -v "$(basename ${0}) watchdog run" > /tmp/garda-crontab.txt
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
-            echo "*/20 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/garda.sh watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            echo "*/30 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
