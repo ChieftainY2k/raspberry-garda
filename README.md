@@ -29,22 +29,45 @@ Enjoy! :-)
 
 **Raspberry preparation**
 
-1. Grab the newest Raspbian (Buster Lite) from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
-1. Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
-1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
-1. If you want to use camera then enable the camera module support (`raspi-config -> interfacing -> camera`)
-1. If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
-1. If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
-1. If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
-1. Reboot
+* Grab the newest Raspbian (Buster Lite) from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
+* Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
+* Configure your time zone (`raspi-config -> localisation -> change timezone`)
+* If you want to use camera then enable the camera module support (`raspi-config -> interfacing -> camera`)
+* If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
+* If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
+* If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
+* Reboot
 
 **(OPTIONAL) Raspberry tuning**
-1. (optional) Update core libraries: `sudo rpi-update` 
-1. (optional) Set CPU overclocking to max available value (`raspi-config -> overclock`)
-1. (optional) Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
-1. (optional) Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`) 
-1. (optional) Configure startup scripts to send an email on each reboot
-1. Reboot
+* Set CPU overclocking to max available value (`raspi-config -> overclock`)
+* Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
+* Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`) 
+* Reboot
+
+**(OPTIONAL) Configure startup scripts to send an email on each reboot**
+* Install email tools: `apt-get install ssmtp mailutils` 
+* Edit ssmtp config: `nano /etc/ssmtp/ssmtp.conf` with the following config (gmail.com as an example):
+`````
+root=YOUR_GMAIL_USER@gmail.com
+mailhub=smtp.gmail.com:587
+hostname=gmail.com
+AuthUser=YOUR_GMAIL_USER@gmail.com
+AuthPass=YOUR_GMAIL_PASSWORD
+FromLineOverride=YES
+UseSTARTTLS=YES
+````` 
+* Edit local startup script `nano /etc/rc.local` , add the following snippet:
+`````
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+echo "sending emails..."
+SUBJECT="$(hostname) restarted"
+BODY=" $(hostname) restarted. Local IP is $_IP "
+echo "$BODY" | mail -s "$SUBJECT" YOUR_GMAIL_USER@gmail.com 
+````` 
 
 **Garda Installation**
 
