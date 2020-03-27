@@ -38,7 +38,16 @@ Enjoy! :-)
 * If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
 * Reboot
 
-**(OPTIONAL) Raspberry tuning**
+**(OPTIONAL): Enable support for 1-Wire**
+`````
+echo "dtoverlay=w1-gpio" >> /boot/config.txt
+echo "w1-gpio" >> /etc/modules
+echo "w1-therm" >> /etc/modules
+reboot
+`````
+
+
+**(OPTIONAL) Raspberry peformance tuning**
 * Set CPU overclocking to max available value (`raspi-config -> overclock`)
 * Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
 * Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`) 

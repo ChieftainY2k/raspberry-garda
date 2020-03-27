@@ -120,7 +120,9 @@ install()
 
     # Install Docker Compose from pip
     log_message "Installing docker-compose..."
-    apt-get install -y docker-compose
+    apt-get install -y python3 python3-pip libffi-dev libssl-dev
+    check_errors $?
+    pip3 install docker-compose
     check_errors $?
 
     log_message "IP address: $ipAddress"
