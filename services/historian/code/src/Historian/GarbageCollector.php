@@ -45,9 +45,34 @@ class GarbageCollector
         echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
+    /**
+     *
+     */
     public function run()
     {
         $this->log("starting garbage collection");
+
+        $sql = "
+                DELETE FROM  
+                    mqtt_events 
+                WHERE
+                    timestamp < :timestampThreshold
+        ";
+
+        $this->log("removing old log entries...");
+        //remove old entries
+        $stmt = $this->pdo->prepare($sql);
+        $result = $stmt->execute(
+            [
+                ":timestampThreshold" => time() - (3600 * 24 * 14),
+            ]
+        );
+
+        if ($result !== true) {
+            $this->log("WARNING: Cannot execute query ".json_encode($sql)." , error = ".json_encode($this->pdo->errorInfo()));
+        }
+
+        $this->log("old entries successfully removed.");
     }
 
 }

@@ -1,4 +1,6 @@
 # service health reporter
 */10 * * * * /usr/bin/flock -w 0 /tmp/healthreporter.lock /code/health-reporter.sh 2>&1 > /proc/1/fd/2
 
+# garbage collector
+0 * * * * /usr/bin/flock -w 0 /tmp/garbagecollector.lock php /code/garbage-collector.php 2>&1 > /proc/1/fd/2
 
