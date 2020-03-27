@@ -64,7 +64,7 @@ class GarbageCollector
         $stmt = $this->pdo->prepare($sql);
         $result = $stmt->execute(
             [
-                ":timestampThreshold" => time() - (3600 * 24 * 9),
+                ":timestampThreshold" => time() - (3600 * 24 * 14),
             ]
         );
 
