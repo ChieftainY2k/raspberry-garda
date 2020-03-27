@@ -1,0 +1,126 @@
+body#red
+{
+    background-color: #943633;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+div.center
+{
+    position: absolute;
+    top: 27%;
+
+    /**************************
+    *   Kerberos logo
+    */
+
+    .content
+    {
+        margin: 0 auto;
+        display: table;
+        z-index: 1;
+
+        .circle
+        {
+            display: table;
+            background: #fff;
+            margin: 9px 0 0 14px;
+            border-radius: 50%;
+            padding: 5px;
+            float: left;
+            background-image: url(../images/kerberos_multihead.svg);
+            background-position: -175px -31px;
+
+            div.kerberos
+            {
+                padding: 10px;
+                display: block;
+                position: relative;
+                background-image: none !important;
+                background-position: center;
+                background-repeat: no-repeat;
+                width: 380px;
+                height: 380px;
+            }
+        }
+    }
+
+    /**************************
+    *   Login form
+    */
+    width: 100%;
+
+    form#login
+    {
+        margin: -280px auto;
+        padding: 30px;
+        display: table;
+        position: relative;
+        z-index: 1337;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        border: px solid #EAEAEA;
+        /* border-bottom: 4px solid #EAEAEA; */
+        background-color: rgba(255,255,255,.8);
+        border-radius: 5px;
+        text-align: center;
+        max-width: 200px;
+
+        input[type='text'], input[type='password']
+        {
+            color: #74838E;
+            border: none;
+            border-radius: 3px;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            padding: 8px 12px;
+            margin: 0;
+            height: 38px;
+            margin-bottom: 10px;
+        }
+
+        input[type='submit']
+        {
+            padding: 9px 16px;
+            border-radius: 3px;
+            border: none;
+            transition: all .12s linear 0s!important;
+            outline: 0;
+            color: #fff;
+            background-color: #943633;
+            width: 100%;
+        }
+    }
+}
+
+.login
+{
+    footer#branding
+    {
+        color: #fff;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        
+        a, a:hover
+        {
+            color: #fff;
+            text-decoration: none;
+            font-weight: normal;
+        }
+
+        i.logo_verstraetenio {
+            background: url(/images/logo_verstraetenio.png);
+            background-size: cover !important;
+            width: 43px;
+            height: 40px;
+            padding: 16px;
+            margin-right: 10px;
+        }
+    }
+}
