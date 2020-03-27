@@ -64,7 +64,7 @@ class GarbageCollector
         $stmt = $this->pdo->prepare($sql);
         $result = $stmt->execute(
             [
-                ":timestampThreshold" => time() - (3600 * 24 * 14),
+                ":timestampThreshold" => time() - (3600 * 24 * 9),
             ]
         );
 
@@ -72,7 +72,9 @@ class GarbageCollector
             $this->log("WARNING: Cannot execute query ".json_encode($sql)." , error = ".json_encode($this->pdo->errorInfo()));
         }
 
-        $this->log("old entries successfully removed.");
+        $deletedRowsCount = $stmt->rowCount();
+
+        $this->log("old entries successfully removed. deletedRowsCount = $deletedRowsCount");
     }
 
 }
