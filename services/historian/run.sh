@@ -70,11 +70,11 @@ done
 # run  the listener forever
 while sleep 1; do
 
-    echo "starting the MQTT topics collector."
+    log_message "starting the MQTT topics collector."
     php /code/topic-collector.php
     check_errors_warning $?
 
-    echo "MQTT topics collector terminated, restarting..."
+    log_message "MQTT topics collector terminated, restarting..."
     sleep 60
 
 done

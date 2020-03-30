@@ -311,6 +311,9 @@ watchdog()
             echo "*/30 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
+            log_message "checking crontab..."
+            crontab -l
+            check_errors $?
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
             ;;
         run)
