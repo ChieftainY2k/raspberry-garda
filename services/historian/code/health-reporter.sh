@@ -46,7 +46,7 @@ messageJson=$(cat <<EOF
     "timestamp":"${timestamp}",
     "local_time":"${localTime}",
     "history_entries_count":"${entriesCount}",
-    "oldest_item_timestamo":"${oldestTimestamp}",
+    "oldest_item_timestamp":"${oldestTimestamp}",
     "oldest_item_local_time":"${oldestLocalTime}",
     "database_file_size":"${databaseFileSizeBytes}"
 }

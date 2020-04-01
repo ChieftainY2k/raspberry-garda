@@ -65,7 +65,7 @@ class ReportAnalyzer
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
 
@@ -74,7 +74,7 @@ class ReportAnalyzer
      */
     public function updateMyHealthReport()
     {
-        $reportFiles = scandir($this->collectedHealthReportsRootPath);
+        $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
 
         //save service health report
         $healthReportFile = $this->myHealthReportFile;
@@ -84,10 +84,10 @@ class ReportAnalyzer
             "collected_report_files_count" => count($reportFiles),
         ];
 
-        $this->log("saving health report to " . $healthReportFile . " , report = " . json_encode($healthReportData) . "");
+        $this->log("saving health report to ".$healthReportFile." , report = ".json_encode($healthReportData)."");
 
         if (!file_put_contents($healthReportFile, json_encode($healthReportData), LOCK_EX)) {
-            throw new \Exception("Cannot save data to file " . $healthReportFile);
+            throw new \Exception("Cannot save data to file ".$healthReportFile);
         }
     }
 
@@ -101,7 +101,7 @@ class ReportAnalyzer
         //print_r($currentWarnings);
 
         //get previous warnings
-        $lastWarningsFilePath = $this->localCacheRootPath . "/" . "last-warnings.json";
+        $lastWarningsFilePath = $this->localCacheRootPath."/"."last-warnings.json";
         if (file_exists($lastWarningsFilePath)) {
             $previousWarnings = json_decode(file_get_contents($lastWarningsFilePath), true);
         } else {
@@ -111,36 +111,36 @@ class ReportAnalyzer
         //compare current and presious warnings => find new and deleted warnings
         $newWarnings = $this->findNewWarnings($previousWarnings, $currentWarnings);
         $deletedWarnings = $this->findDeletedWarnings($previousWarnings, $currentWarnings);
-        $this->log("new warnings: " . json_encode(array_keys($newWarnings)));
-        $this->log("deleted warnings: " . json_encode(array_keys($deletedWarnings)));
+        $this->log("new warnings: ".json_encode(array_keys($newWarnings)));
+        $this->log("deleted warnings: ".json_encode(array_keys($deletedWarnings)));
 
         //Save an email in the email queue
         $emailHtmlBody = "";
 
         if (!empty($newWarnings)) {
             $emailHtmlBody .= "
-                Swarm watcher at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW anomalies</b>:<br>
+                Swarm watcher at <b>".getenv("KD_SYSTEM_NAME")."</b> detected the following <b style='color:red'>NEW anomalies</b>:<br>
                 <ul>
-                    <li>" . join("</li><li>", $newWarnings) . "</li>    
+                    <li>".join("</li><li>", $newWarnings)."</li>    
                 </ul>
             ";
         }
 
         if (!empty($deletedWarnings)) {
             $emailHtmlBody .= "
-                Swarm watcher at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected that the following <b style='color:green'>anomalies DISAPPEARED</b>:<br>
+                Swarm watcher at <b>".getenv("KD_SYSTEM_NAME")."</b> detected that the following <b style='color:green'>anomalies DISAPPEARED</b>:<br>
                 <ul>
-                   <li style='text-decoration: line-through;'>" . join("</li><li style='text-decoration: line-through;'>", $deletedWarnings) . "</li>    
+                   <li style='text-decoration: line-through;'>".join("</li><li style='text-decoration: line-through;'>", $deletedWarnings)."</li>    
                 </ul>
             ";
         }
 
         if (!empty($emailHtmlBody)) {
-            $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - swarm anomaly detected';
+            $emailSubject = ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected';
 
             $emailHtmlBody .= "
                 <br>
-                System local time: " . date("Y-m-d H:i:s") . "
+                System local time: ".date("Y-m-d H:i:s")."
             ";
 
             //create email data
@@ -148,17 +148,17 @@ class ReportAnalyzer
             //@TODO use DTO here
             $emailData = [
                 "recipients" => [
-                    $recipient
+                    $recipient,
                 ],
                 "subject" => $emailSubject,
-                "htmlBody" => $emailHtmlBody
+                "htmlBody" => $emailHtmlBody,
             ];
 
             //save email data to temporary JSON file
-            $filePath = $this->emailQueuePath . "/" . (microtime(true)) . ".json";
-            $filePathTmp = $filePath . ".tmp";
+            $filePath = $this->emailQueuePath."/".(microtime(true)).".json";
+            $filePathTmp = $filePath.".tmp";
             if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
-                throw new \Exception("Cannot save data to file " . $filePath);
+                throw new \Exception("Cannot save data to file ".$filePath);
             }
 
             //rename temporaty file to dest file
@@ -177,7 +177,7 @@ class ReportAnalyzer
 
         //save current warnings as the las warnings
         if (!file_put_contents($lastWarningsFilePath, json_encode($currentWarnings), LOCK_EX)) {
-            throw new \Exception("Cannot save data to file " . $lastWarningsFilePath);
+            throw new \Exception("Cannot save data to file ".$lastWarningsFilePath);
         }
 
     }
@@ -233,7 +233,7 @@ class ReportAnalyzer
         //scan directory for queued topics data, sort it by name, ascending
         $files = scandir($this->collectedHealthReportsRootPath);
         if ($files === false) {
-            throw new \Exception("Cannot open directory " . $this->collectedHealthReportsRootPath . "");
+            throw new \Exception("Cannot open directory ".$this->collectedHealthReportsRootPath."");
         }
 
         //warnings table with current warnings based on the report
@@ -248,9 +248,9 @@ class ReportAnalyzer
 
             //$this->log("processing $queueItemFileName");
 
-            $reportDataRaw = file_get_contents($this->collectedHealthReportsRootPath . "/" . $queueItemFileName);
+            $reportDataRaw = file_get_contents($this->collectedHealthReportsRootPath."/".$queueItemFileName);
             if (empty($reportDataRaw)) {
-                throw new \Exception("Cannot get content of file " . $this->collectedHealthReportsRootPath . "/" . $queueItemFileName);
+                throw new \Exception("Cannot get content of file ".$this->collectedHealthReportsRootPath."/".$queueItemFileName);
             }
             //$this->log("content =  " . $reportData . "");
             $reportData = json_decode($reportDataRaw, true);
@@ -259,7 +259,7 @@ class ReportAnalyzer
 
             if (empty($reportData['payload']['system_name'])) {
                 //throw new \Exception("Invalid payload data");
-                $this->log("WARNING: invalid payload data, skipping this report and moving on. file = " . $queueItemFileName . ", raw data = " . $reportDataRaw);
+                $this->log("WARNING: invalid payload data, skipping this report and moving on. file = ".$queueItemFileName.", raw data = ".$reportDataRaw);
                 continue;
             }
 
@@ -272,15 +272,15 @@ class ReportAnalyzer
             //check report age
             $maxReportAge = 60 * 15;
             if ((time() - $reportTimestamp) > $maxReportAge) {
-                $warningMessage = "<b>" . $reportSystemName . "</b>: the last health report is older than " . $maxReportAge . " sec. (last seen at " . $reportLocalTime . " local time)";
-                $warningId = $reportSystemName . "-old-report";
+                $warningMessage = "<b>".$reportSystemName."</b>: the last health report is older than ".$maxReportAge." sec. (last seen at ".$reportLocalTime." local time)";
+                $warningId = $reportSystemName."-old-report";
                 $warnings[$warningId] = $warningMessage;
             }
 
             //check jpeg stream
             if (strpos($reportVideoStreamStatus, "Stream #0:0: Video: mjpeg") === false) {
-                $warningMessage = "<b>" . $reportSystemName . "</b>: the video stream format is invalid: <b>" . $reportVideoStreamStatus . "</b>";
-                $warningId = $reportSystemName . "-stream-error";
+                $warningMessage = "<b>".$reportSystemName."</b>: the video stream format is invalid: <b>".$reportVideoStreamStatus."</b>";
+                $warningId = $reportSystemName."-stream-error";
                 $warnings[$warningId] = $warningMessage;
             }
 

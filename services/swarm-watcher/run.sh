@@ -66,7 +66,7 @@ done
 # run  the listener forever
 while sleep 1; do
     echo "Starting the swarm watcher MQTT topics collector."
-    php -f /code/swarm-watcher-topic-collector.php
+    php -f /code/topic-collector.php
     check_errors $?
     echo "Swarm watcher MQTT topics collector finished, sleeping and starting again..."
     sleep 20

@@ -1,21 +1,20 @@
 <?php
 /**
+ * Web interface for reports
  *
  * @TODO this is just MVP/PoC, refactor it , use DI!
- *
  */
 
-require(__DIR__ . "/bootstrap.php");
+//echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] Starting UI interface.\n";
+require(__DIR__."/bootstrap.php");
 
-?>
-<html>
-<head>
-    <title>Swarm Watcher (<?php echo htmlspecialchars(getenv("KD_SYSTEM_NAME")); ?>)</title>
-</head>
-<body>
+//queue root path
+$collectedHealthReportsRootPath = "/mydata/collected-health-reports";
+$localCacheRootPath = "/mydata/cache";
 
-Swarm watcher UI.
+//init topics collector with the mqtt client
+$reportAnalyzer = new \SwarmWatcher\WebInterface($collectedHealthReportsRootPath,  $localCacheRootPath);
+$reportAnalyzer->showReportsAsWebPage();
 
-</body>
+//echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] finished.\n";
 
-</html>
