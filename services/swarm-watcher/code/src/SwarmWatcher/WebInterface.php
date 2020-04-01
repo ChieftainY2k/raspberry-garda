@@ -54,6 +54,19 @@ class WebInterface
     }
 
     /**
+     * @param $timestamp
+     * @return string
+     */
+    public function ago($timestamp)
+    {
+        $daysAgo = floor((time() - $timestamp) / (3600 * 24));
+        $hoursAgo = floor(((time() - $timestamp) - ($daysAgo * 3600 * 24)) / (3600));
+        $minutesAgo = floor(((time() - $timestamp) - ($daysAgo * 3600 * 24) - ($hoursAgo * 3600)) / (60));
+
+        return "<b>".$daysAgo."</b>d <b>".$hoursAgo."</b>h <b>".$minutesAgo."</b>m ago";
+    }
+
+    /**
      * @param array $report
      */
     public function showReport($report)
@@ -61,8 +74,17 @@ class WebInterface
         $payload = $report['payload'];
         $version = $payload['version'];
         $systemName = $payload['system_name'];
+        //$minutesAgo = floor((time() - $payload['timestamp']) / (60));
 
-        echo "<b>$systemName</b>";
+        echo "<b>$systemName</b><br>";
+
+        //echo "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
+
+        echo "time: <b>".$payload['local_time']."</b> ";
+        echo "(".$this->ago($payload['timestamp']).")<br>";
+        echo "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
+        echo "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
+        echo "disk space avail: <b>".(number_format($payload['disk_space_available_kb'] / (1024 * 1024), 2, '.', ''))." GB</b><br>";
 
         if ($version == 1) {
 
@@ -90,7 +112,7 @@ class WebInterface
         //scan all collected report files, visualize
         $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
         foreach ($reportFiles as $fileName) {
-            echo "<div style='margin:10px; border: solid 1px black; padding:5px;'>";
+            echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:300px; min-height: 100px;'>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
