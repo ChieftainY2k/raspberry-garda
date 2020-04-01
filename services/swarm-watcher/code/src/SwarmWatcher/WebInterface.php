@@ -53,9 +53,64 @@ class WebInterface
         echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
+    /**
+     * @param array $report
+     */
+    public function showReport($report)
+    {
+        $payload = $report['payload'];
+        $version = $payload['version'];
+        $systemName = $payload['system_name'];
+
+        echo "<b>$systemName</b>";
+
+        if ($version == 1) {
+
+        } elseif ($version == 2) {
+
+        } else {
+            echo "ERROR: unsupported raport payload version $version";
+        }
+    }
+
+    /**
+     *
+     */
     public function showReportsAsWebPage()
     {
 
+        echo "
+            <html>
+            <head>
+                <title>Swarm Watcher (".htmlspecialchars(getenv("KD_SYSTEM_NAME")).")</title>
+            </head>
+            <body>
+        ";
+
+        //scan all collected report files, visualize
+        $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
+        foreach ($reportFiles as $fileName) {
+            echo "<div style='margin:10px; border: solid 1px black; padding:5px;'>";
+            $fileContent = file_get_contents($fileName);
+            if (empty($fileContent)) {
+                //error
+                echo "ERROR: Cannot get content from $fileName";
+            } else {
+                $report = json_decode($fileContent, true);
+                if ($report === false) {
+                    echo "ERROR: invalid json from $fileName";
+                } else {
+                    $this->showReport($report);
+                }
+            }
+            echo "</div>";
+        }
+
+        echo "
+            </body>
+            
+            </html>
+        ";
     }
 
 }

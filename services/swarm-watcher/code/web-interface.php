@@ -1,6 +1,6 @@
 <?php
 /**
- * Web interface for reports
+ * UI for reports
  *
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
