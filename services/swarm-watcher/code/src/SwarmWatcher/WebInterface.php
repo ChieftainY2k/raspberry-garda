@@ -63,7 +63,12 @@ class WebInterface
         $hoursAgo = floor(((time() - $timestamp) - ($daysAgo * 3600 * 24)) / (3600));
         $minutesAgo = floor(((time() - $timestamp) - ($daysAgo * 3600 * 24) - ($hoursAgo * 3600)) / (60));
 
-        return "<b>".$daysAgo."</b>d <b>".$hoursAgo."</b>h <b>".$minutesAgo."</b>m ago";
+        return "<b>".$daysAgo."</b>d <b>".$hoursAgo."</b>h <b>".$minutesAgo."</b>m";
+    }
+
+    public function warning($text)
+    {
+        return "<span style='warning'>$text</span>";
     }
 
     /**
@@ -81,12 +86,21 @@ class WebInterface
         //echo "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
 
         echo "time: <b>".$payload['local_time']."</b> ";
-        echo "(".$this->ago($payload['timestamp']).")<br>";
+        echo "(".$this->ago($payload['timestamp'])." ago)<br>";
         echo "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
         echo "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
         echo "disk space avail: <b>".(number_format($payload['disk_space_available_kb'] / (1024 * 1024), 2, '.', ''))." GB</b><br>";
 
         if ($version == 1) {
+            $videoStreamInfo = $payload['video_stream'];
+
+            echo "video stream: ".$videoStreamInfo;
+            //check jpeg stream
+            if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
+                echo $this->warning("the video stream format is invalid: <b>".$videoStreamInfo."</b>");
+                //$warningId = $reportSystemName."-stream-error";
+                //$warnings[$warningId] = $warningMessage;
+            }
 
         } elseif ($version == 2) {
 
@@ -112,7 +126,7 @@ class WebInterface
         //scan all collected report files, visualize
         $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
         foreach ($reportFiles as $fileName) {
-            echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:300px; min-height: 100px;'>";
+            echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
