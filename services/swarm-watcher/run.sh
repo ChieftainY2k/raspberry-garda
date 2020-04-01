@@ -46,8 +46,15 @@ composer install
 check_errors $?
 
 # Init crontab and cron process
-cron &
+log_message "starting cron... "
+cron 2>&1 > /proc/1/fd/2 &
 check_errors $?
+
+# Init web interface
+log_message "starting web interface... "
+php -S 0.0.0.0:80 /code/web-interface.php 2>&1 > /proc/1/fd/2 &
+check_errors $?
+
 
 #wait for external service
 until nc -z -w30 mqtt-server 1883

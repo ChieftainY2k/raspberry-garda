@@ -23,6 +23,7 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
 entriesCount=$(/usr/bin/sqlite3 /mydata/mqtt-history.sqlite "select count(*) from mqtt_events")
+oldestTimestamp=$(/usr/bin/sqlite3 /mydata/mqtt-history.sqlite "select min(timestamp) from mqtt_events")
 databaseFileSizeBytes=$(stat --printf="%s" /mydata/mqtt-history.sqlite)
 
 
@@ -32,6 +33,7 @@ messageJson=$(cat <<EOF
     "timestamp":"${timestamp}",
     "local_time":"${localTime}",
     "history_entries_count":"${entriesCount}",
+    "oldest_timestamo":"${oldestTimestamp}",
     "database_file_size":"${databaseFileSizeBytes}"
 }
 EOF

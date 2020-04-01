@@ -16,10 +16,11 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
-        depends_on:
-          - kerberos
-          - historian
-          - configurator
+#        depends_on:
+#          - kerberos
+#          - historian
+#          - swarm-watcher
+#          - configurator
 
     configurator:
         env_file:
@@ -158,7 +159,6 @@ services:
             - ./configs:/service-configs:ro
             - ./data/historian:/mydata
         restart: unless-stopped
-
 
     alpr:
         env_file:
