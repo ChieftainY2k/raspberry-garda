@@ -92,9 +92,11 @@ class WebInterface
     {
         echo "<ul>";
         $videoStreamInfo = $serviceReportPayload['video_stream'];
-        echo "<li>video stream: ".$videoStreamInfo;
-        if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-            echo $this->warning("video format is invalid");
+        if (!empty($videoStreamInfo)) {
+            echo "<li>video stream: ".$videoStreamInfo;
+            if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
+                echo $this->warning("video format is invalid");
+            }
         }
         echo "</ul>";
     }
@@ -107,8 +109,10 @@ class WebInterface
         echo "<ul>";
         foreach ($serviceReportPayload['sensors'] as $sensorReport) {
             echo "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
-            echo "reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
-            echo "raw reading: ".$sensorReport['sensor_reading']['raw']."<br>";
+            echo "<ul>";
+            echo "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
+            echo "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
+            echo "</ul>";
         }
         echo "</ul>";
     }
@@ -119,7 +123,19 @@ class WebInterface
     public function showServiceReportHistorian($serviceReportPayload)
     {
         echo "<ul>";
-        echo "<li>db: <b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>, <b>".$serviceReportPayload['history_entries_count']."</b> entries.<br>";
+        echo "<li>db:";
+        if (!empty($serviceReportPayload['database_file_size'])) {
+            echo "<b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>";
+        } else {
+            echo "<span class='notice'>no size</span>";
+        }
+        echo " , ";
+        if (!empty($serviceReportPayload['history_entries_count'])) {
+            echo "<b>".$serviceReportPayload['history_entries_count']."</b> entries.";
+        } else {
+            echo "<span class='notice'>no entries</span>";
+        }
+        echo "<br>";
         echo "<li>oldest item at: ";
         if (!empty($serviceReportPayload['oldest_item_timestamp'])) {
             echo "".date("Y-m-d H:i:s", $serviceReportPayload['oldest_item_timestamp'])." (".$this->ago($serviceReportPayload['oldest_item_timestamp'])." ago)";
@@ -139,7 +155,7 @@ class WebInterface
         $systemName = $payload['system_name'];
         //$minutesAgo = floor((time() - $payload['timestamp']) / (60));
 
-        echo "<b class='reportName'>$systemName</b><hr>";
+        echo "<b class='reportName'>$systemName</b> ".(getenv("KD_SYSTEM_NAME") == $systemName ? " (THIS GARDA)" : "")."<hr>";
 
         //echo "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
 
@@ -171,10 +187,10 @@ class WebInterface
 
         } elseif ($version == 2) {
 
-            echo "<ul>";
             foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
+                echo "<div class='service'>";
                 //report meta-data
-                echo "<li><b>".$serviceName."</b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
+                echo "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
                     echo "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
                 }
@@ -193,8 +209,8 @@ class WebInterface
                         $this->showServiceReportHistorian($serviceReportFullData['report']);
                         break;
                 }
+                echo "</div>";
             };
-            echo "</ul>";
 
         } else {
             echo "ERROR: unsupported raport payload version $version";
@@ -225,20 +241,32 @@ class WebInterface
                     border-radius: 3px;
                     margin: 1px;
                     padding: 5px;
-                    background: #efefef;
+                    background: #efffff;
                     color: black;
                     font-size:11px;
                     vertical-align:top; 
                 }
                 
-                .notice {
-                    display: inline-block;
+                .service {
                     border: 1px solid #aaa;
                     border-radius: 3px;
                     margin: 1px;
-                    padding: 1px;
-                    background: yellow;
+                    padding: 2px;
+                    background: #efefef;
                     color: black;
+                    font-size:11px;
+                    //vertical-align:top; 
+                }
+                
+                .notice {
+                    display: inline-block;
+                    //border: 1px solid #aaa;
+                    //border-radius: 3px;
+                    margin: 1px;
+                    padding: 1px;
+                    //background: yellow;
+                    //color: black;
+                    color: brown;
                 }
                 
                 .warning {
@@ -251,7 +279,7 @@ class WebInterface
                     color: black;
                 }
                 
-                ul { padding-left: 10px }
+                ul { padding-left: 10px; margin-top:1px;  }
                 
             </style>
             <body>
@@ -282,8 +310,10 @@ class WebInterface
                     $this->showReport($report);
                 }
             }
+
             echo "<hr>report file: ".basename($fileName)."<br>";
             echo "[<a href='?delete=".basename($fileName, '.json')."'>delete</a>]";
+
             echo "</div>";
         }
 
