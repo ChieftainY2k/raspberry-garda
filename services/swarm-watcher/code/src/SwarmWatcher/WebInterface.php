@@ -4,6 +4,8 @@
 namespace SwarmWatcher;
 
 
+use Exception;
+
 /**
  * Analyze report collection and produce readable report with new warnings and warnings that disappeared
  *
@@ -20,27 +22,20 @@ class WebInterface
     private $collectedHealthReportsRootPath;
 
     /**
-     * @var string
-     */
-    private $localCacheRootPath;
-
-    /**
      * ReportAnalyzer constructor.
      * @param $collectedHealthReportsRootPath string
-     * @param $localCacheRootPath string
-     * @throws \Exception
+     * @throws Exception
      */
-    function __construct($collectedHealthReportsRootPath, $localCacheRootPath)
+    function __construct($collectedHealthReportsRootPath)
     {
         $this->collectedHealthReportsRootPath = $collectedHealthReportsRootPath;
-        $this->localCacheRootPath = $localCacheRootPath;
 
         //@TODO validate the input
         if (empty(getenv("KD_SYSTEM_NAME"))) {
-            throw new \Exception("Empty environment variable KD_SYSTEM_NAME");
+            throw new Exception("Empty environment variable KD_SYSTEM_NAME");
         }
         if (empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))) {
-            throw new \Exception("Empty environment variable KD_EMAIL_NOTIFICATION_RECIPIENT");
+            throw new Exception("Empty environment variable KD_EMAIL_NOTIFICATION_RECIPIENT");
         }
 
     }
@@ -50,7 +45,7 @@ class WebInterface
      */
     function log($msg)
     {
-        echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
+        $output[] = "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
     /**
@@ -77,79 +72,91 @@ class WebInterface
 
     /**
      * @param $serviceReportPayload
+     * @return string
      */
     public function showServiceReportNgrok($serviceReportPayload)
     {
-        echo "<ul>";
-        echo "<li> url: <a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a>";
-        echo "</ul>";
+        $output[] = "<ul>";
+        $output[] = "<li> url: <a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a>";
+        $output[] = "</ul>";
+
+        return join("", $output);
     }
 
     /**
      * @param $serviceReportPayload
+     * @return string
      */
     public function showServiceReportKerberos($serviceReportPayload)
     {
-        echo "<ul>";
+        $output[] = "<ul>";
         $videoStreamInfo = $serviceReportPayload['video_stream'];
+        $output[] = "<watch>";
         if (!empty($videoStreamInfo)) {
-            echo "<li>";
-            echo "<watch>";
-            echo "video stream: ".$videoStreamInfo;
+            $output[] = "<li>";
+            $output[] = "video stream: ".$videoStreamInfo;
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                echo "<span class='warning'>video format is invalid</span>";
+                $output[] = "<span class='warning'>video format is invalid</span>";
             }
-            echo "</watch>";
         }
-        echo "</ul>";
+        $output[] = "</watch>";
+        $output[] = "</ul>";
+
+        return join("", $output);
     }
 
     /**
      * @param $serviceReportPayload
+     * @return string
      */
     public function showServiceReportThermometer($serviceReportPayload)
     {
-        echo "<ul>";
+        $output[] = "<ul>";
         foreach ($serviceReportPayload['sensors'] as $sensorReport) {
-            echo "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
-            echo "<ul>";
-            echo "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
-            echo "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
-            echo "</ul>";
+            $output[] = "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
+            $output[] = "<ul>";
+            $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
+            $output[] = "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
+            $output[] = "</ul>";
         }
-        echo "</ul>";
+        $output[] = "</ul>";
+
+        return join("", $output);
     }
 
     /**
      * @param $serviceReportPayload
+     * @return string
      */
     public function showServiceReportHistorian($serviceReportPayload)
     {
-        echo "<ul>";
-        echo "<li>db:";
+        $output[] = "<ul>";
+        $output[] = "<li>db:";
         if (!empty($serviceReportPayload['database_file_size'])) {
-            echo "<b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>";
+            $output[] = "<b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>";
         } else {
-            echo "<span class='notice'>no size</span>";
+            $output[] = "<span class='notice'>no size</span>";
         }
-        echo " , ";
+        $output[] = " , ";
         if (!empty($serviceReportPayload['history_entries_count'])) {
-            echo "<b>".$serviceReportPayload['history_entries_count']."</b> entries.";
+            $output[] = "<b>".$serviceReportPayload['history_entries_count']."</b> entries.";
         } else {
-            echo "<span class='notice'>no entries</span>";
+            $output[] = "<span class='notice'>no entries</span>";
         }
-        echo "<br>";
-        echo "<li>oldest item at: ";
+        $output[] = "<li>oldest item at: ";
         if (!empty($serviceReportPayload['oldest_item_timestamp'])) {
-            echo "".date("Y-m-d H:i:s", $serviceReportPayload['oldest_item_timestamp'])." (".$this->ago($serviceReportPayload['oldest_item_timestamp'])." ago)";
+            $output[] = "".date("Y-m-d H:i:s", $serviceReportPayload['oldest_item_timestamp'])." (".$this->ago($serviceReportPayload['oldest_item_timestamp'])." ago)";
         } else {
-            echo "<span class='notice'>empty</span>";
+            $output[] = "<span class='notice'>empty</span>";
         }
-        echo "</ul>";
+        $output[] = "</ul>";
+
+        return join("", $output);
     }
 
     /**
      * @param array $report
+     * @return string
      */
     public function showGardaReport($report)
     {
@@ -158,86 +165,93 @@ class WebInterface
         $systemName = $payload['system_name'];
         //$minutesAgo = floor((time() - $payload['timestamp']) / (60));
 
-        echo "<b class='reportName'>$systemName</b> ".(getenv("KD_SYSTEM_NAME") == $systemName ? " (THIS GARDA)" : "")."<hr>";
+        $output[] = "<b class='reportName'>$systemName</b> ".(getenv("KD_SYSTEM_NAME") == $systemName ? " (THIS GARDA)" : "")."<hr>";
 
-        //echo "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
+        //$output[] = "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
 
-        echo "time: <b>".$payload['local_time']."</b> ";
-        echo "(".$this->ago($payload['timestamp'])." ago)";
+        $output[] = "time: <b>".$payload['local_time']."</b> ";
+        $output[] = "(".$this->ago($payload['timestamp'])." ago)";
         if ((time() - $payload['timestamp']) > 1200) {
-            echo "<watch>";
-            echo "<span class='warning'>report is old</span>";
-            echo "</watch>";
+            $output[] = "<watch>";
+            $output[] = "<span class='warning'>report is old</span>";
+            $output[] = "</watch>";
         }
-        echo "<br>";
-        echo "topic: ".$report['topic']."<br>";
-        echo "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
-        echo "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
-        echo "disk space avail: <b>".(number_format($payload['disk_space_available_kb'] / (1024 * 1024), 2, '.', ''))." GB</b><br>";
+        $output[] = "<br>";
+        $output[] = "topic: ".$report['topic']."<br>";
+        $output[] = "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
+        $output[] = "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
+        $diskSpaceGB = $payload['disk_space_available_kb'] / (1024 * 1024);
+        $output[] = "disk space avail: <b>".(number_format($diskSpaceGB, 2, '.', ''))." GB</b>";
+        if ($diskSpaceGB < 1) {
+            $output[] = "<span class='warning'>low disk space</span>";
+        }
+        $output[] = "<br>";
 
         if (!empty($payload['services']['ngrok']['report']['ngrok_url'])) {
             $ngrokUrl = "http://".$payload['services']['ngrok']['report']['ngrok_url']."";
-            echo "ngrok url: <a href='".$ngrokUrl."'>".$ngrokUrl."</a><br>";
+            $output[] = "ngrok url: <a href='".$ngrokUrl."'>".$ngrokUrl."</a><br>";
             $videoStreamUrl = $ngrokUrl."/video";
-            echo "video stream: <a href='".$videoStreamUrl."'>".$videoStreamUrl."</a><br>";
+            $output[] = "video stream: <a href='".$videoStreamUrl."'>".$videoStreamUrl."</a><br>";
         }
 
         if ($version == 1) {
 
             $videoStreamInfo = $payload['video_stream'];
-            echo "video stream: ".$videoStreamInfo;
+            $output[] = "video stream: ".$videoStreamInfo;
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                echo "<watch>";
-                echo "<span class='warning'>video format is invalid</span>";
-                echo "</watch>";
+                $output[] = "<watch>";
+                $output[] = "<span class='warning'>video format is invalid</span>";
+                $output[] = "</watch>";
             }
 
         } elseif ($version == 2) {
 
             foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
-                echo "<div class='service'>";
+                $output[] = "<div class='service'>";
                 //report meta-data
-                echo "<watch>";
-                echo "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
-                echo "</watch>";
+                $output[] = "<watch>";
+                $output[] = "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
+                $output[] = "</watch>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
-                    echo "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
+                    $output[] = "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
                     if ((time() - $serviceReportFullData['report']['timestamp']) > 1200) {
-                        echo "<watch>";
-                        echo "<span class='notice'>old</span>";
-                        echo "</watch>";
+                        $output[] = "<watch>";
+                        $output[] = "<span class='notice'>old</span>";
+                        $output[] = "</watch>";
                     }
                 }
                 //service-specific info
                 switch ($serviceName) {
                     case "ngrok":
-                        $this->showServiceReportNgrok($serviceReportFullData['report']);
+                        $output[] = $this->showServiceReportNgrok($serviceReportFullData['report']);
                         break;
                     case "kerberos":
-                        $this->showServiceReportKerberos($serviceReportFullData['report']);
+                        $output[] = $this->showServiceReportKerberos($serviceReportFullData['report']);
                         break;
                     case "thermometer":
-                        $this->showServiceReportThermometer($serviceReportFullData['report']);
+                        $output[] = $this->showServiceReportThermometer($serviceReportFullData['report']);
                         break;
                     case "historian":
-                        $this->showServiceReportHistorian($serviceReportFullData['report']);
+                        $output[] = $this->showServiceReportHistorian($serviceReportFullData['report']);
                         break;
                 }
-                echo "</div>";
-            };
+                $output[] = "</div>";
+            }
 
         } else {
-            echo "ERROR: unsupported raport payload version $version";
+            $output[] = "ERROR: unsupported raport payload version $version";
         }
+
+        return join("", $output);
     }
 
     /**
      *
      */
-    public function showReportsAsWebPage()
+    public function getSwarmReportsAsWebPage()
     {
 
-        echo "
+        $output[] = "
             <html>
             <head>
                 <title>Swarm Watcher (".htmlspecialchars(getenv("KD_SYSTEM_NAME")).")</title>
@@ -303,41 +317,43 @@ class WebInterface
         if (!empty($_GET['delete'])) {
             $fileToDelete = $this->collectedHealthReportsRootPath."/".$_GET['delete'].'.json';
             if (file_exists($fileToDelete) and (!unlink($fileToDelete))) {
-                throw new \Exception("Cannot remove report file.");
+                throw new Exception("Cannot remove report file.");
             }
         }
 
         //scan all collected report files, visualize
         $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
         foreach ($reportFiles as $fileName) {
-            //echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
-            echo "<div class='report'>";
-            echo "<report>";
+            //$output[] = "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
+            $output[] = "<div class='report'>";
+            $output[] = "<report>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
-                echo "ERROR: Cannot get content from $fileName";
+                $output[] = "ERROR: Cannot get content from $fileName";
             } else {
                 $report = json_decode($fileContent, true);
                 if ($report === false) {
-                    echo "ERROR: invalid json from $fileName";
+                    $output[] = "ERROR: invalid json from $fileName";
                 } else {
-                    $this->showGardaReport($report);
+                    $output[] = $this->showGardaReport($report);
                 }
             }
-            echo "</report>";
+            $output[] = "</report>";
 
-            echo "<hr>report file: ".basename($fileName)."<br>";
-            echo "[<a href='?delete=".basename($fileName, '.json')."'>delete</a>]";
+            $output[] = "<hr>report file: ".basename($fileName)."<br>";
+            $output[] = "[<a href='?delete=".basename($fileName, '.json')."'>delete</a>]";
 
-            echo "</div>";
+            $output[] = "</div>";
         }
 
-        echo "
+        $output[] = "
             </body>
             
             </html>
         ";
+
+        return join("", $output);
     }
 
 }

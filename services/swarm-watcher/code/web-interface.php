@@ -10,11 +10,10 @@ require(__DIR__."/bootstrap.php");
 
 //queue root path
 $collectedHealthReportsRootPath = "/mydata/collected-health-reports";
-$localCacheRootPath = "/mydata/cache";
 
 //init topics collector with the mqtt client
-$reportAnalyzer = new \SwarmWatcher\WebInterface($collectedHealthReportsRootPath,  $localCacheRootPath);
-$reportAnalyzer->showReportsAsWebPage();
+$reportAnalyzer = new \SwarmWatcher\WebInterface($collectedHealthReportsRootPath);
+echo $reportAnalyzer->getSwarmReportsAsWebPage();
 
 //echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] finished.\n";
 
