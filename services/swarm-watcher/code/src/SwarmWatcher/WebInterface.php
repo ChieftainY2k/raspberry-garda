@@ -66,9 +66,23 @@ class WebInterface
         return "<b>".$daysAgo."</b>d <b>".$hoursAgo."</b>h <b>".$minutesAgo."</b>m";
     }
 
+    /**
+     * @param $text
+     * @return string
+     */
     public function warning($text)
     {
-        return "<span style='warning'>$text</span>";
+        return "<span class='warning'>$text</span>";
+    }
+
+    /**
+     * @param $serviceReportPayload
+     */
+    public function showServiceReportNgrok($serviceReportPayload)
+    {
+        echo "<ul>";
+        echo "<li> url: <a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a>";
+        echo "</ul>";
     }
 
     /**
@@ -86,23 +100,45 @@ class WebInterface
         //echo "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
 
         echo "time: <b>".$payload['local_time']."</b> ";
-        echo "(".$this->ago($payload['timestamp'])." ago)<br>";
+        echo "(".$this->ago($payload['timestamp'])." ago)";
+        if ((time() - $payload['timestamp']) > 1200) {
+            echo $this->warning("report is old");
+        }
+        echo "<br>";
         echo "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
         echo "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
         echo "disk space avail: <b>".(number_format($payload['disk_space_available_kb'] / (1024 * 1024), 2, '.', ''))." GB</b><br>";
 
-        if ($version == 1) {
-            $videoStreamInfo = $payload['video_stream'];
+        if (!empty($payload['services']['ngrok']['report']['ngrok_url'])) {
+            $ngrokUrl = "http://".$payload['services']['ngrok']['report']['ngrok_url']."";
+            echo "ngrok url: <a href='".$ngrokUrl."'>".$ngrokUrl."</a><br>";
+            $videoStreamUrl = $ngrokUrl."/video";
+            echo "video stream: <a href='".$videoStreamUrl."'>".$videoStreamUrl."</a><br>";
+        }
 
+        if ($version == 1) {
+
+            $videoStreamInfo = $payload['video_stream'];
             echo "video stream: ".$videoStreamInfo;
-            //check jpeg stream
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                echo $this->warning("the video stream format is invalid: <b>".$videoStreamInfo."</b>");
-                //$warningId = $reportSystemName."-stream-error";
-                //$warnings[$warningId] = $warningMessage;
+                echo $this->warning("video format is invalid");
             }
 
         } elseif ($version == 2) {
+
+            echo "<ul>";
+            foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
+                echo "<li>".$serviceName." (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span style='color:red'>disabled</span>").")<br>";
+                if (!empty($serviceReportFullData['report']['timestamp'])) {
+                    echo "reported at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp']).")";
+                }
+                switch ($serviceName) {
+                    case "ngrok":
+                        $this->showServiceReportNgrok($serviceReportFullData['report']);
+                        break;
+                }
+            };
+            echo "<ul>";
 
         } else {
             echo "ERROR: unsupported raport payload version $version";
@@ -120,13 +156,37 @@ class WebInterface
             <head>
                 <title>Swarm Watcher (".htmlspecialchars(getenv("KD_SYSTEM_NAME")).")</title>
             </head>
+            <style>
+                .report {
+                    display: inline-block;
+                    border: 1px solid black;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 5px;
+                    background: #efefef;
+                    color: black;
+                    font-size:11px;
+                    vertical-align:top; 
+                }
+                
+                .warning {
+                    display: inline-block;
+                    border: 1px solid red;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 1px;
+                    background: #ffaaaa;
+                    color: black;
+                }
+            </style>
             <body>
         ";
 
         //scan all collected report files, visualize
         $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
         foreach ($reportFiles as $fileName) {
-            echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
+            //echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
+            echo "<div class='report'>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
