@@ -86,6 +86,34 @@ class WebInterface
     }
 
     /**
+     * @param $serviceReportPayload
+     */
+    public function showServiceReportKerberos($serviceReportPayload)
+    {
+        echo "<ul>";
+        $videoStreamInfo = $serviceReportPayload['video_stream'];
+        echo "<li>video stream: ".$videoStreamInfo;
+        if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
+            echo $this->warning("video format is invalid");
+        }
+        echo "</ul>";
+    }
+
+    /**
+     * @param $serviceReportPayload
+     */
+    public function showServiceReportThermometer($serviceReportPayload)
+    {
+        echo "<ul>";
+        foreach ($serviceReportPayload['sensors'] as $sensorReport) {
+            echo "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
+            echo "reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
+            echo "raw reading: ".$sensorReport['sensor_reading']['raw']."<br>";
+        }
+        echo "</ul>";
+    }
+
+    /**
      * @param array $report
      */
     public function showReport($report)
@@ -95,7 +123,7 @@ class WebInterface
         $systemName = $payload['system_name'];
         //$minutesAgo = floor((time() - $payload['timestamp']) / (60));
 
-        echo "<b>$systemName</b><br>";
+        echo "<b class='reportName'>$systemName</b><hr>";
 
         //echo "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
 
@@ -105,6 +133,7 @@ class WebInterface
             echo $this->warning("report is old");
         }
         echo "<br>";
+        echo "topic: ".$report['topic']."<br>";
         echo "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
         echo "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
         echo "disk space avail: <b>".(number_format($payload['disk_space_available_kb'] / (1024 * 1024), 2, '.', ''))." GB</b><br>";
@@ -128,17 +157,25 @@ class WebInterface
 
             echo "<ul>";
             foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
-                echo "<li>".$serviceName." (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span style='color:red'>disabled</span>").")<br>";
+                //report meta-data
+                echo "<li><b>".$serviceName."</b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
-                    echo "reported at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp']).")";
+                    echo "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp']).")";
                 }
+                //service-specific info
                 switch ($serviceName) {
                     case "ngrok":
                         $this->showServiceReportNgrok($serviceReportFullData['report']);
                         break;
+                    case "kerberos":
+                        $this->showServiceReportKerberos($serviceReportFullData['report']);
+                        break;
+                    case "thermometer":
+                        $this->showServiceReportThermometer($serviceReportFullData['report']);
+                        break;
                 }
             };
-            echo "<ul>";
+            echo "</ul>";
 
         } else {
             echo "ERROR: unsupported raport payload version $version";
@@ -157,8 +194,14 @@ class WebInterface
                 <title>Swarm Watcher (".htmlspecialchars(getenv("KD_SYSTEM_NAME")).")</title>
             </head>
             <style>
+            
+                .reportName { font-size:15px; }
+                
                 .report {
+                    font-family: Arial;
                     display: inline-block;
+                    width:300px;
+                    min-height:350px;
                     border: 1px solid black;
                     border-radius: 3px;
                     margin: 1px;
@@ -169,15 +212,27 @@ class WebInterface
                     vertical-align:top; 
                 }
                 
+                .notice {
+                    display: inline-block;
+                    border: 1px solid #aaa;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 1px;
+                    background: yellow;
+                    color: black;
+                }
+                
                 .warning {
                     display: inline-block;
-                    border: 1px solid red;
+                    border: 1px solid #aaa;
                     border-radius: 3px;
                     margin: 1px;
                     padding: 1px;
                     background: #ffaaaa;
                     color: black;
                 }
+                
+                ul { padding-left: 10px }
             </style>
             <body>
         ";
@@ -199,6 +254,7 @@ class WebInterface
                     $this->showReport($report);
                 }
             }
+            echo "<hr>report file: ".basename($fileName)."";
             echo "</div>";
         }
 
