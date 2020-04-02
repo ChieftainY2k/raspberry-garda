@@ -119,8 +119,13 @@ class WebInterface
     public function showServiceReportHistorian($serviceReportPayload)
     {
         echo "<ul>";
-        echo "<li>entries count: <b>".$serviceReportPayload['history_entries_count']."</b><br>";
-        echo "<li>db size: <b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b><br>";
+        echo "<li>db: <b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>, <b>".$serviceReportPayload['history_entries_count']."</b> entries.<br>";
+        echo "<li>oldest item at: ";
+        if (!empty($serviceReportPayload['oldest_item_timestamp'])) {
+            echo "".date("Y-m-d H:i:s", $serviceReportPayload['oldest_item_timestamp'])." (".$this->ago($serviceReportPayload['oldest_item_timestamp'])." ago)";
+        } else {
+            echo "<span class='notice'>empty</span>";
+        }
         echo "</ul>";
     }
 
@@ -247,9 +252,18 @@ class WebInterface
                 }
                 
                 ul { padding-left: 10px }
+                
             </style>
             <body>
         ";
+
+        //delete a report file
+        if (!empty($_GET['delete'])) {
+            $fileToDelete = $this->collectedHealthReportsRootPath."/".$_GET['delete'].'.json';
+            if (file_exists($fileToDelete) and (!unlink($fileToDelete))) {
+                throw new \Exception("Cannot remove report file.");
+            }
+        }
 
         //scan all collected report files, visualize
         $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
@@ -268,7 +282,8 @@ class WebInterface
                     $this->showReport($report);
                 }
             }
-            echo "<hr>report file: ".basename($fileName)."";
+            echo "<hr>report file: ".basename($fileName)."<br>";
+            echo "[<a href='?delete=".basename($fileName, '.json')."'>delete</a>]";
             echo "</div>";
         }
 
