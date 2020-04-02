@@ -66,14 +66,14 @@ class WebInterface
         return "<b>".$daysAgo."</b>d <b>".$hoursAgo."</b>h <b>".$minutesAgo."</b>m";
     }
 
-    /**
-     * @param $text
-     * @return string
-     */
-    public function warning($text)
-    {
-        return "<span class='warning'>$text</span>";
-    }
+    ///**
+    // * @param $text
+    // * @return string
+    // */
+    //public function warning($text)
+    //{
+    //    return "<span class='warning'>$text</span>";
+    //}
 
     /**
      * @param $serviceReportPayload
@@ -93,10 +93,13 @@ class WebInterface
         echo "<ul>";
         $videoStreamInfo = $serviceReportPayload['video_stream'];
         if (!empty($videoStreamInfo)) {
-            echo "<li>video stream: ".$videoStreamInfo;
+            echo "<li>";
+            echo "<watch>";
+            echo "video stream: ".$videoStreamInfo;
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                echo $this->warning("video format is invalid");
+                echo "<span class='warning'>video format is invalid</span>";
             }
+            echo "</watch>";
         }
         echo "</ul>";
     }
@@ -148,7 +151,7 @@ class WebInterface
     /**
      * @param array $report
      */
-    public function showReport($report)
+    public function showGardaReport($report)
     {
         $payload = $report['payload'];
         $version = $payload['version'];
@@ -162,7 +165,9 @@ class WebInterface
         echo "time: <b>".$payload['local_time']."</b> ";
         echo "(".$this->ago($payload['timestamp'])." ago)";
         if ((time() - $payload['timestamp']) > 1200) {
-            echo $this->warning("report is old");
+            echo "<watch>";
+            echo "<span class='warning'>report is old</span>";
+            echo "</watch>";
         }
         echo "<br>";
         echo "topic: ".$report['topic']."<br>";
@@ -182,7 +187,9 @@ class WebInterface
             $videoStreamInfo = $payload['video_stream'];
             echo "video stream: ".$videoStreamInfo;
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                echo $this->warning("video format is invalid");
+                echo "<watch>";
+                echo "<span class='warning'>video format is invalid</span>";
+                echo "</watch>";
             }
 
         } elseif ($version == 2) {
@@ -190,9 +197,16 @@ class WebInterface
             foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
                 echo "<div class='service'>";
                 //report meta-data
+                echo "<watch>";
                 echo "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
+                echo "</watch>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
                     echo "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
+                    if ((time() - $serviceReportFullData['report']['timestamp']) > 1200) {
+                        echo "<watch>";
+                        echo "<span class='notice'>old</span>";
+                        echo "</watch>";
+                    }
                 }
                 //service-specific info
                 switch ($serviceName) {
@@ -298,6 +312,7 @@ class WebInterface
         foreach ($reportFiles as $fileName) {
             //echo "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
             echo "<div class='report'>";
+            echo "<report>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
@@ -307,9 +322,10 @@ class WebInterface
                 if ($report === false) {
                     echo "ERROR: invalid json from $fileName";
                 } else {
-                    $this->showReport($report);
+                    $this->showGardaReport($report);
                 }
             }
+            echo "</report>";
 
             echo "<hr>report file: ".basename($fileName)."<br>";
             echo "[<a href='?delete=".basename($fileName, '.json')."'>delete</a>]";
