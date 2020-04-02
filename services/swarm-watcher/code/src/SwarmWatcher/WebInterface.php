@@ -114,6 +114,17 @@ class WebInterface
     }
 
     /**
+     * @param $serviceReportPayload
+     */
+    public function showServiceReportHistorian($serviceReportPayload)
+    {
+        echo "<ul>";
+        echo "<li>entries count: <b>".$serviceReportPayload['history_entries_count']."</b><br>";
+        echo "<li>db size: <b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b><br>";
+        echo "</ul>";
+    }
+
+    /**
      * @param array $report
      */
     public function showReport($report)
@@ -160,7 +171,7 @@ class WebInterface
                 //report meta-data
                 echo "<li><b>".$serviceName."</b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
-                    echo "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp']).")";
+                    echo "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
                 }
                 //service-specific info
                 switch ($serviceName) {
@@ -172,6 +183,9 @@ class WebInterface
                         break;
                     case "thermometer":
                         $this->showServiceReportThermometer($serviceReportFullData['report']);
+                        break;
+                    case "historian":
+                        $this->showServiceReportHistorian($serviceReportFullData['report']);
                         break;
                 }
             };
