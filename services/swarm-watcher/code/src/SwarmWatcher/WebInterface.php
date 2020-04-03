@@ -98,13 +98,13 @@ class WebInterface
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
                 if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                    $output[] = "<warning><span class='warning'>video format is invalid</span></warning>";
+                    $output[] = "<warning id='invalidVideoFormat'><span class='warning'>video format is invalid</span></warning>";
                 }
             }
             $output[] = "</watch>";
             $output[] = "</ul>";
         } else {
-            $output[] = "<warning><span class='notice'>no stream</span></warning>";
+            $output[] = "<warning id='noStream'><span class='notice'>no stream</span></warning>";
         }
 
         return join("", $output);
@@ -120,7 +120,10 @@ class WebInterface
         if (!empty($serviceReportPayload['sensors'])) {
             $output[] = "<ul>";
             foreach ($serviceReportPayload['sensors'] as $sensorReport) {
-                $output[] = "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
+
+                $output[] = "<li>";
+                $output[] = "<warning id='sensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</warning><br>";
+
                 $output[] = "<ul>";
                 $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
                 $output[] = "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
@@ -128,7 +131,7 @@ class WebInterface
             }
             $output[] = "</ul>";
         } else {
-            $output[] = "<warning><span class='notice'>no sensors</span></warning>";
+            $output[] = "<warning id='noSensors'><span class='notice'>no sensors</span></warning>";
         }
 
         return join("", $output);
@@ -145,7 +148,7 @@ class WebInterface
         if (!empty($serviceReportPayload['database_file_size'])) {
             $output[] = "<b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>";
         } else {
-            $output[] = "<span class='notice'>no size</span>";
+            $output[] = "<warning id='noSqlFileSize'><span class='notice'>no size</span></warning>";
         }
         $output[] = " , ";
         if (!empty($serviceReportPayload['history_entries_count'])) {
@@ -193,7 +196,7 @@ class WebInterface
         $diskSpaceGB = $payload['disk_space_available_kb'] / (1024 * 1024);
         $output[] = "disk space avail: <b>".(number_format($diskSpaceGB, 2, '.', ''))." GB</b>";
         if ($diskSpaceGB < 1) {
-            $output[] = "<span class='warning'>low disk space</span>";
+            $output[] = "<warning id='lowDiskSpace'><span class='warning'>low disk space</span></warning>";
         }
         $output[] = "<br>";
 
