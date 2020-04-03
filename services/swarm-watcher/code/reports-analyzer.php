@@ -19,7 +19,12 @@ $localCacheRootPath = "/mydata/cache";
 
 //init topics collector with the mqtt client
 $reportAnalyzer = new \SwarmWatcher\ReportAnalyzer($collectedHealthReportsRootPath, $emailQueuePath, $localCacheRootPath,$myHealthReportFile);
-$reportAnalyzer->sendNotificationsBasedOnReports();
+//$reportAnalyzer->sendNotificationsBasedOnReports();
 $reportAnalyzer->updateMyHealthReport();
+
+//init topics collector with the mqtt client
+$webInterface = new \SwarmWatcher\WebInterface($collectedHealthReportsRootPath);
+$reportAnalyzer->analyzeWebReport($webInterface);
+
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";

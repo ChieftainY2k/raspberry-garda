@@ -89,18 +89,23 @@ class WebInterface
      */
     public function visualizeServiceReportKerberos($serviceReportPayload)
     {
-        $output[] = "<ul>";
-        $videoStreamInfo = $serviceReportPayload['video_stream'];
-        $output[] = "<watch>";
-        if (!empty($videoStreamInfo)) {
-            $output[] = "<li>";
-            $output[] = "video stream: ".$videoStreamInfo;
-            if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                $output[] = "<span class='warning'>video format is invalid</span>";
+        if (!empty($serviceReportPayload['video_stream'])) {
+
+            $output[] = "<ul>";
+            $videoStreamInfo = $serviceReportPayload['video_stream'];
+            $output[] = "<watch>";
+            if (!empty($videoStreamInfo)) {
+                $output[] = "<li>";
+                $output[] = "video stream: ".$videoStreamInfo;
+                if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
+                    $output[] = "<span class='warning'>video format is invalid</span>";
+                }
             }
+            $output[] = "</watch>";
+            $output[] = "</ul>";
+        } else {
+            $output[] = "<warning><span class='notice'>no stream</span></warning>";
         }
-        $output[] = "</watch>";
-        $output[] = "</ul>";
 
         return join("", $output);
     }
@@ -111,15 +116,20 @@ class WebInterface
      */
     public function visualizeServiceReportThermometer($serviceReportPayload)
     {
-        $output[] = "<ul>";
-        foreach ($serviceReportPayload['sensors'] as $sensorReport) {
-            $output[] = "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
+        $output[] = "";
+        if (!empty($serviceReportPayload['sensors'])) {
             $output[] = "<ul>";
-            $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
-            $output[] = "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
+            foreach ($serviceReportPayload['sensors'] as $sensorReport) {
+                $output[] = "<li>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."<br>";
+                $output[] = "<ul>";
+                $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
+                $output[] = "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
+                $output[] = "</ul>";
+            }
             $output[] = "</ul>";
+        } else {
+            $output[] = "<warning><span class='notice'>no sensors</span></warning>";
         }
-        $output[] = "</ul>";
 
         return join("", $output);
     }

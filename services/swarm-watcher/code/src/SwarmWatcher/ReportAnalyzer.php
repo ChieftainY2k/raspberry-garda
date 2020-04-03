@@ -291,6 +291,27 @@ class ReportAnalyzer
 
     }
 
+
+    /**
+     * @param WebInterface $webInterface
+     * @throws \Exception
+     */
+    public function analyzeWebReport(WebInterface $webInterface)
+    {
+        $htmlTextReport = $webInterface->getSwarmReportsAsWebPage();
+        //echo $htmlReport;
+        //preg_match_all("|<watch>(.*?)</watch>|i",$htmlReport,$match); //non-greety match
+        //print_r($match);
+
+        $htmlDocument = new \DOMDocument();
+        @$htmlDocument->loadHTML($htmlTextReport);
+        $xmlDocument = simplexml_import_dom($htmlDocument);
+        //echo $xmlDocument->saveXML();
+
+        $matches = $xmlDocument->xpath('//warning');
+        print_r($matches);
+    }
+
 }
 
 
