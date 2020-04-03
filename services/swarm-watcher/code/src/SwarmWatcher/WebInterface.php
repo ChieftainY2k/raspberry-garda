@@ -74,7 +74,7 @@ class WebInterface
      * @param $serviceReportPayload
      * @return string
      */
-    public function showServiceReportNgrok($serviceReportPayload)
+    public function visualizeServiceReportNgrok($serviceReportPayload)
     {
         $output[] = "<ul>";
         $output[] = "<li> url: <a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a>";
@@ -87,7 +87,7 @@ class WebInterface
      * @param $serviceReportPayload
      * @return string
      */
-    public function showServiceReportKerberos($serviceReportPayload)
+    public function visualizeServiceReportKerberos($serviceReportPayload)
     {
         $output[] = "<ul>";
         $videoStreamInfo = $serviceReportPayload['video_stream'];
@@ -109,7 +109,7 @@ class WebInterface
      * @param $serviceReportPayload
      * @return string
      */
-    public function showServiceReportThermometer($serviceReportPayload)
+    public function visualizeServiceReportThermometer($serviceReportPayload)
     {
         $output[] = "<ul>";
         foreach ($serviceReportPayload['sensors'] as $sensorReport) {
@@ -128,7 +128,7 @@ class WebInterface
      * @param $serviceReportPayload
      * @return string
      */
-    public function showServiceReportHistorian($serviceReportPayload)
+    public function visualizeServiceReportHistorian($serviceReportPayload)
     {
         $output[] = "<ul>";
         $output[] = "<li>db:";
@@ -158,7 +158,7 @@ class WebInterface
      * @param array $report
      * @return string
      */
-    public function showGardaReport($report)
+    public function visualizeGardaReport($report)
     {
         $payload = $report['payload'];
         $version = $payload['version'];
@@ -223,16 +223,16 @@ class WebInterface
                 //service-specific info
                 switch ($serviceName) {
                     case "ngrok":
-                        $output[] = $this->showServiceReportNgrok($serviceReportFullData['report']);
+                        $output[] = $this->visualizeServiceReportNgrok($serviceReportFullData['report']);
                         break;
                     case "kerberos":
-                        $output[] = $this->showServiceReportKerberos($serviceReportFullData['report']);
+                        $output[] = $this->visualizeServiceReportKerberos($serviceReportFullData['report']);
                         break;
                     case "thermometer":
-                        $output[] = $this->showServiceReportThermometer($serviceReportFullData['report']);
+                        $output[] = $this->visualizeServiceReportThermometer($serviceReportFullData['report']);
                         break;
                     case "historian":
-                        $output[] = $this->showServiceReportHistorian($serviceReportFullData['report']);
+                        $output[] = $this->visualizeServiceReportHistorian($serviceReportFullData['report']);
                         break;
                 }
                 $output[] = "</div>";
@@ -307,7 +307,7 @@ class WebInterface
                     color: black;
                 }
                 
-                ul { padding-left: 10px; margin-top:1px;  }
+                ul { padding-left: 10px; margin-top:1px; margin-bottom: 0px; }
                 
             </style>
             <body>
@@ -336,7 +336,7 @@ class WebInterface
                 if ($report === false) {
                     $output[] = "ERROR: invalid json from $fileName";
                 } else {
-                    $output[] = $this->showGardaReport($report);
+                    $output[] = $this->visualizeGardaReport($report);
                 }
             }
             $output[] = "</report>";
