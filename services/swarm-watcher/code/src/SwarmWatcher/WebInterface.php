@@ -93,18 +93,18 @@ class WebInterface
 
             $output[] = "<ul>";
             $videoStreamInfo = $serviceReportPayload['video_stream'];
-            $output[] = "<watch>";
+            $output[] = "<watch id='videoStream'>";
             if (!empty($videoStreamInfo)) {
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
                 if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                    $output[] = "<warning id='invalidVideoFormat'><span class='warning'>video format is invalid</span></warning>";
+                    $output[] = "<span class='warning'>video format is invalid</span>";
                 }
             }
             $output[] = "</watch>";
             $output[] = "</ul>";
         } else {
-            $output[] = "<warning id='noStream'><span class='notice'>no stream</span></warning>";
+            $output[] = "<watch id='noStream'><span class='notice'>no stream</span></watch>";
         }
 
         return join("", $output);
@@ -122,7 +122,7 @@ class WebInterface
             foreach ($serviceReportPayload['sensors'] as $sensorReport) {
 
                 $output[] = "<li>";
-                $output[] = "<warning id='sensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</warning><br>";
+                $output[] = "<watch id='sensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</watch><br>";
 
                 $output[] = "<ul>";
                 $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
@@ -131,7 +131,7 @@ class WebInterface
             }
             $output[] = "</ul>";
         } else {
-            $output[] = "<warning id='noSensors'><span class='notice'>no sensors</span></warning>";
+            $output[] = "<watch id='noSensors'><span class='notice'>no sensors</span></watch>";
         }
 
         return join("", $output);
@@ -148,7 +148,7 @@ class WebInterface
         if (!empty($serviceReportPayload['database_file_size'])) {
             $output[] = "<b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>";
         } else {
-            $output[] = "<warning id='noSqlFileSize'><span class='notice'>no size</span></warning>";
+            $output[] = "<watch id='noSqlFileSize'><span class='notice'>no size</span></watch>";
         }
         $output[] = " , ";
         if (!empty($serviceReportPayload['history_entries_count'])) {
@@ -185,18 +185,22 @@ class WebInterface
         $output[] = "time: <b>".$payload['local_time']."</b> ";
         $output[] = "(".$this->ago($payload['timestamp'])." ago)";
         if ((time() - $payload['timestamp']) > 1200) {
-            $output[] = "<watch>";
+            $output[] = "<watch id='reportOutdated'>";
             $output[] = "<span class='warning'>outdated</span>";
             $output[] = "</watch>";
         }
         $output[] = "<br>";
         $output[] = "topic: ".$report['topic']."<br>";
-        $output[] = "cpu temp: <b>".$payload['cpu_temp']." C</b><br>";
+        $output[] = "cpu temp: <b>".$payload['cpu_temp']." C</b>";
+        if ($payload['cpu_temp'] > 65) {
+            $output[] = "<watch id='cpuTemperature'><span class='warning'>high CPU temp.</span></watch>";
+        }
+        $output[] = "<br>";
         $output[] = "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
         $diskSpaceGB = $payload['disk_space_available_kb'] / (1024 * 1024);
         $output[] = "disk space avail: <b>".(number_format($diskSpaceGB, 2, '.', ''))." GB</b>";
         if ($diskSpaceGB < 1) {
-            $output[] = "<warning id='lowDiskSpace'><span class='warning'>low disk space</span></warning>";
+            $output[] = "<watch id='lowDiskSpace'><span class='warning'>low disk space</span></watch>";
         }
         $output[] = "<br>";
 
@@ -212,7 +216,7 @@ class WebInterface
             $videoStreamInfo = $payload['video_stream'];
             $output[] = "video stream: ".$videoStreamInfo;
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                $output[] = "<watch>";
+                $output[] = "<watch id='videoFormat'>";
                 $output[] = "<span class='warning'>video format is invalid</span>";
                 $output[] = "</watch>";
             }
@@ -224,13 +228,13 @@ class WebInterface
                 $output[] = "<service id='".$serviceName."'>";
                 $output[] = "<div class='service'>";
                 //report meta-data
-                $output[] = "<watch>";
+                $output[] = "<watch id='serviceIsEnabled'>";
                 $output[] = "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
                 $output[] = "</watch>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
                     $output[] = "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
                     if ((time() - $serviceReportFullData['report']['timestamp']) > 1200) {
-                        $output[] = "<watch>";
+                        $output[] = "<watch id='serviceReportIsOutdated'>";
                         $output[] = "<span class='warning'>outdated</span>";
                         $output[] = "</watch>";
                     }
