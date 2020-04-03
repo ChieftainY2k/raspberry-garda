@@ -122,13 +122,17 @@ Note: The application services will be automatically restarted on reboot, unless
 ./garda.sh logs
 `````
 
-**Show service logs**
+**Show/follow service logs**
 `````
 ./garda.sh log [SERVICE]
 `````
 Example:
 `````
 ./garda.sh log kerberos
+`````
+Example:
+`````
+docker logs garda_historian_1 --since=2020-03-30T23:30 2>&1 | grep "GarbageCollector"
 `````
 
 

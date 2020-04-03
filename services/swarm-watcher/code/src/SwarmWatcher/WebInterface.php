@@ -173,7 +173,7 @@ class WebInterface
         $output[] = "(".$this->ago($payload['timestamp'])." ago)";
         if ((time() - $payload['timestamp']) > 1200) {
             $output[] = "<watch>";
-            $output[] = "<span class='warning'>report is old</span>";
+            $output[] = "<span class='warning'>outdated</span>";
             $output[] = "</watch>";
         }
         $output[] = "<br>";
@@ -216,7 +216,7 @@ class WebInterface
                     $output[] = "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
                     if ((time() - $serviceReportFullData['report']['timestamp']) > 1200) {
                         $output[] = "<watch>";
-                        $output[] = "<span class='notice'>old</span>";
+                        $output[] = "<span class='warning'>outdated</span>";
                         $output[] = "</watch>";
                     }
                 }
