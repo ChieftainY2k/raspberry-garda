@@ -98,7 +98,7 @@ class WebInterface
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
                 if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                    $output[] = "<span class='warning'>video format is invalid</span>";
+                    $output[] = "<warning><span class='warning'>video format is invalid</span></warning>";
                 }
             }
             $output[] = "</watch>";
@@ -216,7 +216,9 @@ class WebInterface
 
         } elseif ($version == 2) {
 
+            //scan all services
             foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
+                $output[] = "<service id='".$serviceName."'>";
                 $output[] = "<div class='service'>";
                 //report meta-data
                 $output[] = "<watch>";
@@ -245,6 +247,7 @@ class WebInterface
                         $output[] = $this->visualizeServiceReportHistorian($serviceReportFullData['report']);
                         break;
                 }
+                $output[] = "</service>";
                 $output[] = "</div>";
             }
 
@@ -258,7 +261,7 @@ class WebInterface
     /**
      *
      */
-    public function getSwarmReportsAsWebPage()
+    public function getSwarmReportHtml()
     {
 
         $output[] = "
@@ -336,7 +339,7 @@ class WebInterface
         foreach ($reportFiles as $fileName) {
             //$output[] = "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
             $output[] = "<div class='report'>";
-            $output[] = "<report>";
+            $output[] = "<report id='".basename($fileName)."'>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error

@@ -24,7 +24,7 @@ $reportAnalyzer->updateMyHealthReport();
 
 //init topics collector with the mqtt client
 $webInterface = new \SwarmWatcher\WebInterface($collectedHealthReportsRootPath);
-$reportAnalyzer->analyzeWebReport($webInterface);
+$reportAnalyzer->analyzeSwarmWebReport($webInterface);
 
 
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
