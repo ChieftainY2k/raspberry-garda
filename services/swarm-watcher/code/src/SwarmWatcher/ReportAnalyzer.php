@@ -308,8 +308,15 @@ class ReportAnalyzer
         $xmlDocument = simplexml_import_dom($htmlDocument);
         //echo $xmlDocument->saveXML();
 
+        //$matches = $xmlDocument->xpath('//warning');
         $matches = $xmlDocument->xpath('//warning');
-        print_r($matches);
+        //print_r($matches);
+        foreach ($matches as $warningNode) {
+            $reportNode = $warningNode->xpath("ancestor::report");
+            $reportNode = $reportNode[0];
+            echo $reportNode->saveXML();
+            exit;
+        }
     }
 
 }
