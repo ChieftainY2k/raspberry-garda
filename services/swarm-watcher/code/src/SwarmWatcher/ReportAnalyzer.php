@@ -299,19 +299,23 @@ class ReportAnalyzer
     public function analyzeWebReport(WebInterface $webInterface)
     {
         $htmlTextReport = $webInterface->getSwarmReportsAsWebPage();
-        //echo $htmlReport;
-        //preg_match_all("|<watch>(.*?)</watch>|i",$htmlReport,$match); //non-greety match
-        //print_r($match);
+        if (empty($htmlTextReport)) {
+            throw new \Exception("Empty html report");
+        }
 
+        //import html report to dom document and xml document
         $htmlDocument = new \DOMDocument();
         @$htmlDocument->loadHTML($htmlTextReport);
         $xmlDocument = simplexml_import_dom($htmlDocument);
-        //echo $xmlDocument->saveXML();
+        if (empty($xmlDocument)) {
+            throw new \Exception("Unable to import html document to XML document");
+        }
 
-        //$matches = $xmlDocument->xpath('//warning');
+        //scan for all warning markers
         $matches = $xmlDocument->xpath('//warning');
         //print_r($matches);
         foreach ($matches as $warningNode) {
+            //get report node for this warning
             $reportNode = $warningNode->xpath("ancestor::report");
             $reportNode = $reportNode[0];
             echo $reportNode->saveXML();
