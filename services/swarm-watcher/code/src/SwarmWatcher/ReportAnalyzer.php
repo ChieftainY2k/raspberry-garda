@@ -311,10 +311,22 @@ class ReportAnalyzer
             throw new \Exception("Unable to import html document to XML document");
         }
 
-        $reports = $xmlDocument->xpath('//report');
-        foreach ($reports as $reportNode) {
+        //fint all <report> elements
+        $reportNodes = $xmlDocument->xpath('.//report');
+        foreach ($reportNodes as $reportNode) {
             $reportId = (string)$reportNode['id'];
             $this->log("Found report id = ".$reportId);
+
+            //find all <watch> data in the report, create data table with watched content
+            $watchNodes = $reportNode->xpath(".//watch");
+            $currentWatchDataTable = [];
+            foreach ($watchNodes as $watchNode) {
+                $watchId = (string)$watchNode['id'];
+                //$this->log("Found watch id = ".$watchId);
+                $currentWatchDataTable[$watchId] = $watchNode->saveXML();
+            }
+            print_r($currentWatchDataTable);
+            //break;
         }
 
         ////scan for all warning markers

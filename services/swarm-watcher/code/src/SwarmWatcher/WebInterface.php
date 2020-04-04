@@ -93,7 +93,7 @@ class WebInterface
 
             $output[] = "<ul>";
             $videoStreamInfo = $serviceReportPayload['video_stream'];
-            $output[] = "<watch id='videoStream'>";
+            $output[] = "<watch id='kerberosVideoStream'>";
             if (!empty($videoStreamInfo)) {
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
@@ -104,7 +104,7 @@ class WebInterface
             $output[] = "</watch>";
             $output[] = "</ul>";
         } else {
-            $output[] = "<watch id='noStream'><span class='notice'>no stream</span></watch>";
+            $output[] = "<watch id='kerberosNoStream'><span class='notice'>no stream</span></watch>";
         }
 
         return join("", $output);
@@ -122,7 +122,7 @@ class WebInterface
             foreach ($serviceReportPayload['sensors'] as $sensorReport) {
 
                 $output[] = "<li>";
-                $output[] = "<watch id='sensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</watch><br>";
+                $output[] = "<watch id='thermoSensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</watch><br>";
 
                 $output[] = "<ul>";
                 $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
@@ -131,7 +131,7 @@ class WebInterface
             }
             $output[] = "</ul>";
         } else {
-            $output[] = "<watch id='noSensors'><span class='notice'>no sensors</span></watch>";
+            $output[] = "<watch id='thermoNoSensors'><span class='notice'>no sensors</span></watch>";
         }
 
         return join("", $output);
@@ -148,7 +148,7 @@ class WebInterface
         if (!empty($serviceReportPayload['database_file_size'])) {
             $output[] = "<b>".number_format($serviceReportPayload['database_file_size'] / 1024 / 1024, 2, '.', '')." MB</b>";
         } else {
-            $output[] = "<watch id='noSqlFileSize'><span class='notice'>no size</span></watch>";
+            $output[] = "<watch id='historianNoSqlFileSize'><span class='notice'>no size</span></watch>";
         }
         $output[] = " , ";
         if (!empty($serviceReportPayload['history_entries_count'])) {
@@ -178,6 +178,7 @@ class WebInterface
         $systemName = $payload['system_name'];
         //$minutesAgo = floor((time() - $payload['timestamp']) / (60));
 
+        $output[] = "<report id='".basename($systemName)."'>";
         $output[] = "<b class='reportName'>$systemName</b> ".(getenv("KD_SYSTEM_NAME") == $systemName ? " (THIS GARDA)" : "")."<hr>";
 
         //$output[] = "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
@@ -228,7 +229,7 @@ class WebInterface
                 $output[] = "<service id='".$serviceName."'>";
                 $output[] = "<div class='service'>";
                 //report meta-data
-                $output[] = "<watch id='serviceIsEnabled'>";
+                $output[] = "<watch id='serviceIsEnabled-".$serviceName."'>";
                 $output[] = "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
                 $output[] = "</watch>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
@@ -259,8 +260,10 @@ class WebInterface
             }
 
         } else {
-            $output[] = "ERROR: unsupported raport payload version $version";
+            $output[] = "<watch id='unsupportedReportVersion'><span class='warning'>ERROR: unsupported raport payload version $version</span></watch>";
         }
+
+        $output[] = "</report>";
 
         return join("", $output);
     }
@@ -346,7 +349,6 @@ class WebInterface
         foreach ($reportFiles as $fileName) {
             //$output[] = "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
             $output[] = "<div class='report'>";
-            $output[] = "<report id='".basename($fileName)."'>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
@@ -359,7 +361,6 @@ class WebInterface
                     $output[] = $this->visualizeGardaReport($report);
                 }
             }
-            $output[] = "</report>";
 
             $output[] = "<hr>report file: ".basename($fileName)."<br>";
             $output[] = "[<a href='?delete=".basename($fileName, '.json')."'>delete</a>]";
