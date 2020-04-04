@@ -328,6 +328,7 @@ class ReportAnalyzer
             //print_r($currentWatchDataTable);
 
             //load previous data from the last run
+            $previousWatchDataTable = [];
             $cacheFileName = $this->localCacheRootPath."/".md5($reportId)."-last.json";
             if (file_exists($cacheFileName)) {
                 $cachedData = null;
@@ -342,10 +343,16 @@ class ReportAnalyzer
                     }
                 }
                 if (!empty($cachedData['watchTable'])) {
-                    //compare with current watch data with the last one
+                    $previousWatchDataTable = $cachedData['watchTable'];
                 } else {
                     $this->log("ERROR: no watchTable index in JSON data from $cacheFileName");
                 }
+            }
+
+            if (!empty($previousWatchDataTable)) {
+                //if ()
+            } else {
+                $this->log("NOTICE: No last data for report id = $reportId ");
             }
 
             //save this data to cache for the next run
