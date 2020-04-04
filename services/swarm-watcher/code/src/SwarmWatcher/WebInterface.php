@@ -230,7 +230,7 @@ class WebInterface
                 $output[] = "<div class='service'>";
                 //report meta-data
                 $output[] = "<watch id='serviceIsEnabled-".$serviceName."'>";
-                $output[] = "<b><u>".$serviceName."</u></b> (".($serviceReportFullData['is_enabled'] == 1 ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
+                $output[] = "<b><u>".$serviceName."</u></b> (".(!empty($serviceReportFullData['is_enabled']) ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
                 $output[] = "</watch>";
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
                     $output[] = "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
@@ -241,19 +241,24 @@ class WebInterface
                     }
                 }
                 //service-specific info
-                switch ($serviceName) {
-                    case "ngrok":
-                        $output[] = $this->visualizeServiceReportNgrok($serviceReportFullData['report']);
-                        break;
-                    case "kerberos":
-                        $output[] = $this->visualizeServiceReportKerberos($serviceReportFullData['report']);
-                        break;
-                    case "thermometer":
-                        $output[] = $this->visualizeServiceReportThermometer($serviceReportFullData['report']);
-                        break;
-                    case "historian":
-                        $output[] = $this->visualizeServiceReportHistorian($serviceReportFullData['report']);
-                        break;
+                if (!empty($serviceReportFullData['report'])) {
+
+                    switch ($serviceName) {
+                        case "ngrok":
+                            $output[] = $this->visualizeServiceReportNgrok($serviceReportFullData['report']);
+                            break;
+                        case "kerberos":
+                            $output[] = $this->visualizeServiceReportKerberos($serviceReportFullData['report']);
+                            break;
+                        case "thermometer":
+                            $output[] = $this->visualizeServiceReportThermometer($serviceReportFullData['report']);
+                            break;
+                        case "historian":
+                            $output[] = $this->visualizeServiceReportHistorian($serviceReportFullData['report']);
+                            break;
+                    }
+                } else {
+                    $output[] = "<watch id='noServiceReport-".$serviceName."'><span class='notice'>no report</span></watch>";
                 }
                 $output[] = "</service>";
                 $output[] = "</div>";

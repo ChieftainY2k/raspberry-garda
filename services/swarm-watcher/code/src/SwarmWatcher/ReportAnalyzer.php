@@ -394,6 +394,9 @@ class ReportAnalyzer
 
         if (!empty($output)) {
 
+            print_r($output);
+            exit;
+
             $emailSubject = ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected';
 
             $emailHtmlBody = "
