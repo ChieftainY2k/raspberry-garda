@@ -325,7 +325,43 @@ class ReportAnalyzer
                 //$this->log("Found watch id = ".$watchId);
                 $currentWatchDataTable[$watchId] = $watchNode->saveXML();
             }
-            print_r($currentWatchDataTable);
+            //print_r($currentWatchDataTable);
+
+            //load previous data from the last run
+            $cacheFileName = $this->localCacheRootPath."/".md5($reportId)."-last.json";
+            if (file_exists($cacheFileName)) {
+                $cachedData = null;
+                $olderWatchDataTableJson = file_get_contents($cacheFileName);
+                if (empty($olderWatchDataTableJson)) {
+                    $this->log("ERROR: empty content from file $cacheFileName");
+                }
+                if (!empty($olderWatchDataTableJson)) {
+                    $cachedData = json_decode($olderWatchDataTableJson, true);
+                    if (empty($cachedData)) {
+                        $this->log("ERROR: invalid JSON from file $cacheFileName");
+                    }
+                }
+                if (!empty($cachedData['watchTable'])) {
+                    //compare with current watch data with the last one
+                } else {
+                    $this->log("ERROR: no watchTable index in JSON data from $cacheFileName");
+                }
+            }
+
+            //save this data to cache for the next run
+            if (!file_put_contents(
+                $cacheFileName,
+                json_encode(
+                    [
+                        "raportId" => $reportId,
+                        "watchTable" => $currentWatchDataTable,
+                    ]
+                ),
+                LOCK_EX
+            )) {
+                $this->log("ERROR: cannot save data to file $cacheFileName");
+            }
+
             //break;
         }
 

@@ -283,7 +283,7 @@ class WebInterface
             
                 .reportName { font-size:15px; }
                 
-                .report {
+                .reportContainer {
                     font-family: Arial;
                     display: inline-block;
                     width:300px;
@@ -348,7 +348,7 @@ class WebInterface
         $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
         foreach ($reportFiles as $fileName) {
             //$output[] = "<div style='font-size:11px; margin:5px; border: solid 1px black; padding:5px; display: inline-block; min-width:200px; min-height: 100px; vertical-align: top'>";
-            $output[] = "<div class='report'>";
+            $output[] = "<div class='reportContainer'>";
             $fileContent = file_get_contents($fileName);
             if (empty($fileContent)) {
                 //error
