@@ -314,8 +314,8 @@ class ReportAnalyzer
         //fint all <report> elements
         $reportNodes = $xmlDocument->xpath('.//report');
         foreach ($reportNodes as $reportNode) {
-            $reportId = (string)$reportNode['id'];
-            $this->log("Found report id = ".$reportId);
+            $reportGardaName = (string)$reportNode['id'];
+            $this->log("Found report gardaName = ".$reportGardaName);
 
             //find all <watch> data in the report, create data table with watched content
             $watchNodes = $reportNode->xpath(".//watch");
@@ -328,8 +328,9 @@ class ReportAnalyzer
             //print_r($currentWatchDataTable);
 
             //load previous data from the last run
-            $previousWatchDataTable = [];
-            $cacheFileName = $this->localCacheRootPath."/".md5($reportId)."-last.json";
+            $previousReportWatchDataTable = null;
+            $previousReportXml = null;
+            $cacheFileName = $this->localCacheRootPath."/".md5($reportGardaName)."-last.json";
             if (file_exists($cacheFileName)) {
                 $cachedData = null;
                 $olderWatchDataTableJson = file_get_contents($cacheFileName);
@@ -343,16 +344,28 @@ class ReportAnalyzer
                     }
                 }
                 if (!empty($cachedData['watchTable'])) {
-                    $previousWatchDataTable = $cachedData['watchTable'];
+                    $previousReportWatchDataTable = $cachedData['watchTable'];
                 } else {
                     $this->log("ERROR: no watchTable index in JSON data from $cacheFileName");
                 }
+                if (!empty($cachedData['reportXml'])) {
+                    $previousReportXml = $cachedData['reportXml'];
+                } else {
+                    $this->log("ERROR: no reportXml index in JSON data from $cacheFileName");
+                }
             }
 
-            if (!empty($previousWatchDataTable)) {
-                //if ()
+            if (!empty($previousReportWatchDataTable)) {
+                if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
+                    $this->log("NOTICE: Watch data changed for gardaName = $reportGardaName ");
+                    //$output = "Report watch changed for report";
+                    //$currentReportXml = $reportNode->saveXML();
+                } else {
+                    $this->log("Report did not change.");
+                }
+
             } else {
-                $this->log("NOTICE: No last data for report id = $reportId ");
+                $this->log("NOTICE: No last watch data for report id = $reportGardaName ");
             }
 
             //save this data to cache for the next run
@@ -360,7 +373,8 @@ class ReportAnalyzer
                 $cacheFileName,
                 json_encode(
                     [
-                        "raportId" => $reportId,
+                        "raportId" => $reportGardaName,
+                        "reportXml" => $reportNode->saveXML(),
                         "watchTable" => $currentWatchDataTable,
                     ]
                 ),
@@ -380,7 +394,7 @@ class ReportAnalyzer
         //    $reportNode = $warningNode->xpath("ancestor::report");
         //    $reportNode = $reportNode[0];
         //    echo $reportNode->saveXML();
-        //    $reportId = (string)$reportNode['id']);
+        //    $reportGardaName = (string)$reportNode['id']);
         //    exit;
         //}
 
