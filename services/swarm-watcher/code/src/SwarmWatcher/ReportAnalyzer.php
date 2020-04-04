@@ -298,6 +298,8 @@ class ReportAnalyzer
      */
     public function analyzeSwarmWebReport(WebInterface $webInterface)
     {
+        $output = [];
+
         $htmlTextReport = $webInterface->getSwarmReportHtml();
         if (empty($htmlTextReport)) {
             throw new \Exception("Empty html report");
@@ -358,8 +360,11 @@ class ReportAnalyzer
             if (!empty($previousReportWatchDataTable)) {
                 if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
                     $this->log("NOTICE: Watch data changed for gardaName = $reportGardaName ");
-                    //$output = "Report watch changed for report";
-                    //$currentReportXml = $reportNode->saveXML();
+                    $output[] = "Report watch changed for ".$reportGardaName."";
+                    $output[] = "<hr>Current report: <div>".$reportNode->saveXML()."<div>";
+                    $output[] = "<hr>Previous report: <div>".$previousReportXml."</div>";
+                    //print_r($output);
+                    //exit;
                 } else {
                     $this->log("Report did not change.");
                 }
@@ -386,17 +391,43 @@ class ReportAnalyzer
             //break;
         }
 
-        ////scan for all warning markers
-        //$matches = $xmlDocument->xpath('//warning');
-        ////print_r($matches);
-        //foreach ($matches as $warningNode) {
-        //    //get report node for this warning
-        //    $reportNode = $warningNode->xpath("ancestor::report");
-        //    $reportNode = $reportNode[0];
-        //    echo $reportNode->saveXML();
-        //    $reportGardaName = (string)$reportNode['id']);
-        //    exit;
-        //}
+
+        if (!empty($output)) {
+
+            $emailSubject = ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected';
+
+            $emailHtmlBody = "
+                Swarm watcher at <b>".getenv("KD_SYSTEM_NAME")."</b> 
+                detected changes in swarm report at ".date("Y-m-d H:i:s")."<br>
+            ";
+            $emailHtmlBody .= "".join("", $output)."";
+
+            //create email data
+            //@TODO use DTO here
+            $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
+            $emailData = [
+                "recipients" => [
+                    $recipient,
+                ],
+                "subject" => $emailSubject,
+                "htmlBody" => $emailHtmlBody,
+            ];
+
+            //save email data to temporary JSON file
+            $filePath = $this->emailQueuePath."/".(microtime(true)).".json";
+            $filePathTmp = $filePath.".tmp";
+            if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
+                throw new \Exception("Cannot save data to file ".$filePath);
+            }
+
+            //rename temporaty file to dest file
+            if (!rename($filePathTmp, $filePath)) {
+                throw new \Exception("Cannot rename file $filePathTmp to $filePath");
+            }
+
+            $this->log("email successfully created and saved to $filePath");
+
+        }
 
     }
 
