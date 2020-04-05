@@ -76,9 +76,13 @@ class WebInterface
      */
     public function visualizeServiceReportNgrok($serviceReportPayload)
     {
-        $output[] = "<ul>";
-        $output[] = "<li> url: <a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a>";
-        $output[] = "</ul>";
+        if (!empty($serviceReportPayload['ngrok_url'])) {
+            $output[] = "<ul>";
+            $output[] = "<li> url: <watch id='ngrokUrl'><a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a></watch>";
+            $output[] = "</ul>";
+        } else {
+            $output[] = "<watch id='ngrokNoUrl'><span class='notice'>no url</span></watch>";
+        }
 
         return join("", $output);
     }
@@ -122,12 +126,12 @@ class WebInterface
             foreach ($serviceReportPayload['sensors'] as $sensorReport) {
 
                 $output[] = "<li>";
-                $output[] = "<watch id='thermoSensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</watch><br>";
-
-                $output[] = "<ul>";
-                $output[] = "<li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
-                $output[] = "<li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
-                $output[] = "</ul>";
+                $output[] = "    <watch id='thermoSensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</watch><br>";
+                $output[] = "    <ul>";
+                $output[] = "        <li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
+                $output[] = "        <li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
+                $output[] = "    </ul>";
+                $output[] = "</li>";
             }
             $output[] = "</ul>";
         } else {
@@ -171,7 +175,7 @@ class WebInterface
      * @param array $report
      * @return string
      */
-    public function visualizeGardaReport($report)
+    public function getGardaReportHtml($report)
     {
         $payload = $report['payload'];
         $version = $payload['version'];
@@ -363,7 +367,7 @@ class WebInterface
                 if ($report === false) {
                     $output[] = "ERROR: invalid json from $fileName";
                 } else {
-                    $output[] = $this->visualizeGardaReport($report);
+                    $output[] = $this->getGardaReportHtml($report);
                 }
             }
 
