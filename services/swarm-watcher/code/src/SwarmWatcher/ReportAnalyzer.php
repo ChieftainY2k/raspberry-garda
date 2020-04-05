@@ -434,8 +434,8 @@ class ReportAnalyzer
             }
 
             if (!empty($previousReportWatchDataTable)) {
-                //if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
-                if (true) {
+                if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
+                    //if (true) {
                     $this->log("NOTICE: Watch data changed for gardaName = $reportGardaName ");
                     $output[] = "
                         <div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfdf;'>
