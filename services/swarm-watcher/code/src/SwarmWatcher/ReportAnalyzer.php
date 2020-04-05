@@ -293,6 +293,78 @@ class ReportAnalyzer
 
 
     /**
+     * Replace class="" with inline style="" so that all email readers can handle the html message
+     *
+     * @param $html
+     * @return string|string[]
+     */
+    private function convertClassToInlineStyling($html)
+    {
+        //inject inline styling
+        $html = str_replace('class="reportName"', 'style="font-size:15px;"', $html);
+        $html = str_replace(
+            'class="reportContainer"',
+            '
+                style="
+                    font-family: Arial;
+                    border: 1px solid black;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 5px;
+                    background: #efffff;
+                    color: black;
+                    font-size:11px;
+                    vertical-align:top; 
+                "
+            ',
+            $html
+        );
+        $html = str_replace(
+            'class="service"',
+            '
+                style="
+                    border: 1px solid #aaa;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 2px;
+                    background: #efefef;
+                    color: black;
+                    font-size:11px;
+                "
+            ',
+            $html
+        );
+        $html = str_replace(
+            'class="notice"',
+            '
+                style="
+                    margin: 1px;
+                    padding: 1px;
+                    color: brown;
+                "
+            ',
+            $html
+        );
+        $html = str_replace(
+            'class="warning"',
+            '
+                style="
+                    display: inline-block;
+                    border: 1px solid #aaa;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 1px;
+                    background: #ffaaaa;
+                    color: black;
+                "
+            ',
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
      * @param WebInterface $webInterface
      * @throws \Exception
      */
@@ -317,6 +389,10 @@ class ReportAnalyzer
         $reportNodes = $xmlDocument->xpath('.//report');
         foreach ($reportNodes as $reportNode) {
             $reportGardaName = (string)$reportNode['id'];
+            if (empty($reportGardaName)) {
+                $this->log("ERROR: empty id from the report XML node.");
+                continue;
+            }
             $this->log("Found report gardaName = ".$reportGardaName);
 
             //find all <watch> data in the report, create data table with watched content
@@ -358,11 +434,28 @@ class ReportAnalyzer
             }
 
             if (!empty($previousReportWatchDataTable)) {
-                if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
+                //if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
+                if (true) {
                     $this->log("NOTICE: Watch data changed for gardaName = $reportGardaName ");
-                    $output[] = "Report watch changed for ".$reportGardaName."";
-                    $output[] = "<hr>Current report: <div>".$reportNode->saveXML()."<div>";
-                    $output[] = "<hr>Previous report: <div>".$previousReportXml."</div>";
+                    $output[] = "
+                        <div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfdf;'>
+                            <div style='color: blue; font-size:12px;'>
+                                Report watch changed for <b>".$reportGardaName."</b>
+                            </div>
+                            <table border='0' cellpadding='0' cellspacing='1'>
+                            <tr>
+                                <td valign='top' width='50%' align='left'>
+                                    <b>Current report:</b>
+                                    <div class=\"reportContainer\">".$reportNode->saveXML()."<div>
+                                </td>
+                                <td valign='top' width='50%' align='left'>
+                                    <b>Previous report:</b>
+                                    <div class=\"reportContainer\">".$previousReportXml."</div>
+                                </td>
+                                </tr>
+                            </table>
+                        </div>
+                    ";
                     //print_r($output);
                     //exit;
                 } else {
@@ -394,40 +487,34 @@ class ReportAnalyzer
 
         if (!empty($output)) {
 
-            print_r($output);
-            exit;
-
-            $emailSubject = ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected';
+            //print_r($output);
+            //exit;
 
             $emailHtmlBody = "
-                Swarm watcher at <b>".getenv("KD_SYSTEM_NAME")."</b> 
-                detected changes in swarm report at ".date("Y-m-d H:i:s")."<br>
+                <div style='font-family: Arial; font-size:12px;'>
+                    <div style='padding:5px'>
+                    Swarm watcher at <b>".getenv("KD_SYSTEM_NAME")."</b> 
+                    detected changes in swarm report at ".date("Y-m-d H:i:s")."<br>
+                    </div>
+                    <div style='padding:5px'>
+                    ".join("", $output)."
+                    </div>
+                </div>
             ";
-            $emailHtmlBody .= "".join("", $output)."";
 
             //create email data
-            //@TODO use DTO here
-            $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
-            $emailData = [
-                "recipients" => [
-                    $recipient,
-                ],
-                "subject" => $emailSubject,
-                "htmlBody" => $emailHtmlBody,
-            ];
-
-            //save email data to temporary JSON file
+            $emailDataJson = json_encode(
+                [
+                    "recipients" => [getenv("KD_EMAIL_NOTIFICATION_RECIPIENT")],
+                    "subject" => ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected',
+                    "htmlBody" => $this->convertClassToInlineStyling($emailHtmlBody),
+                ]
+            );
+            //save email data to email queue
             $filePath = $this->emailQueuePath."/".(microtime(true)).".json";
-            $filePathTmp = $filePath.".tmp";
-            if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
+            if (!file_put_contents($filePath, $emailDataJson, LOCK_EX)) {
                 throw new \Exception("Cannot save data to file ".$filePath);
             }
-
-            //rename temporaty file to dest file
-            if (!rename($filePathTmp, $filePath)) {
-                throw new \Exception("Cannot rename file $filePathTmp to $filePath");
-            }
-
             $this->log("email successfully created and saved to $filePath");
 
         }
