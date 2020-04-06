@@ -251,7 +251,7 @@ class WebInterface
                 if (!empty($serviceReportFullData['report']['timestamp'])) {
                     $output[] = "at: ".date("Y-m-d H:i:s", $serviceReportFullData['report']['timestamp'])." (".$this->ago($serviceReportFullData['report']['timestamp'])." ago)";
                     if ((time() - $serviceReportFullData['report']['timestamp']) > 1200) {
-                        $output[] = "<watch id='serviceReportIsOutdated'>";
+                        $output[] = "<watch id='serviceReportIsOutdated-".$serviceName."'>";
                         $output[] = "<span class='warning'>outdated</span>";
                         $output[] = "</watch>";
                     }
