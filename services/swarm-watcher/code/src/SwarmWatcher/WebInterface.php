@@ -7,7 +7,7 @@ namespace SwarmWatcher;
 use Exception;
 
 /**
- * Analyze report collection and produce readable report with new warnings and warnings that disappeared
+ *
  *
  * @TODO use logger object
  * @TODO use SPL for files and directories
@@ -78,7 +78,7 @@ class WebInterface
     {
         if (!empty($serviceReportPayload['ngrok_url'])) {
             $output[] = "<ul>";
-            $output[] = "<li> url: <watch id='ngrokUrl'><a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a></watch>";
+            $output[] = "<li>url: <watch id='ngrokUrl'><a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a></watch></li>";
             $output[] = "</ul>";
         } else {
             $output[] = "<watch id='ngrokNoUrl'><span class='notice'>no url</span></watch>";
@@ -187,7 +187,7 @@ class WebInterface
 
         //$output[] = "raport received at: <b>".date("Y-m-d H:i:s", $report['timestamp'])."</b><br>";
 
-        $output[] = "time: <b>".$payload['local_time']."</b> ";
+        $output[] = "raport created at: <b>".$payload['local_time']."</b> ";
         $output[] = "(".$this->ago($payload['timestamp'])." ago)";
         if ((time() - $payload['timestamp']) > 1200) {
             $output[] = "<watch id='reportOutdated'>";
@@ -197,14 +197,26 @@ class WebInterface
         $output[] = "<br>";
         $output[] = "topic: ".$report['topic']."<br>";
         $output[] = "cpu temp: <b>".$payload['cpu_temp']." C</b>";
-        if ($payload['cpu_temp'] > 65) {
+        if ($payload['cpu_temp'] > 70) {
             $output[] = "<watch id='cpuTemperature'><span class='warning'>high CPU temp.</span></watch>";
         }
         $output[] = "<br>";
+
+        $output[] = "<watch id='bootTime'>";
+        $output[] = "started at: ";
+        if (!empty($payload['uptime_boot_local_time'])) {
+            $output[] = "<b>".$payload['uptime_boot_local_time']."</b> (local time)";
+        } else {
+            $output[] = "<span class='notice'>unknown boot time</span>";
+        }
+        $output[] = "<br>";
+        $output[] = "</watch>";
+
         $output[] = "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
+
         $diskSpaceGB = $payload['disk_space_available_kb'] / (1024 * 1024);
         $output[] = "disk space avail: <b>".(number_format($diskSpaceGB, 2, '.', ''))." GB</b>";
-        if ($diskSpaceGB < 1) {
+        if ($diskSpaceGB < 1.0) {
             $output[] = "<watch id='lowDiskSpace'><span class='warning'>low disk space</span></watch>";
         }
         $output[] = "<br>";
@@ -219,12 +231,12 @@ class WebInterface
         if ($version == 1) {
 
             $videoStreamInfo = $payload['video_stream'];
+            $output[] = "<watch id='kerberosVideoStream'>";
             $output[] = "video stream: ".$videoStreamInfo;
             if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                $output[] = "<watch id='videoFormat'>";
                 $output[] = "<span class='warning'>video format is invalid</span>";
-                $output[] = "</watch>";
             }
+            $output[] = "</watch>";
 
         } elseif ($version == 2) {
 

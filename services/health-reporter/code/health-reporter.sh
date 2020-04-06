@@ -79,6 +79,7 @@ totalDiskSpaceKb=$(df /  | tail -1 | awk '{print $2}')
 #imagedir=/etc/opt/kerberosio/capture/
 
 uptimeInfo=$(uptime)
+uptimeBootDate=$(uptime -s)
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
@@ -112,6 +113,7 @@ messageJson=$(cat <<EOF
     "cpu_temp":"${temp}",
     "cpu_voltage":"${volts}",
     "uptime_output":"${uptimeInfo}",
+    "uptime_boot_local_time":"${uptimeBootDate}",
     "uptime_seconds":"${uptimeSeconds}",
     "disk_space_available_kb":"${availableDiskSpaceKb}",
     "disk_space_total_kb":"${totalDiskSpaceKb}",

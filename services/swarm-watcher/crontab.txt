@@ -1,3 +1,3 @@
 #launch swarm reports analyzer
-*/5 * * * * /usr/bin/flock -w 0 /tmp/reports-analyzer.lock php /code/reports-analyzer.php 2>&1 > /proc/1/fd/2
+*/10 * * * * /usr/bin/flock -w 0 /tmp/reports-analyzer.lock php /code/reports-analyzer.php 2>&1 > /proc/1/fd/2
 

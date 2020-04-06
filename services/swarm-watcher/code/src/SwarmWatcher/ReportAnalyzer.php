@@ -202,6 +202,9 @@ class ReportAnalyzer
                 //$this->log("Found watch id = ".$watchId);
                 $currentWatchDataTable[$watchId] = $watchNode->saveXML();
             }
+            if (empty($currentWatchDataTable)) {
+                $this->log("WARNING: empty currentWatchDataTable");
+            }
             //print_r($currentWatchDataTable);
 
             //load previous data from the last run
@@ -220,43 +223,93 @@ class ReportAnalyzer
                         $this->log("ERROR: invalid JSON from file $cacheFileName");
                     }
                 }
-                if (!empty($cachedData['watchTable'])) {
+                if (isset($cachedData['watchTable'])) {
                     $previousReportWatchDataTable = $cachedData['watchTable'];
                 } else {
-                    $this->log("ERROR: no watchTable index in JSON data from $cacheFileName");
+                    $this->log("WARNING: no watchTable index in JSON data from $cacheFileName");
                 }
-                if (!empty($cachedData['reportXml'])) {
+                if (isset($cachedData['reportXml'])) {
                     $previousReportXml = $cachedData['reportXml'];
                 } else {
-                    $this->log("ERROR: no reportXml index in JSON data from $cacheFileName");
+                    $this->log("WARNING: no reportXml index in JSON data from $cacheFileName");
                 }
             }
 
             //print_r($currentWatchDataTable);
+            //print_r($previousReportWatchDataTable);
+            //$previousReportWatchDataTable['ngrokUrl']="<watch id=\"ngrokUrl\"><a href=\"http://alamakota.7de0648d.ngrok.io\">7de0648d.ngrok.io</a></watch>";
 
             if (!empty($previousReportWatchDataTable)) {
                 if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
                     //if (true) {
-                    $this->log("NOTICE: Watch data changed for gardaName = $reportGardaName ");
+                    $this->log("watchers data changed for gardaName = $reportGardaName ");
+
+                    //show specific changes
+                    $output[] = "<div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfff;'>";
+                    $output[] = "
+                        <div style='color: blue; font-size:12px;'>
+                            Report watch summary for <b>".$reportGardaName."</b>
+                        </div>
+                    ";
+                    $output[] = "<ul>";
+                    //show watchers that changed or appeared
+                    foreach ($currentWatchDataTable as $watchId => $watchData) {
+                        if (!isset($previousReportWatchDataTable[$watchId])) {
+                            $this->log("watcher '".$watchId."' appeared and was not in the last report.");
+                            $output[] = "
+                                <li>
+                                Watcher '<b>".$watchId."</b>' appeared in newest report with value   
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($currentWatchDataTable[$watchId])."</span> 
+                            ";
+                        } elseif ($currentWatchDataTable[$watchId] != $previousReportWatchDataTable[$watchId]) {
+                            $this->log("watcher '".$watchId."' changed since last report.");
+                            $output[] = "
+                                <li>
+                                Watcher '<b>".$watchId."</b>' changed value from 
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span> 
+                                to
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($currentWatchDataTable[$watchId])."</span> 
+                            ";
+                        }
+                    }
+                    //show watchers that disappeared
+                    foreach ($previousReportWatchDataTable as $watchId => $watchData) {
+                        if (!isset($currentWatchDataTable[$watchId])) {
+                            $this->log("watcher '".$watchId."' disappeared and was in the previous report.");
+                            $output[] = "
+                                <li>
+                                Watcher '<b>".$watchId."</b>' disappeared from current report. Last value was  
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span> 
+                            ";
+                        }
+                    }
+                    $output[] = "<ul>";
+                    $output[] = "</div>";
+
+
+                    //show general report
                     $output[] = "
                         <div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfdf;'>
                             <div style='color: blue; font-size:12px;'>
-                                Report watch changed for <b>".$reportGardaName."</b>
+                                Reports for <b>".$reportGardaName."</b>
                             </div>
                             <table border='0' cellpadding='0' cellspacing='1'>
                             <tr>
                                 <td valign='top' width='50%' align='left'>
-                                    <b>Current report:</b>
+                                    <b style='font-size:12px;'>Current report:</b>
                                     <div class=\"reportContainer\">".$reportNode->saveXML()."<div>
                                 </td>
                                 <td valign='top' width='50%' align='left'>
-                                    <b>Previous report:</b>
+                                    <b style='font-size:12px;'>Previous report:</b>
                                     <div class=\"reportContainer\">".$previousReportXml."</div>
                                 </td>
                                 </tr>
                             </table>
                         </div>
                     ";
+
+                    $output[] = "<hr>";
+
                     //print_r($output);
                     //exit;
                 } else {
@@ -264,7 +317,7 @@ class ReportAnalyzer
                 }
 
             } else {
-                $this->log("NOTICE: No last watch data for report id = $reportGardaName ");
+                $this->log("No last watch data for report id = $reportGardaName ");
             }
 
             //save this data to cache for the next run
