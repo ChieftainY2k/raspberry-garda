@@ -81,7 +81,9 @@ class WebInterface
             $output[] = "<li>url: <watch id='ngrokUrl'><a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a></watch></li>";
             $output[] = "</ul>";
         } else {
-            $output[] = "<watch id='ngrokNoUrl'><span class='notice'>no url</span></watch>";
+            $output[] = "<ul>";
+            $output[] = "<li>url: <watch id='ngrokNoUrl'><span class='notice'>no url</span></watch>";
+            $output[] = "</ul>";
         }
 
         return join("", $output);
