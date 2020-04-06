@@ -126,7 +126,7 @@ class WebInterface
             foreach ($serviceReportPayload['sensors'] as $sensorReport) {
 
                 $output[] = "<li>";
-                $output[] = "    <watch id='thermoSensorName'>sensor: (<b>".$sensorReport['sensor_name']."</b>) ".$sensorReport['sensor_name_original']."</watch><br>";
+                $output[] = "    <watch id='thermoSensorName-".$sensorReport['sensor_name_original']."'>sensor: <b>".$sensorReport['sensor_name']."</b> (".$sensorReport['sensor_name_original'].")</watch><br>";
                 $output[] = "    <ul>";
                 $output[] = "        <li>reading: <b>".$sensorReport['sensor_reading']['celcius']."</b>'C<br>";
                 $output[] = "        <li>raw reading: ".$sensorReport['sensor_reading']['raw']."";
