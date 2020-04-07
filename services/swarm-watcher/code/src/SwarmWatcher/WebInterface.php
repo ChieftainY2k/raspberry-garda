@@ -198,7 +198,7 @@ class WebInterface
         }
         $output[] = "<br>";
         $output[] = "topic: ".$report['topic']."<br>";
-        $output[] = "cpu temp: <b>".$payload['cpu_temp']." C</b>";
+        $output[] = "CPU: <b>".$payload['cpu_temp']."</b>'C , <b>".($payload['cpu_freqency_mhz'] ?? "???")."</b> Mhz";
         if ($payload['cpu_temp'] > 70) {
             $output[] = "<watch id='cpuTemperature'><span class='warning'>high CPU temp.</span></watch>";
         }

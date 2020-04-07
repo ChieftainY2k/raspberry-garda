@@ -54,7 +54,7 @@ maxFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
 maxFreq=$(convert_to_MHz ${maxFreq})
 
 freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq)
-freq=$(convert_to_MHz ${freq})
+freqMhz=$(convert_to_MHz ${freq})
 
 governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
@@ -112,6 +112,7 @@ messageJson=$(cat <<EOF
     "local_time":"${localTime}",
     "cpu_temp":"${temp}",
     "cpu_voltage":"${volts}",
+    "cpu_freqency_mhz":"${freqMhz}",
     "uptime_output":"${uptimeInfo}",
     "uptime_boot_local_time":"${uptimeBootDate}",
     "uptime_seconds":"${uptimeSeconds}",
