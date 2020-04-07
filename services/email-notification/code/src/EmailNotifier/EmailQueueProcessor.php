@@ -119,20 +119,29 @@ class EmailQueueProcessor
         $this->log("processing file $filePath");
 
         //unserializejson data
-        $itemJsonString = file_get_contents($filePath);
+        $itemDataJson = file_get_contents($filePath);
 
-        //$this->log("json data = " . $itemJsonString . ""); exit;
+        //$this->log("json data = " . $itemDataJson . ""); exit;
 
         //@TODO validate loaded data before processing
 
         //@TODO use DTO here
-        $itemData = json_decode($itemJsonString, true);
+        $itemData = json_decode($itemDataJson, true);
 
         if (empty($itemData)) {
             throw new \Exception("Invalid json in $filePath");
         }
 
         $mailer = $this->mailer;
+
+        //clear all settings
+        $mailer->clearAddresses();
+        $mailer->clearCCs();
+        $mailer->clearBCCs();
+        $mailer->clearAllRecipients();
+        $mailer->clearAttachments();
+        $mailer->clearReplyTos();
+        $mailer->clearCustomHeaders();
 
         //recipients
         $mailer->setFrom(getenv("KD_REMOTE_SMTP_FROM"));
