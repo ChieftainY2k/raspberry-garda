@@ -30,7 +30,7 @@ check_errors_sleep()
 log_message "starting the health reporter service..."
 
 # fix permissions
-chmod u+x /code/health-reporter.sh
+chmod u+x /code/garda-health-reporter.sh
 check_errors_warning $?
 
 # fix permissions
