@@ -19,10 +19,14 @@ check_errors()
 }
 
 log_message "running healthcheck..."
-if [[ -f "/tmp/last-health-reporter-failed.flag" ]]; then
-    log_message "failure flag is set, setting container as unhealthy."
+
+log_message "checking seconds since last successful run..."
+secondsSinceLastSuccess=$(expr $(date +%s) - $(stat -c %Y /tmp/health-reporter-success.flag))
+check_errors $?
+
+log_message "secondsSinceLastSuccess = ${secondsSinceLastSuccess}"
+
+if [[ "${secondsSinceLastSuccess}" -gt 600 ]]; then
+    log_message "last successful run was later than expected."
     exit 1
 fi
-
-
-

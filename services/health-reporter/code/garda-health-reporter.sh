@@ -5,7 +5,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][health-reporter]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -16,8 +16,6 @@ check_errors()
     local EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
         log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details."
-        #set flag for the container health checker
-        touch /tmp/last-health-reporter-failed.flag
         exit 1
     fi
 }
@@ -172,6 +170,6 @@ messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 log_message "Saving container health report to file ${reportFile} , report = ${messageJson}"
 echo "${messageJson}" > ${reportFile}
 
-# clear error flag for the container health reporter
-unlink /tmp/last-health-reporter-failed.flag
+#set success flag for the container health reporter
+touch /tmp/health-reporter-success.flag
 check_errors $?
