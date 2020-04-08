@@ -16,6 +16,8 @@ check_errors()
     local EXITCODE=$1
     if [[ ${EXITCODE} -ne 0 ]]; then
         log_message "ERROR: Exit code ${EXITCODE} , check the ouput for details."
+        #set flag for the container health checker
+        touch /tmp/last-health-reporter-failed.flag
         exit 1
     fi
 }
@@ -33,6 +35,7 @@ function calculate_overvolts {
     let overvolts=${1#*.}-20
     echo "$overvolts"
 }
+
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
@@ -138,11 +141,6 @@ messageJson=$(cat <<EOF
 EOF
 )
 
-#@TODO move images_size_kb to kerberos service health reporter
-
-#    "images_size_kb":"${totalFilesSizeKb}",
-
-
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 messageTopic="healthcheck/report"
 
@@ -173,3 +171,7 @@ reportFile="/mydata/health-report.json"
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 log_message "Saving container health report to file ${reportFile} , report = ${messageJson}"
 echo "${messageJson}" > ${reportFile}
+
+# clear error flag for the container health reporter
+unlink /tmp/last-health-reporter-failed.flag
+check_errors $?

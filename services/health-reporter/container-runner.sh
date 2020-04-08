@@ -33,6 +33,10 @@ log_message "starting the health reporter service..."
 chmod u+x /code/health-reporter.sh
 check_errors_warning $?
 
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors_warning $?
+
 #wait for external service
 until nc -z -w30 mqtt-server 1883
 do
@@ -43,7 +47,7 @@ done
 while sleep 15; do
 
     log_message "executing the health reporter script..."
-    /code/health-reporter.sh
+    /code/garda-health-reporter.sh
     check_errors_warning $?
     sleep 120
 

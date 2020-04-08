@@ -18,11 +18,11 @@ check_errors()
     fi
 }
 
-
 log_message "running healthcheck..."
+if [[ -f "/tmp/last-health-reporter-failed.flag" ]]; then
+    log_message "failure flag is set, setting container as unhealthy."
+    exit 1
+fi
 
-log_message "checking http server..."
-curl --fail http://localhost > /dev/null
-check_errors $?
 
 

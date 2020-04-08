@@ -53,7 +53,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/health-reporter
-            dockerfile: Dockerfile.health-reporter
         volumes:
             - ./services/health-reporter/code:/code
             - ./data/:/data-all:ro

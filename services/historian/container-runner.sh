@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][runner]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -40,6 +40,10 @@ if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
 fi
 
 log_message "starting historian service..."
+
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors_warning $?
 
 # Install external libraries
 cd /code
