@@ -151,7 +151,7 @@ services:
             - configs/environment.conf
         build:
             context: ./services/historian
-            dockerfile: Dockerfile.historian
+#            dockerfile: services/historian/Dockerfile
         volumes:
             - ./services/historian/code:/code
             - /etc/timezone:/etc/timezone:ro

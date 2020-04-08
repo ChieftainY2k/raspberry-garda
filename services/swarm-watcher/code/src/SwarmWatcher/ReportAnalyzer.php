@@ -258,7 +258,7 @@ class ReportAnalyzer
                             $this->log("watcher '".$watchId."' appeared and was not in the last report.");
                             $output[] = "
                                 <li>
-                                Watcher '<b>".$watchId."</b>' appeared in newest report with value   
+                                Watcher '<b>".$watchId."</b>' changed from <b>[does not exist]</b> value   
                                 <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($currentWatchDataTable[$watchId])."</span> 
                             ";
                         } elseif ($currentWatchDataTable[$watchId] != $previousReportWatchDataTable[$watchId]) {
@@ -342,9 +342,6 @@ class ReportAnalyzer
 
 
         if (!empty($output)) {
-
-            //print_r($output);
-            //exit;
 
             $emailHtmlBody = "
                 <div style='font-family: Arial; font-size:12px;'>

@@ -22,7 +22,11 @@ ADD ./crontab.txt /crontab.txt
 RUN crontab /crontab.txt
 
 # Startup scripts
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
+
+RUN chmod a+x /code/container-healthcheck.sh
+HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
+    CMD /code/container-healthcheck.sh
 
