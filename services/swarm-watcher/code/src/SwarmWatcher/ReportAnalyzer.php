@@ -278,8 +278,10 @@ class ReportAnalyzer
                             $this->log("watcher '".$watchId."' disappeared and was in the previous report.");
                             $output[] = "
                                 <li>
-                                Watcher '<b>".$watchId."</b>' disappeared from current report. Last value was  
-                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span> 
+                                Watcher '<b>".$watchId."</b>' changed value from   
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span>
+                                to
+                                <b>[disappeared]</b> 
                             ";
                         }
                     }

@@ -55,7 +55,7 @@ reboot
 
 **(OPTIONAL) Configure startup scripts to send an email on each reboot**
 * Install email tools: `apt-get -y install ssmtp mailutils` 
-* Edit ssmtp config: `nano /etc/ssmtp/ssmtp.conf` with the following config (gmail.com as an example):
+* Edit ssmtp config `/etc/ssmtp/ssmtp.conf` with the following config (gmail.com as an example):
 `````
 root=YOUR_GMAIL_USER@gmail.com
 mailhub=smtp.gmail.com:587
