@@ -198,12 +198,17 @@ class WebInterface
         }
         $output[] = "<br>";
         $output[] = "topic: ".$report['topic']."<br>";
-        $output[] = "CPU: <b>".$payload['cpu_temp']."</b>'C , <b>".($payload['cpu_freqency_mhz'] ?? "???")."</b> Mhz";
-        if ($payload['cpu_temp'] > 70) {
+
+        //CPU
+        $output[] = "CPU: <b>".$payload['cpu_temp']."</b>'C";
+        $output[] = ", ".($payload['cpu_freqency_min_mhz'] ?? "???")." - ".($payload['cpu_freqency_max_mhz'] ?? "???")." Mhz";
+        $output[] = " (".($payload['cpu_governor'] ?? "???").")";
+        if ($payload['cpu_temp'] > 75) {
             $output[] = "<watch id='cpuTemperature'><span class='warning'>high CPU temp.</span></watch>";
         }
         $output[] = "<br>";
 
+        //Boot times
         $output[] = "<watch id='bootTime'>";
         $output[] = "started at: ";
         if (!empty($payload['uptime_boot_local_time'])) {

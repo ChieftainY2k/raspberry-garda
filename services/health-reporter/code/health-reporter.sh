@@ -47,12 +47,15 @@ if [[ ${volts} != "1.20" ]]; then
     overvolts=$(calculate_overvolts ${volts})
 fi
 
+#TODO change to vcgencmd ?
 minFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
-minFreq=$(convert_to_MHz ${minFreq})
+minFreqMhz=$(convert_to_MHz ${minFreq})
 
+#TODO change to vcgencmd ?
 maxFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
-maxFreq=$(convert_to_MHz ${maxFreq})
+maxFreqMhz=$(convert_to_MHz ${maxFreq})
 
+#TODO change to vcgencmd ?
 freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq)
 freqMhz=$(convert_to_MHz ${freq})
 
@@ -112,7 +115,9 @@ messageJson=$(cat <<EOF
     "local_time":"${localTime}",
     "cpu_temp":"${temp}",
     "cpu_voltage":"${volts}",
-    "cpu_freqency_mhz":"${freqMhz}",
+    "cpu_freqency_min_mhz":"${minFreqMhz}",
+    "cpu_freqency_max_mhz":"${maxFreqMhz}",
+    "cpu_governor":"${governor}",
     "uptime_output":"${uptimeInfo}",
     "uptime_boot_local_time":"${uptimeBootDate}",
     "uptime_seconds":"${uptimeSeconds}",
