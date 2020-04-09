@@ -258,7 +258,7 @@ class ReportAnalyzer
                             $this->log("watcher '".$watchId."' appeared and was not in the last report.");
                             $output[] = "
                                 <li>
-                                Watcher '<b>".$watchId."</b>' changed from <b>[does not exist]</b> value   
+                                Watcher '<b>".$watchId."</b>' changed from <b>[does not exist]</b> to    
                                 <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($currentWatchDataTable[$watchId])."</span> 
                             ";
                         } elseif ($currentWatchDataTable[$watchId] != $previousReportWatchDataTable[$watchId]) {
@@ -278,7 +278,7 @@ class ReportAnalyzer
                             $this->log("watcher '".$watchId."' disappeared and was in the previous report.");
                             $output[] = "
                                 <li>
-                                Watcher '<b>".$watchId."</b>' changed value from   
+                                Watcher '<b>".$watchId."</b>' changed from   
                                 <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span>
                                 to
                                 <b>[disappeared]</b> 

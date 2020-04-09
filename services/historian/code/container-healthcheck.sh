@@ -31,3 +31,12 @@ fi
 log_message "checking http server..."
 curl --fail http://localhost > /dev/null
 check_errors $?
+
+log_message "checking seconds since last successful service health reporter run..."
+secondsSinceLastSuccess=$(expr $(date +%s) - $(stat -c %Y /tmp/health-reporter-success.flag))
+check_errors $?
+log_message "secondsSinceLastSuccess = ${secondsSinceLastSuccess}"
+if [[ "${secondsSinceLastSuccess}" -gt 1200 ]]; then
+    log_message "last successful run was later than expected."
+    exit 1
+fi

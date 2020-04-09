@@ -58,3 +58,7 @@ outputfile="/mydata/health-report.json"
 log_message "Saving health report to ${outputfile} , content = ${messageJson}"
 echo "${messageJson}" > ${outputfile}
 check_errors $?
+
+#set success flag for the container health reporter
+touch /tmp/health-reporter-success.flag
+check_errors $?
