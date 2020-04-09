@@ -28,4 +28,7 @@ if (empty($pdo)) {
 $garbageCollector = new \Historian\GarbageCollector($localSystemName, $pdo);
 $garbageCollector->run();
 
+//update success flag for container health reporter
+touch("/tmp/garbage-collector-success.flag");
+
 echo "[" . date("Y-m-d H:i:s") . "] finished.\n";

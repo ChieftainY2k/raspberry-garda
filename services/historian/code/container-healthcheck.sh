@@ -40,3 +40,12 @@ if [[ "${secondsSinceLastSuccess}" -gt 1200 ]]; then
     log_message "last successful run was later than expected."
     exit 1
 fi
+
+log_message "checking seconds since last successful garbage collector run..."
+secondsSinceLastSuccess=$(expr $(date +%s) - $(stat -c %Y /tmp/garbage-collector-success.flag))
+check_errors $?
+log_message "secondsSinceLastSuccess = ${secondsSinceLastSuccess}"
+if [[ "${secondsSinceLastSuccess}" -gt 172800 ]]; then
+    log_message "last successful run was later than expected."
+    exit 1
+fi

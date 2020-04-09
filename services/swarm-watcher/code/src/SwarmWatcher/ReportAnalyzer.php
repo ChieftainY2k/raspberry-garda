@@ -247,8 +247,8 @@ class ReportAnalyzer
                     //show specific changes
                     $output[] = "<div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfff;'>";
                     $output[] = "
-                        <div style='color: blue; font-size:12px;'>
-                            Report watch summary for <b>".$reportGardaName."</b>
+                        <div style='color: blue; font-size:14px;'>
+                            <b>".$reportGardaName."</b> - report summary
                         </div>
                     ";
                     $output[] = "<ul>";
@@ -292,8 +292,8 @@ class ReportAnalyzer
                     //show general report
                     $output[] = "
                         <div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfdf;'>
-                            <div style='color: blue; font-size:12px;'>
-                                Reports for <b>".$reportGardaName."</b>
+                            <div style='color: blue; font-size:14px;'>
+                                <b>".$reportGardaName."</b> - service reports 
                             </div>
                             <table border='0' cellpadding='0' cellspacing='1'>
                             <tr>

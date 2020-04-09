@@ -86,6 +86,13 @@ class TopicCollector
     {
         $this->logger->debug("received topic '".$message->topic."' with payload: '".$message->payload."'");
 
+        //ignore incoming looping back remote message about this garda
+        //(happens on containers restart when local mqtt server connects to remore mqtt server via mqtt bridge)
+        if ($message->topic == "remote/".getenv("KD_SYSTEM_NAME")."/healthcheck/report") {
+            $this->logger->debug("topic '".$message->topic."' is ignored.");
+            return;
+        }
+
         //save topic do the dedicated file
         $filePath = $this->collectedHealthReportsRootPath."/".(md5($message->topic)).".json";
         $filePathTmp = $filePath.".tmp";

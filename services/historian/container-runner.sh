@@ -58,6 +58,11 @@ check_errors $?
 cron &
 check_errors $?
 
+# Init container health reporter flags
+touch /tmp/health-reporter-success.flag
+check_errors_warning $?
+touch /tmp/garbage-collector-success.flag
+check_errors_warning $?
 
 # Init web interface
 log_message "starting web interface... "

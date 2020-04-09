@@ -37,6 +37,10 @@ check_errors_warning $?
 chmod u+x /code/container-healthcheck.sh
 check_errors_warning $?
 
+# Init container health reporter flags
+touch /tmp/health-reporter-success.flag
+check_errors_warning $?
+
 #wait for external service
 until nc -z -w30 mqtt-server 1883
 do
