@@ -18,11 +18,13 @@ check_errors()
     fi
 }
 
-
 log_message "running healthcheck..."
+
+if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
+    log_message "NOTICE: historian service is DISABLED, skipping container healthcheck"
+    exit 0
+fi
 
 log_message "checking http server..."
 curl --fail http://localhost > /dev/null
 check_errors $?
-
-
