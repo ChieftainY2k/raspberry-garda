@@ -26,16 +26,15 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
 
 if [[ "${KD_THERMOMETER_ENABLED}" != "1" ]]; then
     log_message "NOTICE: Thermometer service is DISABLED, going to sleep..."
     sleep infinity
     exit
 fi
-
-# fix permissions
-chmod u+x /code/container-healthcheck.sh
-check_errors $?
 
 log_message "probing for temperature sensors..."
 cat /sys/bus/w1/devices/28*/w1_slave

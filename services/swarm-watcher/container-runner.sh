@@ -26,6 +26,10 @@ check_errors $?
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 check_errors $?
 
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
+
 if [[ "${KD_SWARM_WATCHER_ENABLED}" != "1" ]]; then
     log_message "NOTICE: Swarm watcher service is DISABLED, going to sleep..."
     sleep infinity
@@ -35,10 +39,6 @@ fi
 if [[ "${KD_EMAIL_NOTIFICATION_ENABLED}" != "1" ]]; then
     log_message "WARNING: Email notification service required to send messages is DISABLED, email messages will not be sent."
 fi
-
-# fix permissions
-chmod u+x /code/container-healthcheck.sh
-check_errors $?
 
 # Install external libraries
 cd /code
