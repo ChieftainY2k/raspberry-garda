@@ -43,7 +43,7 @@ log_message "starting historian service..."
 
 # fix permissions
 chmod u+x /code/container-healthcheck.sh
-check_errors_warning $?
+check_errors $?
 
 # Install external libraries
 cd /code

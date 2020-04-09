@@ -36,8 +36,9 @@ if [[ "${KD_EMAIL_NOTIFICATION_ENABLED}" != "1" ]]; then
     log_message "WARNING: Email notification service required to send messages is DISABLED, email messages will not be sent."
 fi
 
-
-
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
 
 # Install external libraries
 cd /code

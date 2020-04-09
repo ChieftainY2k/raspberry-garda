@@ -24,7 +24,7 @@ log_message "running healthcheck..."
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
-    log_message "NOTICE: historian service is DISABLED, skipping container healthcheck"
+    log_message "service is DISABLED, skipping container healthcheck"
     exit 0
 fi
 

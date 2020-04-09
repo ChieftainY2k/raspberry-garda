@@ -106,7 +106,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/swarm-watcher
-            dockerfile: Dockerfile.swarm-watcher
         volumes:
             - ./services/swarm-watcher/code:/code
             - ./data/email-notification/:/data-email-notification
@@ -135,7 +134,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/thermometer
-            dockerfile: Dockerfile.thermometer
         volumes:
             - ./services/thermometer/code:/code
             - /etc/timezone:/etc/timezone:ro

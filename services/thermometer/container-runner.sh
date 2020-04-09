@@ -33,6 +33,9 @@ if [[ "${KD_THERMOMETER_ENABLED}" != "1" ]]; then
     exit
 fi
 
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
 
 log_message "probing for temperature sensors..."
 cat /sys/bus/w1/devices/28*/w1_slave
@@ -59,3 +62,4 @@ while sleep 1; do
 done
 
 sleep infinity
+
