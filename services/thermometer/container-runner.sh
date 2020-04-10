@@ -20,7 +20,7 @@ check_errors()
 
 log_message "starting thermometer service..."
 
-#load services configuration
+#load services configurationr
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
 # Workaround: preserve the environment for cron process

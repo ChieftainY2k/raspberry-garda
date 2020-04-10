@@ -39,6 +39,7 @@ Enjoy! :-)
 * Reboot
 
 **(OPTIONAL): Enable support for 1-Wire**
+If you plan to use thermometer service you must enable the 1-wire interface
 `````
 echo "dtoverlay=w1-gpio" >> /boot/config.txt
 echo "w1-gpio" >> /etc/modules
@@ -50,7 +51,8 @@ reboot
 **(OPTIONAL) Raspberry peformance tuning**
 * Set CPU overclocking to max available value (`raspi-config -> overclock`)
 * Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
-* Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`) 
+* Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`)
+* Disable bluetooth (see https://scribles.net/disabling-bluetooth-on-raspberry-pi) 
 * Reboot
 
 **(OPTIONAL) Configure startup scripts to send an email on each reboot**
