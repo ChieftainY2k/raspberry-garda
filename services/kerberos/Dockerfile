@@ -21,8 +21,15 @@ RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
 
-RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.6.1.deb -O /tmp/kerberos.deb
+#RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.6.1.deb -O /tmp/kerberos.deb
+RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.8.0.deb -O /tmp/kerberos.deb
 RUN dpkg -i /tmp/kerberos.deb
+
+RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 -O /usr/lib/arm-linux-gnueabihf/libx264.so.148
+#RUN sudo mv rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 /usr/lib/arm-linux-gnueabihf/libx264.so.148
+
+RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160
+#RUN sudo mv rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 /usr/lib/arm-linux-gnueabihf/libx265.so.160
 
 #Install WEB
 
@@ -33,7 +40,7 @@ ADD ./resources/nginx-kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
 RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
 
 USER www-data
-RUN cd /var/www/web && wget https://github.com/kerberos-io/web/releases/download/v2.5.1/web.tar.gz
+RUN cd /var/www/web && wget https://github.com/kerberos-io/web/releases/download/v2.8.0/web.tar.gz
 RUN cd /var/www/web && tar xvf web.tar.gz .
 RUN cd /var/www/web && rm -f xvf web.tar.gz
 

@@ -68,7 +68,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/kerberos
-            dockerfile: Dockerfile.kerberos
         volumes:
             - ./services/kerberos/code:/code
             - ./services/kerberos/resources:/resources
@@ -232,5 +231,6 @@ services:
     #            - /var/run/docker.sock:/var/run/docker.sock
     #            - ./data/portainer:/data
     #        restart: unless-stopped
+
 
 
