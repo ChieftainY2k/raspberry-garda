@@ -26,10 +26,8 @@ RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${
 RUN dpkg -i /tmp/kerberos.deb
 
 RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 -O /usr/lib/arm-linux-gnueabihf/libx264.so.148
-#RUN sudo mv rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 /usr/lib/arm-linux-gnueabihf/libx264.so.148
 
 RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160
-#RUN sudo mv rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 /usr/lib/arm-linux-gnueabihf/libx265.so.160
 
 #Install WEB
 
