@@ -68,7 +68,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/kerberos
-            dockerfile: Dockerfile.kerberos
         volumes:
             - ./services/kerberos/code:/code
             - ./services/kerberos/resources:/resources

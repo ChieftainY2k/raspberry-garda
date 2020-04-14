@@ -56,11 +56,13 @@ RUN chmod a+rwx /run/php/php7.0-fpm.sock
 ADD ./resources/crontab.txt /crontab.txt
 RUN crontab /crontab.txt
 
-# Add startup script
+# Startup scripts
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
 
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
+HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
+    CMD /code/container-healthcheck.sh
 
 EXPOSE 80
 EXPOSE 8889

@@ -25,6 +25,10 @@ printenv | grep -v "no_proxy" >> /etc/environment
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 check_errors $?
 
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
+
 if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
     log_message "NOTICE: KERBEROS service is DISABLED, going to sleep..."
     sleep infinity
