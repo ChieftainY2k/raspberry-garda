@@ -71,6 +71,14 @@ check_errors $?
 /code/autoremoval.sh
 check_errors $?
 
+
+# Init container health reporter flags
+touch /tmp/health-reporter-success.flag
+check_errors_warning $?
+touch /tmp/autoremove-success.flag
+check_errors_warning $?
+
+
 # Init crontab and cron process
 log_message "starting syslog..."
 rsyslogd &
