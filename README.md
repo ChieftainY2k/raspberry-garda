@@ -87,10 +87,14 @@ echo "$BODY" | mail -s "$SUBJECT" YOUR_GMAIL_USER@gmail.com
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
-1. (optional) Run `sudo ./garda.sh watchdog install` to install watchdog scripts to reboot host or perform some other "last resort" operations when something is wrong (i.e. internet connection is lost)
+
+**(OPTIONAL) Watchdog installation**
+
+1. (optional) Run `sudo ./garda.sh watchdog install` to install garda watchdog scripts to reboot host or perform some other "last resort" operations when something is wrong (i.e. internet connection is lost)
+1. (optional) Configure low-level system watchdog (see https://medium.com/@arslion/enabling-watchdog-on-raspberry-pi-b7e574dcba6b) 
 
 
-**Starting up**
+**Starting up Raspberry Garda**
 
 1. Run `sudo ./garda.sh start`
 1. Go to the kerberos installation page at `http://_YOUR_RASPBERRY_PI_ADDRESS_`
