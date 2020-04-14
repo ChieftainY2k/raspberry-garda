@@ -29,7 +29,7 @@ if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
 fi
 
 log_message "checking http server..."
-curl --fail http://localhost > /dev/null
+curl --silent --fail http://localhost > /dev/null
 check_errors $?
 
 log_message "checking seconds since last successful service health reporter run..."
