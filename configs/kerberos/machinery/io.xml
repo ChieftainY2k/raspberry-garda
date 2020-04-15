@@ -10,8 +10,8 @@
         <throttler type="number">1</throttler>
     </Disk>
     <Video>
-        <fps type="number">10</fps>
-        <recordAfter type="number">1</recordAfter>
+        <fps type="number">20</fps>
+        <recordAfter type="number">5</recordAfter>
         <maxDuration type="number">30</maxDuration>
         <extension type="number">mp4</extension>
         <codec type="number">h264</codec>
