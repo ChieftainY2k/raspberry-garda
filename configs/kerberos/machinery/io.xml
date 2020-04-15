@@ -5,7 +5,7 @@
         <fileFormat type="text">timestamp_microseconds_instanceName_regionCoordinates_numberOfChanges_token.jpg</fileFormat>
         <directory type="text">/etc/opt/kerberosio/capture/</directory>
         <markWithTimestamp type="bool">true</markWithTimestamp>
-        <timestampColor type="text">none</timestampColor>
+        <timestampColor type="text">white</timestampColor>
         <privacy type="bool">false</privacy>
         <throttler type="number">1</throttler>
     </Disk>
@@ -20,7 +20,7 @@
         <hardwareDirectory type="text">/etc/opt/kerberosio/h264/</hardwareDirectory>
         <enableHardwareEncoding type="bool">true</enableHardwareEncoding>
         <markWithTimestamp type="bool">false</markWithTimestamp>
-        <timestampColor type="text">none</timestampColor>
+        <timestampColor type="text">white</timestampColor>
         <privacy type="bool">false</privacy>
         <throttler type="number">0</throttler>
     </Video>
@@ -37,8 +37,8 @@
         <throttler type="number">0</throttler>
     </TCPSocket>
     <Webhook>
-        <url type="text">http://webhook-php:8080</url>
-        <throttler type="number">5</throttler>
+        <url type="text">http://localhost/api/v1/webhook</url>
+        <throttler type="number">0</throttler>
     </Webhook>
     <Script>
         <path type="text">/etc/opt/kerberosio/scripts/run.sh</path>
@@ -49,6 +49,7 @@
         <verifycn type="bool">false</verifycn>
         <server type="number">mqtt-server</server>
         <port type="number">1883</port>
+        <clientId type="text"></clientId>
         <topic type="text">kerberos/motiondetected</topic>
         <username type="text"></username>
         <password type="text"></password>
@@ -57,7 +58,7 @@
     <Pushbullet>
         <url type="text">https://api.pushbullet.com</url>
         <token type="text">o.mC5LPVCvPCphtSsEgWZQpFM86w9ciWQ3</token>
-        <throttler type="number">10</throttler>
+        <throttler type="number">10</throttler> 
     </Pushbullet>
 
 </ios>

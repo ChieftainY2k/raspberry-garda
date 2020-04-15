@@ -2,10 +2,9 @@
 <captures>
 
     <IPCamera>
-        <!--<url type="text">rtsp://127.0.0.1:9000/stream</url>-->
-        <url type="text">http://streamer-mjpg:9000/?action=stream</url>
-        <frameWidth type="number">1280</frameWidth>
-        <frameHeight type="number">720</frameHeight>
+        <url type="text">rtsp://admin:888888@192.168.0.13/tcp/av0_1</url>
+        <frameWidth type="number">640</frameWidth>
+        <frameHeight type="number">480</frameHeight>
         <delay type="number">500</delay>
         <angle type="number">0</angle>
     </IPCamera>

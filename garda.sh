@@ -33,6 +33,7 @@ helper()
     $0 install - install and configure core and services
     $0 check   - check workspace and hardware sanity
     $0 status  - show current status of containers and applications
+    $0 cleanup - clean all unnecessary data (usused images, containers, files etc.)
 
     $0 watchdog install - install watchdog checks in the host cron table
     $0 watchdog check   - run watchdog checks
@@ -181,7 +182,7 @@ start()
     docker-compose ${DOCKER_PARAMS} up -d --remove-orphans ${SERVICE}
     check_errors $?
 
-    cleanup
+#    cleanup
 
     status
     log_message "Containers started. Use '$0 log' to see container logs."
@@ -373,4 +374,3 @@ case ${ARG1} in
         exit 1
         ;;
 esac
-
