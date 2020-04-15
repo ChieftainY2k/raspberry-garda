@@ -23,13 +23,18 @@ log_message "running healthcheck..."
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
-if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
+if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
     log_message "service is DISABLED, skipping container healthcheck"
     exit 0
 fi
 
 log_message "checking http server..."
 curl --silent --fail http://localhost > /dev/null
+check_errors $?
+
+#check the health of the kerberos stream
+log_message "checking video stream..."
+ffmpegOutput=$(ffprobe http://localhost:8889 2>&1)
 check_errors $?
 
 log_message "checking seconds since last successful service health reporter run..."
@@ -41,11 +46,11 @@ if [[ "${secondsSinceLastSuccess}" -gt 1200 ]]; then
     exit 1
 fi
 
-log_message "checking seconds since last successful garbage collector run..."
-secondsSinceLastSuccess=$(expr $(date +%s) - $(stat -c %Y /tmp/garbage-collector-success.flag))
+log_message "checking seconds since last successful autoremove run..."
+secondsSinceLastSuccess=$(expr $(date +%s) - $(stat -c %Y /tmp/autoremove-success.flag))
 check_errors $?
 log_message "secondsSinceLastSuccess = ${secondsSinceLastSuccess}"
-if [[ "${secondsSinceLastSuccess}" -gt 172800 ]]; then
+if [[ "${secondsSinceLastSuccess}" -gt 1200 ]]; then
     log_message "last successful run was later than expected."
     exit 1
 fi

@@ -106,25 +106,22 @@ install()
     apt install -y \
          apt-transport-https ca-certificates \
          curl wget telnet gnupg2 software-properties-common \
-         git mc multitail htop jnettop python python-pip joe pydf \
-         build-essential libssl-dev libffi-dev python-dev \
-         docker docker-compose
+         git mc multitail htop jnettop python3 python3-pip joe pydf \
+         build-essential libssl-dev libffi-dev python-dev
     check_errors $?
 
-#    log_message "Installing docker..."
-#    curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-#    check_errors $?
-#    chmod u+x /tmp/get-docker.sh
-#    check_errors $?
-#    /tmp/get-docker.sh
-#    check_errors $?
-#
-#    # Install Docker Compose from pip
-#    log_message "Installing docker-compose..."
-#    apt-get install -y python3 python3-pip libffi-dev libssl-dev
-#    check_errors $?
-#    pip3 install docker-compose
-#    check_errors $?
+    log_message "Installing docker..."
+    curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+    check_errors $?
+    chmod u+x /tmp/get-docker.sh
+    check_errors $?
+    /tmp/get-docker.sh
+    check_errors $?
+
+    # Install Docker Compose from pip
+    log_message "Installing docker-compose..."
+    pip3 install docker-compose
+    check_errors $?
 
     log_message "IP address: $ipAddress"
     log_message "Available disk space: $availableDiskSpaceKb kb."

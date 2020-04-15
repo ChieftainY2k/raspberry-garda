@@ -107,3 +107,7 @@ EOF
 fi
 
 log_message "cleanup finished."
+
+#set success flag for the container health reporter
+touch /tmp/autoremove-success.flag
+check_errors $?
