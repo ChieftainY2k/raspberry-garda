@@ -13,7 +13,9 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     libjpeg62-turbo-dev cmake git mc joe multitail make cmake make \
     sudo g++ libav-tools libssl-dev wget curl \
     mosquitto-clients rpi-update cron rsyslog tmpreaper strace \
-    libraspberrypi-bin
+    libraspberrypi-bin \
+    stretch \
+    nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 
 #Install VideoCore libraries etc.
 
@@ -32,8 +34,6 @@ RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${
 
 #Install WEB
 
-RUN apt-get update && apt-get install -y -t stretch \
-    nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 RUN rm -f /etc/nginx/sites-enabled/default
 ADD ./resources/nginx-kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
 RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
