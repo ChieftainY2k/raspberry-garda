@@ -18,6 +18,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
 
 #Install VideoCore libraries etc.
 
+RUN usermod -aG video $USER
 RUN echo "y" | rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 
