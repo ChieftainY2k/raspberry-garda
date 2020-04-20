@@ -18,6 +18,15 @@ check_errors()
     fi
 }
 
+#check for errors
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details, moving on..."
+    fi
+}
+
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
@@ -35,7 +44,7 @@ if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
     exit
 fi
 
-log_message "starting the kerberos service..."
+log_me_ssage "starting the kerberos service..."
 
 # replace kerberos web config with a link to the dockerized one
 check_errors $?
