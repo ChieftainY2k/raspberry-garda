@@ -12,7 +12,8 @@ RUN echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib 
 RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     libjpeg62-turbo-dev cmake git mc joe multitail make cmake make \
     sudo g++ libav-tools libssl-dev wget curl \
-    mosquitto-clients rpi-update cron rsyslog tmpreaper strace
+    mosquitto-clients rpi-update cron rsyslog tmpreaper strace \
+    libraspberrypi-bin
 
 #Install VideoCore libraries etc.
 
