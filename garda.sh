@@ -125,7 +125,6 @@ install()
     check_errors $?
 
     log_message "IP address: $ipAddress"
-    log_message "Available disk space: $availableDiskSpaceKb kb."
     log_message "Probing for available disk space..."
     pydf
     check_errors $?
