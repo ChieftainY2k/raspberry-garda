@@ -21,7 +21,6 @@ RUN yes | rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
-
 #RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.6.1/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.6.1.deb -O /tmp/kerberos.deb
 RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.8.0.deb -O /tmp/kerberos.deb
 RUN dpkg -i /tmp/kerberos.deb

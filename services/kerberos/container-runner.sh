@@ -44,7 +44,7 @@ if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
     exit
 fi
 
-log_me_ssage "starting the kerberos service..."
+log_message "starting the kerberos service..."
 
 # replace kerberos web config with a link to the dockerized one
 check_errors $?
