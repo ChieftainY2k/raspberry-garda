@@ -14,7 +14,6 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     sudo g++ libav-tools libssl-dev wget curl \
     mosquitto-clients rpi-update cron rsyslog tmpreaper strace \
     libraspberrypi-bin \
-    stretch \
     nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 
 #Install VideoCore libraries etc.
@@ -33,7 +32,6 @@ RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${
 RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160
 
 #Install WEB
-
 RUN rm -f /etc/nginx/sites-enabled/default
 ADD ./resources/nginx-kerberosio.conf /etc/nginx/sites-enabled/kerberosio.conf
 RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
