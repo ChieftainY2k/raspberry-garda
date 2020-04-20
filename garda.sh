@@ -66,7 +66,7 @@ get_raspberry_version_for_kerberos_build()
 {
     local raspberryHardware=$(get_raspberry_hardware)
     if [[ "$raspberryHardware" =~ "Raspberry Pi 4 Model" ]]; then
-        echo "3"
+        echo "4"
     elif [[ "$raspberryHardware" =~ "Raspberry Pi 3 Model" ]]; then
         echo "3"
     else
