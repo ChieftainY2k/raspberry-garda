@@ -13,13 +13,11 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     libjpeg62-turbo-dev cmake git mc joe multitail make cmake make \
     sudo g++ libav-tools libssl-dev wget curl \
     mosquitto-clients rpi-update cron rsyslog tmpreaper strace \
-    libraspberrypi-bin \
     nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 
 #Install VideoCore libraries etc.
 
-RUN usermod -aG video $USER
-RUN echo "y" | rpi-update
+RUN yes | rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
