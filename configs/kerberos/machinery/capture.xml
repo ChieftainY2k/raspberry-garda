@@ -20,7 +20,7 @@
 
     <RaspiCamera>
         <frameWidth type="number">1280</frameWidth>
-        <frameHeight type="number">720</frameHeight>
+        <frameHeight type="number">960</frameHeight>
         <delay type="number">100</delay>
         <angle type="number">0</angle>
         <framerate type="number">10</framerate>
