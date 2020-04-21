@@ -232,7 +232,12 @@ class WebInterface
             $ngrokUrl = "http://".$payload['services']['ngrok']['report']['ngrok_url']."";
             $output[] = "ngrok url: <a href='".$ngrokUrl."'>".$ngrokUrl."</a><br>";
             $videoStreamUrl = $ngrokUrl."/video";
-            $output[] = "video stream: <a href='".$videoStreamUrl."'>".$videoStreamUrl."</a><br>";
+            $elementId = uniqid("");
+            $output[] = "<div>";
+            $output[] = "video stream: <a href='".$videoStreamUrl."'>".$videoStreamUrl."</a>";
+            $output[] = " (<a href='#' onclick='document.getElementById(\"$elementId\").src=\"$videoStreamUrl\"'>show</a>)";
+            $output[] = "<div><a href='$videoStreamUrl'><img id='$elementId' style='width:100%'></a></div>";
+            $output[] = "</div>";
         }
 
         if ($version == 1) {
