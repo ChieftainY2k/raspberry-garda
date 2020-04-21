@@ -96,10 +96,6 @@ log_message "starting cron..."
 cron &
 check_errors $?
 
-log_message "starting ssh server..."
-/usr/sbin/sshd -D &
-check_errors $?
-
 # Init machinery
 while sleep 1; do
     log_message "starting kerberos-io machinery..."
@@ -109,4 +105,3 @@ while sleep 1; do
 done
 
 #sleep infinity
-#
