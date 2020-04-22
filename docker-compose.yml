@@ -82,8 +82,10 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
-        privileged: true
         restart: unless-stopped
+        devices:
+          - /dev/vcsm
+          - /dev/vchiq
 
     email-notification:
         env_file:
