@@ -35,7 +35,7 @@ usedPercent=$(df -h | grep ${partition} | head -1 | awk -F' ' '{ print $5/1 }' |
 #spaceTotalKb=$(df --sync $imagedir | tail -1 | awk '{print $1}') # total space (free+used)
 spaceUsedKb=$(df --sync ${imageDir} | tail -1 | awk '{print $2}') # used space
 spaceAvailableKb=$(df --sync ${imageDir} | tail -1 | awk '{print $4}') # currently available free space on device
-filesCount=$(find ${imageDir}| wc -l) # number of captured files
+filesCount=$(ls -f ${imageDir}| wc -l) # number of captured files
 totalFilesSizeKb=$(du ${imageDir} | tail -1 | awk '{print $1}') # total size of captured files
 log_message "partition $partition for $imageDir is used in $usedPercent percent ($spaceAvailableKb kb available), capture dir has $filesCount files (using $totalFilesSizeKb kb in total)"
 
