@@ -32,7 +32,7 @@ Enjoy! :-)
 * Grab the newest Raspbian (Buster Lite) from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
 * Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 * Configure your time zone (`raspi-config -> localisation -> change timezone`)
-* If you want to use camera then enable the camera module support (`raspi-config -> interfacing -> camera`)
+* Enable the camera module support (`raspi-config -> interfacing -> camera`)
 * If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
 * If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
 * If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)

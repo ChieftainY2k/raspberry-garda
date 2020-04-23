@@ -68,8 +68,7 @@ done
 while sleep 1; do
     echo "Starting the swarm watcher MQTT topics collector."
     php -f /code/topic-collector.php
-    check_errors $?
-    echo "Swarm watcher MQTT topics collector finished, sleeping and starting again..."
+    echo "Swarm watcher MQTT topics collector finished with exit code $? , sleeping and starting again..."
     sleep 20
 done
 

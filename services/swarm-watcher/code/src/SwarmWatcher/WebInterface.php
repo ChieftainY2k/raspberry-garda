@@ -257,7 +257,7 @@ class WebInterface
             //scan all services
             foreach ($payload['services'] as $serviceName => $serviceReportFullData) {
                 $output[] = "<service id='".$serviceName."'>";
-                $output[] = "<div class='service'>";
+                $output[] = "<div class='".(!empty($serviceReportFullData['is_enabled']) ? "serviceEnabled" : "serviceDisabled")."'>";
                 //report meta-data
                 $output[] = "<watch id='serviceIsEnabled-".$serviceName."'>";
                 $output[] = "<b><u>".$serviceName."</u></b> (".(!empty($serviceReportFullData['is_enabled']) ? "enabled" : "<span class='notice'>disabled</span>").")<br>";
@@ -333,12 +333,23 @@ class WebInterface
                     vertical-align:top; 
                 }
                 
-                .service {
+                .serviceEnabled {
                     border: 1px solid #aaa;
                     border-radius: 3px;
                     margin: 1px;
                     padding: 2px;
                     background: #efefef;
+                    color: black;
+                    font-size:11px;
+                    //vertical-align:top; 
+                }
+                
+                .serviceDisabled {
+                    border: 1px solid #aaa;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 2px;
+                    background: #dddddd;
                     color: black;
                     font-size:11px;
                     //vertical-align:top; 
@@ -413,4 +424,3 @@ class WebInterface
     }
 
 }
-

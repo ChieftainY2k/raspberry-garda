@@ -336,8 +336,27 @@ watchdog()
                     log_message "CRITICAL: still no network connection, rebooting..."
                     /sbin/shutdown -r now "Rebooting on network loss."
                 fi
-
             fi
+
+            log_message "checking containers..."
+            dockerPsOutput=$(docker ps -a)
+            if [[ $? != 0 ]]
+            then
+                log_message "cannot get containers list, 'docker ps' returned a nonzero exit code, rebooting..."
+                #/sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
+            else
+                log_message "OK, got containers list"
+            fi
+
+            unhealthyContainersCount=$(echo ${dockerPsOutput} | grep unhealthy | wc -l)
+            if [[ "${unhealthyContainersCount}" != "0" ]]
+            then
+                log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
+                #/sbin/shutdown -r now "rebooting because there are unhealthy containers"
+            else
+                log_message "OK, there are no unhealthy containers"
+            fi
+
             ;;
         *)
             helper
