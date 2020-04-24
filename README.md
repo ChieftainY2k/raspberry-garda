@@ -88,10 +88,24 @@ echo "$BODY" | mail -s "$SUBJECT" YOUR_GMAIL_USER@gmail.com
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
 
-**(OPTIONAL) Watchdog installation**
+**(OPTIONAL) Garda watchdog installation**
 
-1. (optional) Run `sudo ./garda.sh watchdog install` to install garda watchdog scripts to reboot host or perform some other "last resort" operations when something is wrong (i.e. internet connection is lost)
-1. (optional) Configure low-level system watchdog (see https://medium.com/@arslion/enabling-watchdog-on-raspberry-pi-b7e574dcba6b) 
+Run `sudo ./garda.sh watchdog install` to install garda watchdog scripts to reboot host or perform some other "last resort" operations when something is wrong (i.e. internet connection is lost)
+
+**(OPTIONAL) Hardware watchdog installation**
+
+Configure low-level system watchdog:
+
+```
+sudo modprobe bcm2835_wdt
+echo "bcm2835_wdt" | sudo tee -a /etc/modules
+sudo apt-get install watchdog
+sudo update-rc.d watchdog defaults
+echo "watchdog-timeout = 15" >> /etc/watchdog.conf
+sed -i "s/^#max-load-1[^1-9].*/max-load-1 = 24/g"  /etc/watchdog.conf
+sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
+sudo service watchdog start
+``` 
 
 
 **Starting up Raspberry Garda**

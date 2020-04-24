@@ -184,6 +184,14 @@ class WebInterface
         $payload = $report['payload'];
         $version = $payload['version'];
         $systemName = $payload['system_name'];
+
+        if (empty($payload))
+        {
+            $output[] = "<div class='warning'>EMPTY REPORT DATA</div>";
+            $output[] = "<div>topic: ".$report['topic']."</div>";
+            return join("", $output);
+        }
+
         //$minutesAgo = floor((time() - $payload['timestamp']) / (60));
 
         $output[] = "<report id='".basename($systemName)."'>";

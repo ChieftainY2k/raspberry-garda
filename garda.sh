@@ -343,7 +343,7 @@ watchdog()
             if [[ $? != 0 ]]
             then
                 log_message "cannot get containers list, 'docker ps' returned a nonzero exit code, rebooting..."
-                #/sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
+                /sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
             else
                 log_message "OK, got containers list"
             fi
@@ -352,7 +352,7 @@ watchdog()
             if [[ "${unhealthyContainersCount}" != "0" ]]
             then
                 log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
-                #/sbin/shutdown -r now "rebooting because there are unhealthy containers"
+                /sbin/shutdown -r now "rebooting because there are unhealthy containers"
             else
                 log_message "OK, there are no unhealthy containers"
             fi
