@@ -265,13 +265,16 @@ status()
     log_message "IP address: $(get_ip_address)"
 
     log_message "Probing for available disk space..."
-    pydf
+    pydf | grep -v overlay
 
     log_message "Probing for container status..."
     docker-compose ${DOCKER_PARAMS} ps
 
-    log_message "checking cron for watchdog..."
+    log_message "checking cron for garda watchdog..."
     crontab -l | grep watchdog
+
+    log_message "checking hardware watchdog service..."
+    service watchdog status
 }
 
 shell()
