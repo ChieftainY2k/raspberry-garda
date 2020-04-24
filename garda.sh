@@ -35,8 +35,9 @@ helper()
     $0 status  - show current status of containers and applications
     $0 cleanup - clean all unnecessary data (usused images, containers, files etc.)
 
-    $0 watchdog install - install watchdog checks in the host cron table
-    $0 watchdog check   - run watchdog checks
+    $0 watchdog install         - install garda watchdog checks in the host cron table
+    $0 watchdog installhardware - install hardware watchdog
+    $0 watchdog check           - run garda watchdog checks
 
     $0 start   <sevice>  - start container(s)
     $0 stop    <sevice>  - stop containers(s)
