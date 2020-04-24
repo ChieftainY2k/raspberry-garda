@@ -94,19 +94,7 @@ Run `sudo ./garda.sh watchdog install` to install garda watchdog scripts to rebo
 
 **(OPTIONAL) Hardware watchdog installation**
 
-Configure low-level system watchdog:
-
-```
-sudo modprobe bcm2835_wdt
-echo "bcm2835_wdt" | sudo tee -a /etc/modules
-sudo apt-get install watchdog
-sudo update-rc.d watchdog defaults
-echo "watchdog-timeout = 15" >> /etc/watchdog.conf
-sed -i "s/^#max-load-1[^1-9].*/max-load-1 = 24/g"  /etc/watchdog.conf
-sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
-sudo service watchdog start
-``` 
-
+Configure low-level system watchdog: `sudo ./garda.sh watchdog installhardware`
 
 **Starting up Raspberry Garda**
 

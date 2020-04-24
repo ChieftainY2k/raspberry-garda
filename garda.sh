@@ -314,6 +314,48 @@ watchdog()
             check_errors $?
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
             ;;
+        installhardware)
+            log_message "installing module bcm2835_wdt..."
+            modprobe bcm2835_wdt
+            check_errors $?
+            log_message "creating temporary file for modules..."
+            cat /etc/modules | grep -v "bcm2835_wdt" > /tmp/modules
+            check_errors $?
+            log_message "inserting module into temporary file..."
+            echo "bcm2835_wdt" >> /tmp/modules
+            check_errors $?
+            log_message "backing up /etc/modules..."
+            cp /etc/modules /etc/modules.$(date '+%Y%m%d%H%M%S')
+            check_errors $?
+            log_message "replacing /ect/modules with temporary file..."
+            mv /tmp/modules /etc/modules
+            check_errors $?
+            log_message "installing watchdog package..."
+            apt-get -y install watchdog
+            check_errors $?
+            log_message "configuring rc scripts..."
+            update-rc.d watchdog defaults
+            check_errors $?
+            log_message "backing up /etc/watchdog.conf..."
+            cp /etc/watchdog.conf /etc/watchdog.conf.$(date '+%Y%m%d%H%M%S')
+            check_errors $?
+            log_message "updating /etc/watchdog.conf..."
+            echo "watchdog-timeout = 15" >> /etc/watchdog.conf
+            check_errors $?
+            log_message "updating /etc/watchdog.conf..."
+            sed -i "s/^#max-load-1[^1-9].*/max-load-1 = 24/g"  /etc/watchdog.conf
+            check_errors $?
+            log_message "updating /etc/watchdog.conf..."
+            sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
+            check_errors $?
+            log_message "starting watchdog service..."
+            service watchdog start
+            check_errors $?
+            log_message "probing watchdog service status..."
+            service watchdog status
+            check_errors $?
+            log_message "OK, hardware watchdog successfully installed"
+            ;;
         run)
             log_message "checking internet connection..."
             ping -c5 1.1.1.1
