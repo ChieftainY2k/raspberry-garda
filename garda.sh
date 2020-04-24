@@ -315,13 +315,13 @@ watchdog()
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
             ;;
         installhardware)
-            log_message "installing module bcm2835_wdt..."
+            log_message "installing watchdog kernel module..."
             modprobe bcm2835_wdt
             check_errors $?
             log_message "creating temporary file for modules..."
             cat /etc/modules | grep -v "bcm2835_wdt" > /tmp/modules
             check_errors $?
-            log_message "inserting module into temporary file..."
+            log_message "inserting watchdog kernel module into temporary file..."
             echo "bcm2835_wdt" >> /tmp/modules
             check_errors $?
             log_message "backing up /etc/modules..."
