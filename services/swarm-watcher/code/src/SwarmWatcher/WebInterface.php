@@ -233,7 +233,7 @@ class WebInterface
 
         $diskSpaceGB = $payload['disk_space_available_kb'] / (1024 * 1024);
         $output[] = "disk space avail: <b>".(number_format($diskSpaceGB, 2, '.', ''))." GB</b>";
-        if ($diskSpaceGB < 1.0) {
+        if ($diskSpaceGB < 0.8) {
             $output[] = "<watch id='lowDiskSpace'><span class='warning'>low disk space</span></watch>";
         }
         $output[] = "<br>";
