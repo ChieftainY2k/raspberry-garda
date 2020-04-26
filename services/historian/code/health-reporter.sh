@@ -24,11 +24,11 @@ timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
 
 log_message "getting entries count..."
-entriesCount=$(/usr/bin/sqlite3 /mydata/mqtt-history.sqlite "select count(*) from mqtt_events")
+entriesCount=$(/usr/bin/sqlite3 -cmd ".timeout 10000" /mydata/mqtt-history.sqlite "select count(*) from mqtt_events")
 check_errors $?
 
 log_message "getting oldest entry timestamp..."
-oldestTimestamp=$(/usr/bin/sqlite3 /mydata/mqtt-history.sqlite "select min(timestamp) from mqtt_events")
+oldestTimestamp=$(/usr/bin/sqlite3 -cmd ".timeout 10000" /mydata/mqtt-history.sqlite "select min(timestamp) from mqtt_events")
 check_errors $?
 
 log_message "getting oldest entry local time..."
