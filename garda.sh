@@ -110,6 +110,7 @@ install()
          curl wget telnet gnupg2 software-properties-common \
          git mc multitail htop jnettop python3 python3-pip joe pydf \
          build-essential libssl-dev libffi-dev python-dev
+
     check_errors $?
 
     log_message "Installing docker..."
@@ -307,10 +308,13 @@ watchdog()
 
     case ${ARG1} in
         install)
+            log_message "installing packages..."
+            apt-get -qy install tmpreaper
+            check_errors $?
             log_message "installing cron script for watchdog..."
             crontab -l | grep -v "$(basename ${0}) watchdog run" > /tmp/garda-crontab.txt
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
-            echo "*/30 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            echo "*/30 * * * * tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ ; /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
             log_message "checking crontab..."
