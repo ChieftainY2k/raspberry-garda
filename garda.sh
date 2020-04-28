@@ -314,7 +314,7 @@ watchdog()
             log_message "installing cron script for watchdog..."
             crontab -l | grep -v "$(basename ${0}) watchdog run" > /tmp/garda-crontab.txt
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
-            echo "*/30 * * * * tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ ; /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            echo "*/30 * * * * /usr/sbin/tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ ; /usr/bin/flock -w 0 /tmp/gardca-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
             log_message "checking crontab..."
@@ -347,13 +347,13 @@ watchdog()
             log_message "backing up /etc/watchdog.conf..."
             cp /etc/watchdog.conf /etc/watchdog.conf.$(date '+%Y%m%d%H%M%S')
             check_errors $?
-            log_message "updating /etc/watchdog.conf..."
+            log_message "updating /etc/watchdog.conf [1]..."
             echo "watchdog-timeout = 15" >> /etc/watchdog.conf
             check_errors $?
-            log_message "updating /etc/watchdog.conf..."
+            log_message "updating /etc/watchdog.conf [2]..."
             sed -i "s/^#max-load-1[^1-9].*/max-load-1 = 24/g"  /etc/watchdog.conf
             check_errors $?
-            log_message "updating /etc/watchdog.conf..."
+            log_message "updating /etc/watchdog.conf [3]..."
             sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
             check_errors $?
             log_message "starting watchdog service..."
