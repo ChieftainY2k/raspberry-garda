@@ -30,6 +30,10 @@ check_errors_warning()
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+check_errors $?
+
 # fix permissions
 chmod u+x /code/container-healthcheck.sh
 check_errors $?
@@ -39,7 +43,6 @@ if [[ "${KD_EMAIL_NOTIFICATION_ENABLED}" != "1" ]]; then
     sleep infinity
     exit
 fi
-
 
 chmod u+x /code/queue-test-email.sh
 check_errors $?
