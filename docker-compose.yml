@@ -92,7 +92,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/email-notification
-            dockerfile: Dockerfile.email-notification
         volumes:
             - ./services/email-notification/code:/code
             - ./data/email-notification/:/mydata
