@@ -29,7 +29,7 @@ Enjoy! :-)
 
 **Raspberry preparation**
 
-* Grab the newest Raspbian (Buster Lite) from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
+* Grab the Raspbian Buster Lite from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
 * Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 * Configure your time zone (`raspi-config -> localisation -> change timezone`)
 * Enable the camera module support (`raspi-config -> interfacing -> camera`)
@@ -56,17 +56,21 @@ reboot
 * Reboot
 
 **(OPTIONAL) Configure startup scripts to send an email on each reboot**
-* Install email tools: `apt-get -y install ssmtp mailutils` 
-* Edit ssmtp config `/etc/ssmtp/ssmtp.conf` with the following config (gmail.com as an example):
+* Install email tools: `apt-get install -y msmtp msmtp-mta` 
+* Edit ssmtp config `/etc/msmtprc` with your config (gmail.com as an example below):
 `````
-root=YOUR_GMAIL_USER@gmail.com
-mailhub=smtp.gmail.com:587
-hostname=gmail.com
-rewriteDomain=gmail.com
-AuthUser=YOUR_GMAIL_USER
-AuthPass=YOUR_GMAIL_PASSWORD
-FromLineOverride=YES
-UseSTARTTLS=YES
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+account gmail.com
+host smtp.gmail.com
+port 587
+from xxxxxxxxxxxxxx@gmail.com
+user xxxxxxxxxxxxxx
+password yyyyyyyyyyyyyyyyyyyy
+account default : gmail.com
+
 ````` 
 * Edit local startup script `nano /etc/rc.local` , add the following snippet:
 `````
