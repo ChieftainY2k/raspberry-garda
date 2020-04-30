@@ -136,8 +136,8 @@ install()
 
 check()
 {
-    log_message "Checking config file..."
-    stat ./configs/services.conf
+    log_message "Checking configs/services.conf..."
+    stat ./configs/services.conf > /dev/null
     check_errors $?
 
     #load vars
@@ -162,6 +162,15 @@ check()
 
     log_message "Checking docker installation, attempting to run a simple container..."
     docker run --rm hypriot/armhf-hello-world
+    check_errors $?
+
+    log_message "Checking the filesystem WRITE performance..."
+    sync; dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024
+    check_errors $?
+    log_message "Checking the filesystem READ performance..."
+    sync; echo 3 > /proc/sys/vm/drop_caches
+    check_errors $?
+    sync; dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024
     check_errors $?
 
 }
