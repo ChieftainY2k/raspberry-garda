@@ -401,6 +401,7 @@ watchdog()
             unhealthyContainersCount=$(echo ${dockerPsOutput} | grep unhealthy | wc -l)
             if [[ "${unhealthyContainersCount}" != "0" ]]
             then
+                #@TODO make a recovery attempt by restarting all containers...
                 log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
                 /sbin/shutdown -r now "rebooting because there are unhealthy containers"
             else
