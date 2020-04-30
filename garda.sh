@@ -180,6 +180,11 @@ check()
     sync; dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024 oflag=dsync
     check_errors $?
 
+    log_message "removing temporary files..."
+    rm -f /tmp/test.tmp
+    check_errors $?
+    log_message "all checks completed."
+
 }
 
 stop()
