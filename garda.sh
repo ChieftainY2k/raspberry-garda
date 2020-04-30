@@ -94,7 +94,7 @@ install()
     log_message "Hardware: $(get_raspberry_hardware)"
     log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
-    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
+#    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $(get_ip_address)"
 
     log_message "Updating packages..."
@@ -136,13 +136,20 @@ install()
 
 check()
 {
+    log_message "Hardware: $(get_raspberry_hardware)"
+    log_message "Kernel: $(uname -a)"
+    log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
+    log_message "IP address: $(get_ip_address)"
+
+    log_message "Probing for available disk space..."
+    pydf | grep -v overlay
+
     log_message "Checking configs/services.conf..."
     stat ./configs/services.conf > /dev/null
     check_errors $?
 
     #load vars
     . ./configs/services.conf
-
 
     #@FIXME move this check to the service ?
     if [[ "${KD_KERBEROS_ENABLED}" == "1" ]]; then
@@ -165,12 +172,12 @@ check()
     check_errors $?
 
     log_message "Checking the filesystem WRITE performance..."
-    sync; dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024
+    sync; dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024 oflag=dsync
     check_errors $?
     log_message "Checking the filesystem READ performance..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     check_errors $?
-    sync; dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024
+    sync; dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024 oflag=dsync
     check_errors $?
 
 }
