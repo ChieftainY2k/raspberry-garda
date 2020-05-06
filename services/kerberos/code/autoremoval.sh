@@ -5,7 +5,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][autoremove]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -106,13 +106,15 @@ EOF
     messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
     messageTopic="kerberos/files/removed"
 
-    log_message "attempting to publish message: topic = ${messageTopic} , payload = ${messageJson}"
+    log_message "publishing message: topic = ${messageTopic} , payload = ${messageJson}"
 
     #publish it
     mosquitto_pub -h mqtt-server -t "$messageTopic" -m "$messageJson"
     check_errors $?
 
+else
 
+    log_message "disk space is ok, no media files were removed."
 
 fi
 

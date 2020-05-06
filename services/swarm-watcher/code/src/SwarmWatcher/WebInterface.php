@@ -346,7 +346,7 @@ class WebInterface
                     border-radius: 3px;
                     margin: 1px;
                     padding: 2px;
-                    background: #efefef;
+                    background: #efffef;
                     color: black;
                     font-size:11px;
                     //vertical-align:top; 
