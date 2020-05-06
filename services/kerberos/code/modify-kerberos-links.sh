@@ -18,17 +18,23 @@ check_errors()
     fi
 }
 
-FILEDIRS="/var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php"
+#FILEDIRS="/var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php"
 
-sed -i "s|Route::get('|Route::get('kerberos/|g" ${FILEDIRS}
-sed -i "s|Route::post('|Route::post('kerberos/|g" ${FILEDIRS}
-sed -i "s|Route::put('|Route::put('kerberos/|g" ${FILEDIRS}
-sed -i "s|Route::prefix('api|Route::prefix('kerberos/api|g" ${FILEDIRS}
+log_message "updating kerberos code..."
+sed -i "s|Route::get('|Route::get('kerberos/|g" /var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php
+sed -i "s|Route::post('|Route::post('kerberos/|g" /var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php
+sed -i "s|Route::put('|Route::put('kerberos/|g" /var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php
+sed -i "s|Route::prefix('api|Route::prefix('kerberos/api|g" /var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php
 #sed -i 's|"/api/v1|"/kerberos/api/v1|g' /var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/public/js/app/views/*
 #sed -i 's|var _baseUrl = "{{URL::to(\x27/\x27)}}"|var _baseUrl = "{{URL::to(\x27/kerberos\x27)}}"|g' ${FILEDIRS}
 
 find /var/www/web/resources/views -type f -exec sed -i -e 's|var _baseUrl = "{{URL::to(\x27/\x27)}}"|var _baseUrl = "{{URL::to(\x27/kerberos\x27)}}"|g' {} \;
 find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/')|URL::to('/kerberos/')|g" {} \;
+find /var/www/web/app/Http/ -type f -exec sed -i -e "s|redirect('/|redirect('/kerberos/|g" {} \;
+
+log_message "creating symbolic links..."
+ln -s /var/www/web/public /var/www/web/public/kerberos
+check_errors $?
 
 #sed -i "s|Route::get('login|Route::get('kerberos/login|g" /var/www/web/routes/* /var/www/web/app/Providers/*
 #sed -i "s|Route::post('login/login|Route::post('kerberos/login/login|g" /var/www/web/routes/* /var/www/web/app/Providers/*
