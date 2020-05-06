@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][run]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -30,7 +30,15 @@ check_errors_sleep()
 log_message "starting the health reporter service..."
 
 # fix permissions
-chmod u+x /code/health-reporter.sh
+chmod u+x /code/garda-health-reporter.sh
+check_errors_warning $?
+
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors_warning $?
+
+# Init container health reporter flags
+touch /tmp/health-reporter-success.flag
 check_errors_warning $?
 
 #wait for external service
@@ -43,7 +51,7 @@ done
 while sleep 15; do
 
     log_message "executing the health reporter script..."
-    /code/health-reporter.sh
+    /code/garda-health-reporter.sh
     check_errors_warning $?
     sleep 120
 

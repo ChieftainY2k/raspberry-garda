@@ -7,23 +7,29 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     mc joe multitail curl wget \
     php7.0-cli php-zip composer telnet mosquitto-clients \
-    sqlite3 php-sqlite3 \
     git libmosquitto-dev mosquitto-dev php-pear php-dev libcurl3-openssl-dev \
-    netcat make cron rsyslog
+    make cron netcat
+
 
 # Enable mosquitto lib in PHP
 
-RUN yes '' | pecl install Mosquitto-alpha
+RUN echo "" | pecl install Mosquitto-alpha
 RUN echo "extension=mosquitto.so" > /etc/php/7.0/mods-available/mosquitto.ini
 RUN echo "extension=mosquitto.so" > /etc/php/7.0/cli/conf.d/20-mosquitto.ini
 
 # Configure cron
-ADD ./crontab.txt /crontab.txt
+
+ADD ./resources/crontab.txt /crontab.txt
 RUN crontab /crontab.txt
 
+# Add Startup scripts
 
-# Startup scripts
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
+
+HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
+    CMD /code/container-healthcheck.sh
+
+
 

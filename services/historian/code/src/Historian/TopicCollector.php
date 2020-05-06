@@ -69,9 +69,17 @@ class TopicCollector
             throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
         }
 
+        //$stmt = "
+        //    CREATE UNIQUE INDEX IF NOT EXISTS index_timestamp
+        //    ON mqtt_events(timestamp, payload);
+        //";
+        //if ($this->pdo->exec($stmt) === false) {
+        //    throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
+        //}
+
         $stmt = "
-            CREATE UNIQUE INDEX IF NOT EXISTS index_timestamp
-            ON mqtt_events(timestamp, payload);
+            CREATE INDEX IF NOT EXISTS index_timestamp_order
+            ON mqtt_events(timestamp);
         ";
         if ($this->pdo->exec($stmt) === false) {
             throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));

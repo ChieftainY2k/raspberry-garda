@@ -65,7 +65,7 @@ class ReportAnalyzer
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
 
@@ -74,7 +74,7 @@ class ReportAnalyzer
      */
     public function updateMyHealthReport()
     {
-        $reportFiles = scandir($this->collectedHealthReportsRootPath);
+        $reportFiles = glob($this->collectedHealthReportsRootPath."/*.json");
 
         //save service health report
         $healthReportFile = $this->myHealthReportFile;
@@ -84,210 +84,293 @@ class ReportAnalyzer
             "collected_report_files_count" => count($reportFiles),
         ];
 
-        $this->log("saving health report to " . $healthReportFile . " , report = " . json_encode($healthReportData) . "");
+        $this->log("saving health report to ".$healthReportFile." , report = ".json_encode($healthReportData)."");
 
         if (!file_put_contents($healthReportFile, json_encode($healthReportData), LOCK_EX)) {
-            throw new \Exception("Cannot save data to file " . $healthReportFile);
+            throw new \Exception("Cannot save data to file ".$healthReportFile);
         }
     }
 
     /**
+     * Replace class="" with inline style="" so that all email readers can handle the html message
+     *
+     * @param $html
+     * @return string|string[]
+     */
+    private function convertClassToInlineStyling($html)
+    {
+        //inject inline styling
+        $html = str_replace('class="reportName"', 'style="font-size:15px;"', $html);
+        $html = str_replace(
+            'class="reportContainer"',
+            '
+                style="
+                    font-family: Arial;
+                    border: 1px solid black;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 5px;
+                    background: #efffff;
+                    color: black;
+                    font-size:11px;
+                    vertical-align:top; 
+                "
+            ',
+            $html
+        );
+        $html = str_replace(
+            'class="service"',
+            '
+                style="
+                    border: 1px solid #aaa;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 2px;
+                    background: #efefef;
+                    color: black;
+                    font-size:11px;
+                "
+            ',
+            $html
+        );
+        $html = str_replace(
+            'class="notice"',
+            '
+                style="
+                    margin: 1px;
+                    padding: 1px;
+                    color: brown;
+                "
+            ',
+            $html
+        );
+        $html = str_replace(
+            'class="warning"',
+            '
+                style="
+                    display: inline-block;
+                    border: 1px solid #aaa;
+                    border-radius: 3px;
+                    margin: 1px;
+                    padding: 1px;
+                    background: #ffaaaa;
+                    color: black;
+                "
+            ',
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
+     * @param WebInterface $webInterface
      * @throws \Exception
      */
-    public function sendNotificationsBasedOnReports()
+    public function analyzeSwarmWebReport(WebInterface $webInterface)
     {
-        //get current warnings based on the health reports
-        $currentWarnings = $this->getWarningsFromLatestHealthReports();
-        //print_r($currentWarnings);
+        $output = [];
 
-        //get previous warnings
-        $lastWarningsFilePath = $this->localCacheRootPath . "/" . "last-warnings.json";
-        if (file_exists($lastWarningsFilePath)) {
-            $previousWarnings = json_decode(file_get_contents($lastWarningsFilePath), true);
-        } else {
-            $previousWarnings = [];
+        $htmlTextReport = $webInterface->getSwarmReportHtml();
+        if (empty($htmlTextReport)) {
+            throw new \Exception("Empty html report");
         }
 
-        //compare current and presious warnings => find new and deleted warnings
-        $newWarnings = $this->findNewWarnings($previousWarnings, $currentWarnings);
-        $deletedWarnings = $this->findDeletedWarnings($previousWarnings, $currentWarnings);
-        $this->log("new warnings: " . json_encode(array_keys($newWarnings)));
-        $this->log("deleted warnings: " . json_encode(array_keys($deletedWarnings)));
-
-        //Save an email in the email queue
-        $emailHtmlBody = "";
-
-        if (!empty($newWarnings)) {
-            $emailHtmlBody .= "
-                Swarm watcher at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected the following <b style='color:red'>NEW anomalies</b>:<br>
-                <ul>
-                    <li>" . join("</li><li>", $newWarnings) . "</li>    
-                </ul>
-            ";
+        //import html report to dom document and xml document
+        $htmlDocument = new \DOMDocument();
+        @$htmlDocument->loadHTML($htmlTextReport);
+        $xmlDocument = simplexml_import_dom($htmlDocument);
+        if (empty($xmlDocument)) {
+            throw new \Exception("Unable to import html document to XML document");
         }
 
-        if (!empty($deletedWarnings)) {
-            $emailHtmlBody .= "
-                Swarm watcher at <b>" . getenv("KD_SYSTEM_NAME") . "</b> detected that the following <b style='color:green'>anomalies DISAPPEARED</b>:<br>
-                <ul>
-                   <li style='text-decoration: line-through;'>" . join("</li><li style='text-decoration: line-through;'>", $deletedWarnings) . "</li>    
-                </ul>
-            ";
+        //fint all <report> elements
+        $reportNodes = $xmlDocument->xpath('.//report');
+        foreach ($reportNodes as $reportNode) {
+            $reportGardaName = (string)$reportNode['id'];
+            if (empty($reportGardaName)) {
+                $this->log("ERROR: empty id from the report XML node.");
+                continue;
+            }
+            $this->log("Found report gardaName = ".$reportGardaName);
+
+            //find all <watch> data in the report, create data table with watched content
+            $watchNodes = $reportNode->xpath(".//watch");
+            $currentWatchDataTable = [];
+            foreach ($watchNodes as $watchNode) {
+                $watchId = (string)$watchNode['id'];
+                //$this->log("Found watch id = ".$watchId);
+                $currentWatchDataTable[$watchId] = $watchNode->saveXML();
+            }
+            if (empty($currentWatchDataTable)) {
+                $this->log("WARNING: empty currentWatchDataTable");
+            }
+            //print_r($currentWatchDataTable);
+
+            //load previous data from the last run
+            $previousReportWatchDataTable = null;
+            $previousReportXml = null;
+            $cacheFileName = $this->localCacheRootPath."/".md5($reportGardaName)."-last.json";
+            if (file_exists($cacheFileName)) {
+                $cachedData = null;
+                $olderWatchDataTableJson = file_get_contents($cacheFileName);
+                if (empty($olderWatchDataTableJson)) {
+                    $this->log("ERROR: empty content from file $cacheFileName");
+                }
+                if (!empty($olderWatchDataTableJson)) {
+                    $cachedData = json_decode($olderWatchDataTableJson, true);
+                    if (empty($cachedData)) {
+                        $this->log("ERROR: invalid JSON from file $cacheFileName");
+                    }
+                }
+                if (isset($cachedData['watchTable'])) {
+                    $previousReportWatchDataTable = $cachedData['watchTable'];
+                } else {
+                    $this->log("WARNING: no watchTable index in JSON data from $cacheFileName");
+                }
+                if (isset($cachedData['reportXml'])) {
+                    $previousReportXml = $cachedData['reportXml'];
+                } else {
+                    $this->log("WARNING: no reportXml index in JSON data from $cacheFileName");
+                }
+            }
+
+            //print_r($currentWatchDataTable);
+            //print_r($previousReportWatchDataTable);
+            //$previousReportWatchDataTable['ngrokUrl']="<watch id=\"ngrokUrl\"><a href=\"http://alamakota.7de0648d.ngrok.io\">7de0648d.ngrok.io</a></watch>";
+
+            if (!empty($previousReportWatchDataTable)) {
+                if (serialize($previousReportWatchDataTable) != serialize($currentWatchDataTable)) {
+                    //if (true) {
+                    $this->log("watchers data changed for gardaName = $reportGardaName ");
+
+                    //show specific changes
+                    $output[] = "<div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfff;'>";
+                    $output[] = "
+                        <div style='color: blue; font-size:14px;'>
+                            <b>".$reportGardaName."</b> - report summary
+                        </div>
+                    ";
+                    $output[] = "<ul>";
+                    //show watchers that changed or appeared
+                    foreach ($currentWatchDataTable as $watchId => $watchData) {
+                        if (!isset($previousReportWatchDataTable[$watchId])) {
+                            $this->log("watcher '".$watchId."' appeared and was not in the last report.");
+                            $output[] = "
+                                <li>
+                                Watcher '<b>".$watchId."</b>' changed from <b>[does not exist]</b> to    
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($currentWatchDataTable[$watchId])."</span> 
+                            ";
+                        } elseif ($currentWatchDataTable[$watchId] != $previousReportWatchDataTable[$watchId]) {
+                            $this->log("watcher '".$watchId."' changed since last report.");
+                            $output[] = "
+                                <li>
+                                Watcher '<b>".$watchId."</b>' changed value from 
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span> 
+                                to
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($currentWatchDataTable[$watchId])."</span> 
+                            ";
+                        }
+                    }
+                    //show watchers that disappeared
+                    foreach ($previousReportWatchDataTable as $watchId => $watchData) {
+                        if (!isset($currentWatchDataTable[$watchId])) {
+                            $this->log("watcher '".$watchId."' disappeared and was in the previous report.");
+                            $output[] = "
+                                <li>
+                                Watcher '<b>".$watchId."</b>' changed from   
+                                <span style='border:solid 1px #aaaaaa; background: yellow; padding:2px;'>".strip_tags($previousReportWatchDataTable[$watchId])."</span>
+                                to
+                                <b>[disappeared]</b> 
+                            ";
+                        }
+                    }
+                    $output[] = "<ul>";
+                    $output[] = "</div>";
+
+
+                    //show general report
+                    $output[] = "
+                        <div style='margin-bottom:10px; border: 1px solid black; border-radius: 3px; padding: 5px; background: #dfdfdf;'>
+                            <div style='color: blue; font-size:14px;'>
+                                <b>".$reportGardaName."</b> - service reports 
+                            </div>
+                            <table border='0' cellpadding='0' cellspacing='1'>
+                            <tr>
+                                <td valign='top' width='50%' align='left'>
+                                    <b style='font-size:12px;'>Current report:</b>
+                                    <div class=\"reportContainer\">".$reportNode->saveXML()."<div>
+                                </td>
+                                <td valign='top' width='50%' align='left'>
+                                    <b style='font-size:12px;'>Previous report:</b>
+                                    <div class=\"reportContainer\">".$previousReportXml."</div>
+                                </td>
+                                </tr>
+                            </table>
+                        </div>
+                    ";
+
+                    $output[] = "<hr>";
+
+                    //print_r($output);
+                    //exit;
+                } else {
+                    $this->log("Report did not change.");
+                }
+
+            } else {
+                $this->log("No last watch data for report id = $reportGardaName ");
+            }
+
+            //save this data to cache for the next run
+            if (!file_put_contents(
+                $cacheFileName,
+                json_encode(
+                    [
+                        "raportId" => $reportGardaName,
+                        "reportXml" => $reportNode->saveXML(),
+                        "watchTable" => $currentWatchDataTable,
+                    ]
+                ),
+                LOCK_EX
+            )) {
+                $this->log("ERROR: cannot save data to file $cacheFileName");
+            }
+
+            //break;
         }
 
-        if (!empty($emailHtmlBody)) {
-            $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - swarm anomaly detected';
 
-            $emailHtmlBody .= "
-                <br>
-                System local time: " . date("Y-m-d H:i:s") . "
+        if (!empty($output)) {
+
+            $emailHtmlBody = "
+                <div style='font-family: Arial; font-size:12px;'>
+                    <div style='padding:5px'>
+                    Swarm watcher at <b>".getenv("KD_SYSTEM_NAME")."</b> 
+                    detected changes in swarm report at ".date("Y-m-d H:i:s")."<br>
+                    </div>
+                    <div style='padding:5px'>
+                    ".join("", $output)."
+                    </div>
+                </div>
             ";
 
             //create email data
-            $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");
-            //@TODO use DTO here
-            $emailData = [
-                "recipients" => [
-                    $recipient
-                ],
-                "subject" => $emailSubject,
-                "htmlBody" => $emailHtmlBody
-            ];
-
-            //save email data to temporary JSON file
-            $filePath = $this->emailQueuePath . "/" . (microtime(true)) . ".json";
-            $filePathTmp = $filePath . ".tmp";
-            if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
-                throw new \Exception("Cannot save data to file " . $filePath);
+            $emailDataJson = json_encode(
+                [
+                    "recipients" => [getenv("KD_EMAIL_NOTIFICATION_RECIPIENT")],
+                    "subject" => ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected',
+                    "htmlBody" => $this->convertClassToInlineStyling($emailHtmlBody),
+                ]
+            );
+            //save email data to email queue
+            $filePath = $this->emailQueuePath."/".(microtime(true)).".json";
+            if (!file_put_contents($filePath, $emailDataJson, LOCK_EX)) {
+                throw new \Exception("Cannot save data to file ".$filePath);
             }
-
-            //rename temporaty file to dest file
-            if (!rename($filePathTmp, $filePath)) {
-                throw new \Exception("Cannot rename file $filePathTmp to $filePath");
-            }
-
             $this->log("email successfully created and saved to $filePath");
 
-        } else {
-
-            $this->log("no new or deleted warnings");
-
         }
-
-
-        //save current warnings as the las warnings
-        if (!file_put_contents($lastWarningsFilePath, json_encode($currentWarnings), LOCK_EX)) {
-            throw new \Exception("Cannot save data to file " . $lastWarningsFilePath);
-        }
-
-    }
-
-    /**
-     * @param $previousWarnings
-     * @param $currentWarnings
-     * @return array
-     */
-    public function findNewWarnings($previousWarnings, $currentWarnings)
-    {
-        $newWarnings = [];
-
-        //@TODO optimize this
-        //check for new entries
-        foreach ($currentWarnings as $currentWarningId => $currentWarningData) {
-            //this new warning does not exist in previous warnings table
-            if (empty($previousWarnings[$currentWarningId])) {
-                $newWarnings[$currentWarningId] = $currentWarningData;
-            }
-        }
-
-        return $newWarnings;
-    }
-
-    /**
-     * @param $previousWarnings
-     * @param $currentWarnings
-     * @return array
-     */
-    public function findDeletedWarnings($previousWarnings, $currentWarnings)
-    {
-        $deletedWarnings = [];
-
-        //check for deleted entries
-        foreach ($previousWarnings as $previousWarningId => $previousWarningData) {
-            if (empty($currentWarnings[$previousWarningId])) {
-                $deletedWarnings[$previousWarningId] = $previousWarningData;
-            }
-        }
-
-        return $deletedWarnings;
-    }
-
-
-    /**
-     * @return array warnings table
-     * @throws \Exception
-     */
-    public function getWarningsFromLatestHealthReports()
-    {
-
-        //scan directory for queued topics data, sort it by name, ascending
-        $files = scandir($this->collectedHealthReportsRootPath);
-        if ($files === false) {
-            throw new \Exception("Cannot open directory " . $this->collectedHealthReportsRootPath . "");
-        }
-
-        //warnings table with current warnings based on the report
-        $warnings = [];
-
-        //scan all files in queue directory
-        foreach ($files as $queueItemFileName) {
-
-            if (!preg_match('/.*\.json$/i', $queueItemFileName)) {
-                continue;
-            }
-
-            //$this->log("processing $queueItemFileName");
-
-            $reportDataRaw = file_get_contents($this->collectedHealthReportsRootPath . "/" . $queueItemFileName);
-            if (empty($reportDataRaw)) {
-                throw new \Exception("Cannot get content of file " . $this->collectedHealthReportsRootPath . "/" . $queueItemFileName);
-            }
-            //$this->log("content =  " . $reportData . "");
-            $reportData = json_decode($reportDataRaw, true);
-            //var_dump($reportData);
-            //print_r($reportData); //exit;
-
-            if (empty($reportData['payload']['system_name'])) {
-                //throw new \Exception("Invalid payload data");
-                $this->log("WARNING: invalid payload data, skipping this report and moving on. file = " . $queueItemFileName . ", raw data = " . $reportDataRaw);
-                continue;
-            }
-
-            //$tmpDir = sys_get_temp_dir();
-            $reportTimestamp = $reportData['payload']['timestamp'];
-            $reportLocalTime = $reportData['payload']['local_time'];
-            $reportSystemName = $reportData['payload']['system_name'];
-            $reportVideoStreamStatus = $reportData['payload']['video_stream'] ?? null;
-
-            //check report age
-            $maxReportAge = 60 * 15;
-            if ((time() - $reportTimestamp) > $maxReportAge) {
-                $warningMessage = "<b>" . $reportSystemName . "</b>: the last health report is older than " . $maxReportAge . " sec. (last seen at " . $reportLocalTime . " local time)";
-                $warningId = $reportSystemName . "-old-report";
-                $warnings[$warningId] = $warningMessage;
-            }
-
-            //check jpeg stream
-            if (strpos($reportVideoStreamStatus, "Stream #0:0: Video: mjpeg") === false) {
-                $warningMessage = "<b>" . $reportSystemName . "</b>: the video stream format is invalid: <b>" . $reportVideoStreamStatus . "</b>";
-                $warningId = $reportSystemName . "-stream-error";
-                $warnings[$warningId] = $warningMessage;
-            }
-
-        };
-
-        //print_r($warnings);
-        return $warnings;
 
     }
 

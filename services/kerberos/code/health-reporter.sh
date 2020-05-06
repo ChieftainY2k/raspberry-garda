@@ -24,13 +24,16 @@ log_message "FFProbe output = ${streamFFprobeOutput}"
 
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
+imageDir=/etc/opt/kerberosio/capture/
+filesCount=$(ls -f ${imageDir}| wc -l) # number of captured files
 
 # prepare JSON message
 messageJson=$(cat <<EOF
 {
     "timestamp":"${timestamp}",
     "local_time":"${localTime}",
-    "video_stream":"${streamFFprobeOutput}"
+    "video_stream":"${streamFFprobeOutput}",
+    "media_files_count":"${filesCount}"
 }
 EOF
 )
@@ -39,3 +42,8 @@ outputfile="/mydata/health-report.json"
 
 log_message "Saving health report to ${outputfile} , content = ${messageJson}"
 echo "${messageJson}" > ${outputfile}
+
+#set success flag for the container health reporter
+touch /tmp/health-reporter-success.flag
+check_errors $?
+

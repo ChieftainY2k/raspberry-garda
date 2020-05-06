@@ -33,9 +33,11 @@ helper()
     $0 install - install and configure core and services
     $0 check   - check workspace and hardware sanity
     $0 status  - show current status of containers and applications
+    $0 cleanup - clean all unnecessary data (usused images, containers, files etc.)
 
-    $0 watchdog install - install watchdog checks in the host cron table
-    $0 watchdog check   - run watchdog checks
+    $0 watchdog install         - install garda watchdog checks in the host cron table
+    $0 watchdog installhardware - install hardware watchdog
+    $0 watchdog check           - run garda watchdog checks
 
     $0 start   <sevice>  - start container(s)
     $0 stop    <sevice>  - stop containers(s)
@@ -65,7 +67,7 @@ get_raspberry_version_for_kerberos_build()
 {
     local raspberryHardware=$(get_raspberry_hardware)
     if [[ "$raspberryHardware" =~ "Raspberry Pi 4 Model" ]]; then
-        echo "3"
+        echo "4"
     elif [[ "$raspberryHardware" =~ "Raspberry Pi 3 Model" ]]; then
         echo "3"
     else
@@ -76,7 +78,7 @@ get_raspberry_version_for_kerberos_build()
 get_available_disk_space()
 {
     availableDiskSpaceKb=$(df / | grep /dev/root | awk '{print $4/1}')
-    echo ${availableDiskSpaceKb};
+    echo ${availableDiskSpaceKb}
 }
 
 get_ip_address()
@@ -92,7 +94,7 @@ install()
     log_message "Hardware: $(get_raspberry_hardware)"
     log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
-    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
+#    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $(get_ip_address)"
 
     log_message "Updating packages..."
@@ -106,8 +108,9 @@ install()
     apt install -y \
          apt-transport-https ca-certificates \
          curl wget telnet gnupg2 software-properties-common \
-         git mc multitail htop jnettop python python-pip joe pydf \
+         git mc multitail htop jnettop python3 python3-pip joe pydf \
          build-essential libssl-dev libffi-dev python-dev
+
     check_errors $?
 
     log_message "Installing docker..."
@@ -120,11 +123,10 @@ install()
 
     # Install Docker Compose from pip
     log_message "Installing docker-compose..."
-    apt-get install -y docker-compose
+    pip3 install docker-compose
     check_errors $?
 
     log_message "IP address: $ipAddress"
-    log_message "Available disk space: $availableDiskSpaceKb kb."
     log_message "Probing for available disk space..."
     pydf
     check_errors $?
@@ -134,13 +136,20 @@ install()
 
 check()
 {
-    log_message "Checking config file..."
-    stat ./configs/services.conf
+    log_message "Hardware: $(get_raspberry_hardware)"
+    log_message "Kernel: $(uname -a)"
+    log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
+    log_message "IP address: $(get_ip_address)"
+
+    log_message "Probing for available disk space..."
+    pydf | grep -v overlay
+
+    log_message "Checking configs/services.conf..."
+    stat ./configs/services.conf > /dev/null
     check_errors $?
 
     #load vars
     . ./configs/services.conf
-
 
     #@FIXME move this check to the service ?
     if [[ "${KD_KERBEROS_ENABLED}" == "1" ]]; then
@@ -162,6 +171,20 @@ check()
     docker run --rm hypriot/armhf-hello-world
     check_errors $?
 
+    log_message "Checking the filesystem WRITE performance..."
+    sync; dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024 oflag=dsync
+    check_errors $?
+    log_message "Checking the filesystem READ performance..."
+    sync; echo 3 > /proc/sys/vm/drop_caches
+    check_errors $?
+    sync; dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024 oflag=dsync
+    check_errors $?
+
+    log_message "removing temporary files..."
+    rm -f /tmp/test.tmp
+    check_errors $?
+    log_message "all checks completed."
+
 }
 
 stop()
@@ -181,7 +204,7 @@ start()
     docker-compose ${DOCKER_PARAMS} up -d --remove-orphans ${SERVICE}
     check_errors $?
 
-    cleanup
+#    cleanup
 
     status
     log_message "Containers started. Use '$0 log' to see container logs."
@@ -265,13 +288,16 @@ status()
     log_message "IP address: $(get_ip_address)"
 
     log_message "Probing for available disk space..."
-    pydf
+    pydf | grep -v overlay
 
     log_message "Probing for container status..."
     docker-compose ${DOCKER_PARAMS} ps
 
-    log_message "checking cron for watchdog..."
+    log_message "checking cron for garda watchdog..."
     crontab -l | grep watchdog
+
+    log_message "checking hardware watchdog service..."
+    service watchdog status
 }
 
 shell()
@@ -303,13 +329,61 @@ watchdog()
 
     case ${ARG1} in
         install)
+            log_message "installing packages..."
+            apt-get -qy install tmpreaper
+            check_errors $?
             log_message "installing cron script for watchdog..."
             crontab -l | grep -v "$(basename ${0}) watchdog run" > /tmp/garda-crontab.txt
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
-            echo "*/30 * * * * /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            echo "*/30 * * * * /usr/sbin/tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ > /dev/null ; /usr/bin/flock -w 0 /tmp/gardca-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
+            log_message "checking crontab..."
+            crontab -l
+            check_errors $?
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
+            ;;
+        installhardware)
+            log_message "installing watchdog kernel module..."
+            modprobe bcm2835_wdt
+            check_errors $?
+            log_message "creating temporary file for modules..."
+            cat /etc/modules | grep -v "bcm2835_wdt" > /tmp/modules
+            check_errors $?
+            log_message "inserting watchdog kernel module into temporary file..."
+            echo "bcm2835_wdt" >> /tmp/modules
+            check_errors $?
+            log_message "backing up /etc/modules..."
+            cp /etc/modules /etc/modules.$(date '+%Y%m%d%H%M%S')
+            check_errors $?
+            log_message "replacing /ect/modules with temporary file..."
+            mv /tmp/modules /etc/modules
+            check_errors $?
+            log_message "installing watchdog package..."
+            apt-get -y install watchdog
+            check_errors $?
+            log_message "configuring rc scripts..."
+            update-rc.d watchdog defaults
+            check_errors $?
+            log_message "backing up /etc/watchdog.conf..."
+            cp /etc/watchdog.conf /etc/watchdog.conf.$(date '+%Y%m%d%H%M%S')
+            check_errors $?
+            log_message "updating /etc/watchdog.conf [1]..."
+            echo "watchdog-timeout = 15" >> /etc/watchdog.conf
+            check_errors $?
+            log_message "updating /etc/watchdog.conf [2]..."
+            sed -i "s/^#max-load-1[^1-9].*/max-load-1 = 24/g"  /etc/watchdog.conf
+            check_errors $?
+            log_message "updating /etc/watchdog.conf [3]..."
+            sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
+            check_errors $?
+            log_message "starting watchdog service..."
+            service watchdog start
+            check_errors $?
+            log_message "probing watchdog service status..."
+            service watchdog status
+            check_errors $?
+            log_message "OK, hardware watchdog successfully installed"
             ;;
         run)
             log_message "checking internet connection..."
@@ -333,8 +407,28 @@ watchdog()
                     log_message "CRITICAL: still no network connection, rebooting..."
                     /sbin/shutdown -r now "Rebooting on network loss."
                 fi
-
             fi
+
+            log_message "checking containers..."
+            dockerPsOutput=$(docker ps -a)
+            if [[ $? != 0 ]]
+            then
+                log_message "cannot get containers list, 'docker ps' returned a nonzero exit code, rebooting..."
+                /sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
+            else
+                log_message "OK, got containers list"
+            fi
+
+            unhealthyContainersCount=$(echo ${dockerPsOutput} | grep unhealthy | wc -l)
+            if [[ "${unhealthyContainersCount}" != "0" ]]
+            then
+                #@TODO make a recovery attempt by restarting all containers...
+                log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
+                /sbin/shutdown -r now "rebooting because there are unhealthy containers"
+            else
+                log_message "OK, there are no unhealthy containers"
+            fi
+
             ;;
         *)
             helper
@@ -370,4 +464,3 @@ case ${ARG1} in
         exit 1
         ;;
 esac
-

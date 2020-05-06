@@ -5,7 +5,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][health-reporter]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -34,6 +34,7 @@ function calculate_overvolts {
     echo "$overvolts"
 }
 
+
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 
@@ -47,14 +48,17 @@ if [[ ${volts} != "1.20" ]]; then
     overvolts=$(calculate_overvolts ${volts})
 fi
 
+#TODO change to vcgencmd ?
 minFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
-minFreq=$(convert_to_MHz ${minFreq})
+minFreqMhz=$(convert_to_MHz ${minFreq})
 
+#TODO change to vcgencmd ?
 maxFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
-maxFreq=$(convert_to_MHz ${maxFreq})
+maxFreqMhz=$(convert_to_MHz ${maxFreq})
 
+#TODO change to vcgencmd ?
 freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq)
-freq=$(convert_to_MHz ${freq})
+freqMhz=$(convert_to_MHz ${freq})
 
 governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 
@@ -79,6 +83,7 @@ totalDiskSpaceKb=$(df /  | tail -1 | awk '{print $2}')
 #imagedir=/etc/opt/kerberosio/capture/
 
 uptimeInfo=$(uptime)
+uptimeBootDate=$(uptime -s)
 uptimeSeconds=$(echo $(awk '{print $1}' /proc/uptime) *100 /100 | bc)
 timestamp=$(date +%s)
 localTime=$(date '+%Y-%m-%d %H:%M:%S')
@@ -111,7 +116,11 @@ messageJson=$(cat <<EOF
     "local_time":"${localTime}",
     "cpu_temp":"${temp}",
     "cpu_voltage":"${volts}",
+    "cpu_freqency_min_mhz":"${minFreqMhz}",
+    "cpu_freqency_max_mhz":"${maxFreqMhz}",
+    "cpu_governor":"${governor}",
     "uptime_output":"${uptimeInfo}",
+    "uptime_boot_local_time":"${uptimeBootDate}",
     "uptime_seconds":"${uptimeSeconds}",
     "disk_space_available_kb":"${availableDiskSpaceKb}",
     "disk_space_total_kb":"${totalDiskSpaceKb}",
@@ -129,11 +138,6 @@ messageJson=$(cat <<EOF
 }
 EOF
 )
-
-#@TODO move images_size_kb to kerberos service health reporter
-
-#    "images_size_kb":"${totalFilesSizeKb}",
-
 
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 messageTopic="healthcheck/report"
@@ -165,3 +169,7 @@ reportFile="/mydata/health-report.json"
 messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
 log_message "Saving container health report to file ${reportFile} , report = ${messageJson}"
 echo "${messageJson}" > ${reportFile}
+
+#set success flag for the container health reporter
+touch /tmp/health-reporter-success.flag
+check_errors $?

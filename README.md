@@ -29,22 +29,61 @@ Enjoy! :-)
 
 **Raspberry preparation**
 
-1. Grab the newest Raspbian (Buster Lite) from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
-1. Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
-1. Configure your time zone (`raspi-config -> localisation -> change timezone`)
-1. If you want to use camera then enable the camera module support (`raspi-config -> interfacing -> camera`)
-1. If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
-1. If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
-1. If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
-1. Reboot
+* Grab the Raspbian Buster Lite from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
+* Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
+* Configure your time zone (`raspi-config -> localisation -> change timezone`)
+* Enable the camera module support (`raspi-config -> interfacing -> camera`)
+* If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
+* If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
+* If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=400`)
+* Reboot
 
-**(OPTIONAL) Raspberry tuning**
-1. (optional) Update core libraries: `sudo rpi-update` 
-1. (optional) Set CPU overclocking to max available value (`raspi-config -> overclock`)
-1. (optional) Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
-1. (optional) Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`) 
-1. (optional) Configure startup scripts to send an email on each reboot
-1. Reboot
+**(OPTIONAL): Enable support for 1-Wire**
+If you plan to use thermometer service you must enable the 1-wire interface
+`````
+echo "dtoverlay=w1-gpio" >> /boot/config.txt
+echo "w1-gpio" >> /etc/modules
+echo "w1-therm" >> /etc/modules
+reboot
+`````
+
+
+**(OPTIONAL) Raspberry peformance tuning**
+* Set CPU overclocking to max available value (`raspi-config -> overclock`)
+* Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
+* Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`)
+* Disable bluetooth (see https://scribles.net/disabling-bluetooth-on-raspberry-pi) 
+* Reboot
+
+**(OPTIONAL) Configure startup scripts to send an email on each reboot**
+* Install email tools: `apt-get install -y msmtp msmtp-mta` 
+* Edit ssmtp config `/etc/msmtprc` with your config (gmail.com as an example below):
+`````
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+account gmail.com
+host smtp.gmail.com
+port 587
+from xxxxxxxxxxxxxx@gmail.com
+user xxxxxxxxxxxxxx
+password yyyyyyyyyyyyyyyyyyyy
+account default : gmail.com
+
+````` 
+* Edit local startup script `nano /etc/rc.local` , add the following snippet:
+`````
+_IP=$(hostname -I) || true
+if [ "$_IP" ]; then
+  printf "My IP address is %s\n" "$_IP"
+fi
+
+echo "sending emails..."
+SUBJECT="$(hostname) restarted"
+BODY=" $(hostname) restarted. Local IP is $_IP "
+echo "$BODY" | mail -s "$SUBJECT" YOUR_GMAIL_USER@gmail.com 
+````` 
 
 **Garda Installation**
 
@@ -52,10 +91,16 @@ Enjoy! :-)
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
-1. (optional) Run `sudo ./garda.sh watchdog install` to install watchdog scripts to reboot host or perform some other "last resort" operations when something is wrong (i.e. internet connection is lost)
 
+**(OPTIONAL) Garda watchdog installation**
 
-**Starting up**
+Run `sudo ./garda.sh watchdog install` to install garda watchdog scripts to reboot host or perform some other "last resort" operations when something is wrong (i.e. internet connection is lost)
+
+**(OPTIONAL) Hardware watchdog installation**
+
+Configure low-level system watchdog: `sudo ./garda.sh watchdog installhardware`
+
+**Starting up Raspberry Garda**
 
 1. Run `sudo ./garda.sh start`
 1. Go to the kerberos installation page at `http://_YOUR_RASPBERRY_PI_ADDRESS_`
@@ -89,13 +134,17 @@ Note: The application services will be automatically restarted on reboot, unless
 ./garda.sh logs
 `````
 
-**Show service logs**
+**Show/follow service logs**
 `````
 ./garda.sh log [SERVICE]
 `````
 Example:
 `````
 ./garda.sh log kerberos
+`````
+Example:
+`````
+docker logs garda_historian_1 --since=2020-03-30T23:30 2>&1 | grep "GarbageCollector"
 `````
 
 

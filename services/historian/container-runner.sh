@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][runner]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -41,6 +41,10 @@ fi
 
 log_message "starting historian service..."
 
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
+
 # Install external libraries
 cd /code
 check_errors $?
@@ -54,6 +58,11 @@ check_errors $?
 cron &
 check_errors $?
 
+# Init container health reporter flags
+touch /tmp/health-reporter-success.flag
+check_errors_warning $?
+touch /tmp/garbage-collector-success.flag
+check_errors_warning $?
 
 # Init web interface
 log_message "starting web interface... "
@@ -70,11 +79,11 @@ done
 # run  the listener forever
 while sleep 1; do
 
-    echo "starting the MQTT topics collector."
+    log_message "starting the MQTT topics collector."
     php /code/topic-collector.php
     check_errors_warning $?
 
-    echo "MQTT topics collector terminated, restarting..."
+    log_message "MQTT topics collector terminated, restarting..."
     sleep 60
 
 done

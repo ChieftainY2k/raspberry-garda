@@ -14,7 +14,12 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
 #ADD ./health-reporter.sh /health-reporter.sh
 #RUN chmod a+x /health-reporter.sh
 
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
+# Startup scripts
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
+
+HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
+    CMD /code/container-healthcheck.sh
+
 

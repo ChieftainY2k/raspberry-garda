@@ -18,11 +18,24 @@ check_errors()
     fi
 }
 
+#check for errors
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "ERROR: Exit code ${EXITCODE} , there were some errors - check the ouput for details, moving on..."
+    fi
+}
+
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+check_errors $?
+
+# fix permissions
+chmod u+x /code/container-healthcheck.sh
 check_errors $?
 
 if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
@@ -66,6 +79,14 @@ chmod u+x /code/autoremoval.sh
 check_errors $?
 /code/autoremoval.sh
 check_errors $?
+
+
+# Init container health reporter flags
+touch /tmp/health-reporter-success.flag
+check_errors_warning $?
+touch /tmp/autoremove-success.flag
+check_errors_warning $?
+
 
 # Init crontab and cron process
 log_message "starting syslog..."

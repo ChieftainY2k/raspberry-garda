@@ -55,7 +55,7 @@ class EmailQueueProcessor
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
     /**
@@ -66,7 +66,7 @@ class EmailQueueProcessor
     {
 
         //process the queue
-        $dirPath = $this->queueRootPath . "/" . $subQueuePath;
+        $dirPath = $this->queueRootPath."/".$subQueuePath;
 
         $this->log("processing directory $dirPath ...");
 
@@ -74,7 +74,7 @@ class EmailQueueProcessor
 
         $dirHandle = opendir($dirPath);
         if (!$dirHandle) {
-            throw new \Exception("Cannot open directory " . $dirPath . "");
+            throw new \Exception("Cannot open directory ".$dirPath."");
         }
 
         //scan all files in queue directory
@@ -87,7 +87,7 @@ class EmailQueueProcessor
             }
 
             //process a sub-directory
-            if (is_dir($dirPath . "/" . $fileName)) {
+            if (is_dir($dirPath."/".$fileName)) {
                 $this->processEmailQueue($fileName);
                 continue;
             }
@@ -97,13 +97,13 @@ class EmailQueueProcessor
                 continue;
             }
 
-            $this->processFile($dirPath . "/" . $fileName);
+            $this->processFile($dirPath."/".$fileName);
 
             //remove processed queue item
-            if (!unlink($dirPath . "/" . $fileName)) {
-                throw new \Exception("Cannot remove file " . $dirPath . "/" . $fileName);
+            if (!unlink($dirPath."/".$fileName)) {
+                throw new \Exception("Cannot remove file ".$dirPath."/".$fileName);
             }
-            $this->log("successfully removed " . $dirPath . "/" . $fileName . " from queue.");
+            $this->log("successfully removed ".$dirPath."/".$fileName." from queue.");
         };
 
         //$this->log("finished processing directory $dirPath ...");
@@ -119,20 +119,29 @@ class EmailQueueProcessor
         $this->log("processing file $filePath");
 
         //unserializejson data
-        $itemJsonString = file_get_contents($filePath);
+        $itemDataJson = file_get_contents($filePath);
 
-        //$this->log("json data = " . $itemJsonString . ""); exit;
+        //$this->log("json data = " . $itemDataJson . ""); exit;
 
         //@TODO validate loaded data before processing
 
         //@TODO use DTO here
-        $itemData = json_decode($itemJsonString, true);
+        $itemData = json_decode($itemDataJson, true);
 
         if (empty($itemData)) {
             throw new \Exception("Invalid json in $filePath");
         }
 
         $mailer = $this->mailer;
+
+        //clear all settings
+        $mailer->clearAddresses();
+        $mailer->clearCCs();
+        $mailer->clearBCCs();
+        $mailer->clearAllRecipients();
+        $mailer->clearAttachments();
+        $mailer->clearReplyTos();
+        $mailer->clearCustomHeaders();
 
         //recipients
         $mailer->setFrom(getenv("KD_REMOTE_SMTP_FROM"));
@@ -141,13 +150,17 @@ class EmailQueueProcessor
         }
 
         //Add requested attachments
+        if (empty($itemData['attachments'])) {
+            $itemData['attachments'] = [];
+        }
         foreach ($itemData['attachments'] as $attachmentData) {
             if (file_exists($attachmentData['filePath'])) {
                 $mailer->addAttachment($attachmentData['filePath']);
             } else {
-                $this->log("warning: skipping missing attachment file " . $attachmentData['filePath']);
+                $this->log("warning: skipping missing attachment file ".$attachmentData['filePath']);
             }
         }
+
 
         //Content
         $mailer->isHTML(true);                                  // Set email format to HTML
@@ -156,21 +169,28 @@ class EmailQueueProcessor
         $mailer->addCustomHeader("x-local-time", date("Y-m-d H:i:s"));
         $result = $mailer->send();
         if (!$result) {
-            throw new \Exception("Cannot send email: " . $mailer->ErrorInfo);
+            throw new \Exception("Cannot send email: ".$mailer->ErrorInfo);
         }
 
-        $this->log("successfully sent email to " . json_encode($itemData['recipients']) . " with subject " . json_encode($itemData['subject']) . ", with " . count($itemData['attachments']) . " attachments");
+        $this->log("successfully sent email to ".json_encode($itemData['recipients'])." with subject ".json_encode($itemData['subject']).", with ".count($itemData['attachments'])." attachments");
 
-        $this->mqttClient->publish("notification/email/sent", json_encode([
-            "system_name" => getenv("KD_SYSTEM_NAME"),
-            "timestamp" => time(),
-            "local_time" => date("Y-m-d H:i:s"),
-            //"recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
-            "recipients" => $itemData['recipients'],
-            "subject" => $mailer->Subject,
-            "service" => basename(__FILE__),
-            "attachment_count" => count($itemData['attachments']),
-        ]), 1, false);
+        $this->mqttClient->publish(
+            "notification/email/sent",
+            json_encode(
+                [
+                    "system_name" => getenv("KD_SYSTEM_NAME"),
+                    "timestamp" => time(),
+                    "local_time" => date("Y-m-d H:i:s"),
+                    //"recipient" => getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"),
+                    "recipients" => $itemData['recipients'],
+                    "subject" => $mailer->Subject,
+                    "service" => basename(__FILE__),
+                    "attachment_count" => count($itemData['attachments']),
+                ]
+            ),
+            1,
+            false
+        );
 
     }
 
