@@ -18,21 +18,32 @@ check_errors()
     fi
 }
 
-sed -i "s|Route::get('login|Route::get('kerberos/login|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-sed -i "s|Route::post('login/login|Route::post('kerberos/login/login|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-sed -i "s|Route::prefix('api|Route::prefix('kerberos/api|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-sed -i "s|Route::get('users|Route::get('kerberos/users|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+FILEDIRS="/var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/resources/views/*.php"
 
-sed -i "s|Route::get('images|Route::get('kerberos/images|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-sed -i "s|Route::get('system|Route::get('kerberos/system|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+sed -i "s|Route::get('|Route::get('kerberos/|g" ${FILEDIRS}
+sed -i "s|Route::post('|Route::post('kerberos/|g" ${FILEDIRS}
+sed -i "s|Route::put('|Route::put('kerberos/|g" ${FILEDIRS}
+sed -i "s|Route::prefix('api|Route::prefix('kerberos/api|g" ${FILEDIRS}
+#sed -i 's|"/api/v1|"/kerberos/api/v1|g' /var/www/web/routes/* /var/www/web/app/Providers/* /var/www/web/public/js/app/views/*
+#sed -i 's|var _baseUrl = "{{URL::to(\x27/\x27)}}"|var _baseUrl = "{{URL::to(\x27/kerberos\x27)}}"|g' ${FILEDIRS}
 
-sed -i "s|Route::post('cloud|Route::post('kerberos/cloud|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+find /var/www/web/resources/views -type f -exec sed -i -e 's|var _baseUrl = "{{URL::to(\x27/\x27)}}"|var _baseUrl = "{{URL::to(\x27/kerberos\x27)}}"|g' {} \;
+find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/')|URL::to('/kerberos/')|g" {} \;
 
-sed -i "s|Route::get('name|Route::get('kerberos/name|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-sed -i "s|Route::put('name|Route::put('kerberos/name|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-
-sed -i "s|Route::get('condition|Route::get('kerberos/condition|g" /var/www/web/routes/* /var/www/web/app/Providers/*
-sed -i "s|Route::put('condition|Route::put('kerberos/condition|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('login|Route::get('kerberos/login|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::post('login/login|Route::post('kerberos/login/login|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::prefix('api|Route::prefix('kerberos/api|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('users|Route::get('kerberos/users|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::post('users|Route::post('kerberos/users|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('images|Route::get('kerberos/images|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('system|Route::get('kerberos/system|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::post('cloud|Route::post('kerberos/cloud|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('name|Route::get('kerberos/name|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::put('name|Route::put('kerberos/name|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('condition|Route::get('kerberos/condition|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::put('condition|Route::put('kerberos/condition|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::get('condition|Route::get('kerberos/condition|g" /var/www/web/routes/* /var/www/web/app/Providers/*
+#sed -i "s|Route::put('condition|Route::put('kerberos/condition|g" /var/www/web/routes/* /var/www/web/app/Providers/*
 
 
 #Route::get('
