@@ -25,12 +25,21 @@ log_message "updating kerberos code..."
 sed -i "s|Route::prefix('api|Route::prefix('kerberos/api|g" /var/www/web/app/Providers/RouteServiceProvider.php
 sed -i "s|'/capture'|'/kerberos/capture'|g" /var/www/web/config/app.php
 sed -i "s|Route::get('|Route::get('kerberos/|g" /var/www/web/routes/web.php
+sed -i "s|Route::get('kerberos//'|Route::get('kerberos/dashboard'|g" /var/www/web/routes/web.php
 sed -i "s|Route::post('|Route::post('kerberos/|g" /var/www/web/routes/web.php
 sed -i "s|Route::put('|Route::put('kerberos/|g" /var/www/web/routes/web.php
+
+
+
 #find /var/www/web/resources/views -type f -exec sed -i -e 's|var _baseUrl = "{{URL::to(\x27/\x27)}}"|var _baseUrl = "{{URL::to(\x27/kerberos\x27)}}"|g' {} \;
 find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/|URL::to('/kerberos/|g" {} \;
+
+#find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/kerberos/'|URL::to('/kerberos/dashboard'|g" {} \;
+
 find /var/www/web/app/Http/Controllers -type f -exec sed -i -e "s|URL::to('/|URL::to('/kerberos/|g" {} \;
 find /var/www/web/app/Http/Controllers -type f -exec sed -i -e "s|Redirect::to('|Redirect::to('kerberos/|g" {} \;
+find /var/www/web/app/Http/Middleware -type f -exec sed -i -e "s|redirect('|redirect('kerberos|g" {} \;
+find /var/www/web/app/Http/Middleware -type f -exec sed -i -e "s|redirect('kerberos/'|redirect('kerberos/dashboard'|g" {} \;
 #find /var/www/web/app/Http/ -type f -exec sed -i -e "s|redirect('/|redirect('/kerberos/|g" {} \;
 
 log_message "creating symbolic links..."

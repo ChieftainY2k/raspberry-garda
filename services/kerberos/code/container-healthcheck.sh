@@ -29,7 +29,8 @@ if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
 fi
 
 log_message "checking http server..."
-curl --silent --fail http://localhost > /dev/null
+#curl --silent --fail http://localhost > /dev/null
+curl --silent http://localhost > /dev/null
 check_errors $?
 
 #check the health of the kerberos stream
