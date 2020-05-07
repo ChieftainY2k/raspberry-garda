@@ -20,7 +20,7 @@ This service is based on the Kerberos-IO (https://github.com/kerberos-io/) video
 **Web interface **
 
 1. User interface: `http://_YOUR_RASPBERRY_PI_ADDRESS_/kerberos`
-1. Video stream: `http://_YOUR_RASPBERRY_PI_ADDRESS_/video`
+1. Video stream: `http://_YOUR_RASPBERRY_PI_ADDRESS_/kerberos/stream`
 
 
 **Published MQTT topics**

@@ -241,7 +241,7 @@ class WebInterface
         if (!empty($payload['services']['ngrok']['report']['ngrok_url'])) {
             $ngrokUrl = "http://".$payload['services']['ngrok']['report']['ngrok_url']."";
             $output[] = "ngrok url: <a href='".$ngrokUrl."'>".$ngrokUrl."</a><br>";
-            $videoStreamUrl = $ngrokUrl."/video";
+            $videoStreamUrl = $ngrokUrl."/kerberos/stream";
             $elementId = uniqid("");
             $output[] = "<div>";
             $output[] = "video stream: <a href='".$videoStreamUrl."'>".$videoStreamUrl."</a>";
