@@ -33,6 +33,7 @@ sed -i "s|Route::put('|Route::put('kerberos/|g" /var/www/web/routes/web.php
 
 #find /var/www/web/resources/views -type f -exec sed -i -e 's|var _baseUrl = "{{URL::to(\x27/\x27)}}"|var _baseUrl = "{{URL::to(\x27/kerberos\x27)}}"|g' {} \;
 find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/|URL::to('/kerberos/|g" {} \;
+find /var/www/web/resources/views -type f -exec sed -i -e 's|url: "|url: "/kerberos|g' {} \;
 
 #find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/kerberos/'|URL::to('/kerberos/dashboard'|g" {} \;
 
