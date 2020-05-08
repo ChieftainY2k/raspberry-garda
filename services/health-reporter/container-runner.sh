@@ -30,11 +30,11 @@ check_errors_sleep()
 log_message "starting the health reporter service..."
 
 # fix permissions
-chmod u+x /code/garda-health-reporter.sh
+chmod u+x /code/container-healthcheck.sh
 check_errors_warning $?
 
 # fix permissions
-chmod u+x /code/container-healthcheck.sh
+chmod u+x /code/garda-health-reporter.sh
 check_errors_warning $?
 
 # Init container health reporter flags
