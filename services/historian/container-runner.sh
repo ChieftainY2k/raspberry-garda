@@ -33,17 +33,17 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
+log_message "starting historian service..."
+
+# fix permissions
+chmod a+x /code/container-healthcheck.sh
+check_errors $?
+
 if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
     log_message "NOTICE: historian service is DISABLED, going to sleep..."
     sleep infinity
     exit
 fi
-
-log_message "starting historian service..."
-
-# fix permissions
-chmod u+x /code/container-healthcheck.sh
-check_errors $?
 
 # Install external libraries
 cd /code
@@ -90,4 +90,4 @@ done
 
 sleep infinity
 
-#@TODO add service health reporter (db size, count of stored entries etc.)
+
