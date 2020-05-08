@@ -120,7 +120,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/ngrok
-            dockerfile: Dockerfile.ngrok
         volumes:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro

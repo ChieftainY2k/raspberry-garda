@@ -4,20 +4,15 @@ MAINTAINER "ChieftainY2k@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Common stuff
-
 RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     mc joe multitail curl wget telnet unzip
-
-# Install ngrok client
 
 WORKDIR /tmp
 RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip
 RUN unzip ./ngrok-stable-linux-arm.zip
 RUN mv ngrok /sbin/ngrok
 
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
-
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
 

@@ -19,7 +19,7 @@ RUN echo "extension=mosquitto.so" > /etc/php/7.0/cli/conf.d/20-mosquitto.ini
 
 # Configure cron
 
-ADD ./crontab.txt /crontab.txt
+ADD ./resources/crontab.txt /crontab.txt
 RUN crontab /crontab.txt
 
 # Startup scripts
