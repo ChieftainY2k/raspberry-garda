@@ -1,6 +1,0 @@
-vendor/
-public/node_modules/
-node_modules/
-public/capture
-composer.lock
-bootstrap/compiled.php
