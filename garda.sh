@@ -410,7 +410,7 @@ watchdog()
             fi
 
             log_message "checking containers..."
-            dockerPsOutput=$(docker ps -a)
+            dockerPsOutput=$(timeout 120 docker ps -a)
             if [[ $? != 0 ]]
             then
                 log_message "cannot get containers list, 'docker ps' returned a nonzero exit code, rebooting..."
