@@ -405,7 +405,8 @@ watchdog()
                 if [[ $? != 0 ]]
                 then
                     log_message "CRITICAL: still no network connection, rebooting..."
-                    /sbin/shutdown -r now "Rebooting on network loss."
+                    #/sbin/shutdown -r now "Rebooting on network loss."
+                    systemctl --force --force reboot
                 fi
             fi
 
@@ -414,7 +415,8 @@ watchdog()
             if [[ $? != 0 ]]
             then
                 log_message "cannot get containers list, 'docker ps' returned a nonzero exit code, rebooting..."
-                /sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
+                #/sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
+                systemctl --force --force reboot
             else
                 log_message "OK, got containers list"
             fi
@@ -424,7 +426,8 @@ watchdog()
             then
                 #@TODO make a recovery attempt by restarting all containers...
                 log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
-                /sbin/shutdown -r now "rebooting because there are unhealthy containers"
+                #/sbin/shutdown -r now "rebooting because there are unhealthy containers"
+                systemctl --force --force reboot
             else
                 log_message "OK, there are no unhealthy containers"
             fi
