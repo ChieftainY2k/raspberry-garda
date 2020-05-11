@@ -335,7 +335,7 @@ watchdog()
             log_message "installing cron script for watchdog..."
             crontab -l | grep -v "$(basename ${0}) watchdog run" > /tmp/garda-crontab.txt
             BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
-            echo "*/30 * * * * /usr/sbin/tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ > /dev/null ; /usr/bin/flock -w 0 /tmp/gardca-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
+            echo "*/30 * * * * /usr/sbin/tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ > /dev/null ; cd ${BASEDIR} && /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
             log_message "checking crontab..."
