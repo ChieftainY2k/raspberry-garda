@@ -413,9 +413,10 @@ watchdog()
 
             log_message "checking containers..."
             dockerPsOutput=$(timeout 120 docker ps -a)
-            if [[ $? != 0 ]]
+            EXITCODE=$?
+            if [[ ${EXITCODE} != 0 ]]
             then
-                log_message "cannot get containers list, 'docker ps' returned a nonzero exit code, rebooting..."
+                log_message "cannot get containers list, docker returned a nonzero exit code (${EXITCODE}), rebooting..."
                 /sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
                 sleep 60
                 systemctl --force --force reboot
