@@ -17,17 +17,9 @@ RUN echo "" | pecl install Mosquitto-alpha
 RUN echo "extension=mosquitto.so" > /etc/php/7.0/mods-available/mosquitto.ini
 RUN echo "extension=mosquitto.so" > /etc/php/7.0/cli/conf.d/20-mosquitto.ini
 
-# Configure document root
-
-RUN rm -f /etc/nginx/sites-enabled/default
-ADD ./configurator.conf /etc/nginx/sites-enabled/configurator.conf
-
-#RUN mkdir -p /var/www/web && chown www-data:www-data /var/www/web
-
 # Add startup script
-
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
 
 EXPOSE 80

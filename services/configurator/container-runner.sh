@@ -22,6 +22,10 @@ check_errors()
 printenv | grep -v "no_proxy" >> /etc/environment
 check_errors $?
 
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+check_errors $?
+
 # Install external libraries
 cd /code
 check_errors $?

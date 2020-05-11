@@ -27,7 +27,6 @@ services:
             - configs/environment.conf
         build:
             context: ./services/configurator
-            dockerfile: Dockerfile.configurator
         volumes:
             - ./services/configurator/code:/code
             - ./configs:/service-configs
