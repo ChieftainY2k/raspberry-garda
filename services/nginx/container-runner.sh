@@ -36,6 +36,13 @@ log_message "setting up password..."
 htpasswd -cb /etc/nginx/.htpasswd "${KD_UI_USER}" "${KD_UI_PASSWORD}"
 check_errors $?
 
+log_message "setting up log redirection (1)..."
+ln -sf /proc/1/fd/1 /var/log/nginx/access.log
+check_errors $?
+log_message "setting up log redirection (2)..."
+ln -sf /proc/1/fd/2 /var/log/nginx/error.log
+check_errors $?
+
 while sleep 1; do
     log_message "starting nginx..."
     /usr/sbin/nginx
