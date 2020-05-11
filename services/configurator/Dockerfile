@@ -22,4 +22,7 @@ ADD ./container-runner.sh /container-runner.sh
 RUN chmod a+x /container-runner.sh
 CMD /container-runner.sh
 
+HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
+    CMD /code/container-healthcheck.sh
+
 EXPOSE 80

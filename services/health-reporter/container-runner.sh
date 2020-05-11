@@ -27,7 +27,7 @@ check_errors_sleep()
     fi
 }
 
-log_message "starting the health reporter service..."
+log_message "starting service..."
 
 # fix permissions
 chmod u+x /code/container-healthcheck.sh

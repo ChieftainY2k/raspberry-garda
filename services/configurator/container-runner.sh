@@ -18,6 +18,17 @@ check_errors()
     fi
 }
 
+#check for errors
+check_errors_warning()
+{
+    local EXITCODE=$1
+    if [[ ${EXITCODE} -ne 0 ]]; then
+        log_message "WARNING: Exit code ${EXITCODE} , there were some errors - check the ouput for details, moving on..."
+    fi
+}
+
+log_message "starting service..."
+
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 check_errors $?
@@ -26,7 +37,13 @@ check_errors $?
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 check_errors $?
 
+# fix permissions
+log_message "fixing permissions..."
+chmod u+x /code/container-healthcheck.sh
+check_errors_warning $?
+
 # Install external libraries
+log_message "Installing libraries..."
 cd /code
 check_errors $?
 composer install
@@ -34,15 +51,10 @@ check_errors $?
 
 # run the simple PHP process to act as web interface
 while sleep 1; do
-    echo "Starting the configurator server..."
+    log_message "Starting the web server..."
     php -S 0.0.0.0:80 /code/configurator.php
-    echo "Configurator server stopped, sleeping and starting again..."
+    log_message "Configurator server stopped, sleeping and starting again..."
     sleep 60
 done
 
-
 #sleep infinity
-
-
-
-

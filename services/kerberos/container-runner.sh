@@ -39,12 +39,12 @@ chmod u+x /code/container-healthcheck.sh
 check_errors $?
 
 if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
-    log_message "NOTICE: KERBEROS service is DISABLED, going to sleep..."
+    log_message "NOTICE: service is DISABLED, going to sleep..."
     sleep infinity
     exit
 fi
 
-log_message "starting the kerberos service..."
+log_message "starting service..."
 
 # replace kerberos web config with a link to the dockerized one
 check_errors $?

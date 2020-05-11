@@ -27,6 +27,8 @@ check_errors_warning()
     fi
 }
 
+log_message "starting service..."
+
 # Workaround: preserve the environment for cron process
 printenv | grep -v "no_proxy" >> /etc/environment
 
