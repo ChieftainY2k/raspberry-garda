@@ -43,7 +43,7 @@ chmod u+x /code/container-healthcheck.sh
 check_errors_warning $?
 
 # Install external libraries
-log_message "Installing libraries..."
+log_message "installing libraries..."
 cd /code
 check_errors $?
 composer install
@@ -51,9 +51,9 @@ check_errors $?
 
 # run the simple PHP process to act as web interface
 while sleep 1; do
-    log_message "Starting the web server..."
+    log_message "starting the web server..."
     php -S 0.0.0.0:80 /code/configurator.php
-    log_message "Configurator server stopped, sleeping and starting again..."
+    log_message "configurator server stopped, sleeping and starting again..."
     sleep 60
 done
 
