@@ -7,10 +7,10 @@ services:
             - configs/environment.conf
         build:
             context: ./services/nginx
-            dockerfile: Dockerfile.nginx
         ports:
             - "80:80"
         volumes:
+            - ./services/nginx/code:/code
             - /var/run/docker.sock:/tmp/docker.sock:ro
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro

@@ -35,6 +35,7 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 check_errors $?
 
 # fix permissions
+log_message "fixing permissions..."
 chmod u+x /code/container-healthcheck.sh
 check_errors $?
 
