@@ -413,7 +413,7 @@ watchdog()
             fi
 
             log_message "checking containers..."
-            dockerPsOutput=$(timeout 300 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps -a)
+            dockerPsOutput=$(timeout 300 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps)
             EXITCODE=$?
             if [[ ${EXITCODE} != 0 ]]
             then
