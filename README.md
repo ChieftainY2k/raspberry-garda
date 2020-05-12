@@ -103,8 +103,8 @@ Configure low-level system watchdog: `sudo ./garda.sh watchdog installhardware`
 **Starting up Raspberry Garda**
 
 1. Run `sudo ./garda.sh start`
-1. Go to the kerberos installation page at `http://_YOUR_RASPBERRY_PI_ADDRESS_`
-1. Check the video stream at `http://_YOUR_RASPBERRY_PI_ADDRESS_/stream`
+1. Go to the kerberos installation page at `http://_YOUR_RASPBERRY_PI_ADDRESS_/kerberos`
+1. Check the video stream at `http://_YOUR_RASPBERRY_PI_ADDRESS_/kerberos/stream`
 
 Note: The application services will be automatically restarted on reboot, unless you explicitely stop it (see instructions below).
 
@@ -117,7 +117,7 @@ Note: The application services will be automatically restarted on reboot, unless
 **Configuration (web GUI)**
 
 1. Edit `configs/services.conf` and set the `KD_UI_USER` `KD_UI_PASSWORD` values with a password of your choice
-1. Go to `http://_YOUR_RASPBERRY_PI_ADDRESS_/configurator`   
+1. Go to `http://_YOUR_RASPBERRY_PI_ADDRESS_/`   
 
 **Stop the system**
 `````
