@@ -1,6 +1,8 @@
 #!/bin/bash
 
 export COMPOSE_HTTP_TIMEOUT=3600
+BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
+DOCKER_COMPOSE="/usr/local/bin/docker-compose"
 DOCKER_PARAMS="-f docker-compose.yml -p garda"
 
 #helper function
@@ -192,7 +194,7 @@ stop()
     local SERVICE=${1}
 
     log_message "Stopping services containers..."
-    docker-compose ${DOCKER_PARAMS} stop ${SERVICE}
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} stop ${SERVICE}
     check_errors $?
 }
 
@@ -201,7 +203,7 @@ start()
     local SERVICE=${1}
 
     log_message "Starting up services containers..."
-    docker-compose ${DOCKER_PARAMS} up -d --remove-orphans ${SERVICE}
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} up -d --remove-orphans ${SERVICE}
     check_errors $?
 
 #    cleanup
@@ -236,7 +238,7 @@ rebuild()
     stop ${SERVICE}
 
     log_message "Removing containers..."
-    docker-compose ${DOCKER_PARAMS} rm -f ${SERVICE}
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} rm -f ${SERVICE}
     check_errors $?
 
     build ${SERVICE}
@@ -256,7 +258,7 @@ build()
 
     local RASPBERRY_PLATFORM_FOR_KERBEROS=$(get_raspberry_version_for_kerberos_build)
     log_message "Building images..."
-    docker-compose ${DOCKER_PARAMS} build \
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} build \
         --build-arg RASPBERRY_PLATFORM_FOR_KERBEROS=${RASPBERRY_PLATFORM_FOR_KERBEROS} \
         ${SERVICE}
     check_errors $?
@@ -268,7 +270,7 @@ execute()
     local COMMAND=${2}
 
     log_message "Executing command..."
-    docker-compose ${DOCKER_PARAMS} exec ${SERVICE} ${COMMAND}
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} exec ${SERVICE} ${COMMAND}
     check_errors $?
 }
 
@@ -276,7 +278,7 @@ log()
 {
     local SERVICE=${1}
     log_message "Tracking container logs. Press Ctrl-C to stop."
-    docker-compose ${DOCKER_PARAMS} logs -f --tail=40 ${SERVICE}
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} logs -f --tail=40 ${SERVICE}
 }
 
 status()
@@ -291,7 +293,7 @@ status()
     pydf | grep -v overlay
 
     log_message "Probing for container status..."
-    docker-compose ${DOCKER_PARAMS} ps
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps
 
     log_message "checking cron for garda watchdog..."
     crontab -l | grep watchdog
@@ -304,7 +306,7 @@ shell()
 {
     local SERVICE=${1}
 
-    docker-compose ${DOCKER_PARAMS} exec ${SERVICE} bash
+    ${DOCKER_COMPOSE} ${DOCKER_PARAMS} exec ${SERVICE} bash
 }
 
 kerberos()
@@ -314,7 +316,7 @@ kerberos()
     case ${ARG1} in
         log)
             log_message "Accessing logs in the container..."
-            docker-compose ${DOCKER_PARAMS} exec kerberos bash -c "tail -f /var/log/nginx/* /var/www/web/storage/logs/*"
+            ${DOCKER_COMPOSE} ${DOCKER_PARAMS} exec kerberos bash -c "tail -f /var/log/nginx/* /var/www/web/storage/logs/*"
             ;;
         *)
             helper
@@ -334,7 +336,6 @@ watchdog()
             check_errors $?
             log_message "installing cron script for watchdog..."
             crontab -l | grep -v "$(basename ${0}) watchdog run" > /tmp/garda-crontab.txt
-            BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
             echo "*/30 * * * * /usr/sbin/tmpreaper -v 30d ${BASEDIR}/logs/watchdog/ > /dev/null ; cd ${BASEDIR} && /usr/bin/flock -w 0 /tmp/garda-watchdog.lock ${BASEDIR}/$(basename ${0}) watchdog run 2>&1 >> ${BASEDIR}/logs/watchdog/watchdog.\$(date \"+\\%Y\\%m\\%d\").log" >> /tmp/garda-crontab.txt
             cat /tmp/garda-crontab.txt | crontab
             check_errors $?
@@ -412,7 +413,7 @@ watchdog()
             fi
 
             log_message "checking containers..."
-            dockerPsOutput=$(timeout 120 docker-compose ${DOCKER_PARAMS} ps -a)
+            dockerPsOutput=$(timeout 120 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps -a)
             EXITCODE=$?
             if [[ ${EXITCODE} != 0 ]]
             then
