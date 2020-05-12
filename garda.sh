@@ -43,18 +43,18 @@ helper()
 
     $0 start   <sevice>  - start container(s)
     $0 stop    <sevice>  - stop containers(s)
-    $0 restart <sevice> - restart containers(s)
+    $0 restart <sevice>  - restart containers(s)
 
-    $0 build   <sevice> - build containers(s) image
-    $0 rebuild <sevice> - stop + remove + rebuild containers(s) image
+    $0 build   <sevice>      - build containers(s) image
+    $0 rebuild <sevice>      - stop + remove + rebuild containers(s) image
     $0 rebuildstart <sevice> - stop + remove + rebuild + start containers(s) image
 
-    $0 log <sevice>     - show and track container(s) logs
+    $0 log <sevice> - show and track container(s) logs
 
     $0 shell <service>         - launch bash shell console for container
     $0 exec <sevice> <command> - execute a command inside service container
 
-    $0 kerberos log   - show and track application logs inside kerberos container
+    $0 kerberos log - show and track application logs inside kerberos container
 
     " | sed "s/^[ \t]*//"
 }
@@ -418,6 +418,7 @@ watchdog()
             if [[ ${EXITCODE} != 0 ]]
             then
                 log_message "cannot get containers list, docker returned a nonzero exit code (${EXITCODE}), rebooting..."
+                sleep 5
                 /sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
                 sleep 60
                 systemctl --force --force reboot
@@ -430,6 +431,7 @@ watchdog()
             then
                 #@TODO make a recovery attempt by restarting all containers...
                 log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
+                sleep 5
                 /sbin/shutdown -r now "rebooting because there are unhealthy containers"
                 sleep 60
                 systemctl --force --force reboot
