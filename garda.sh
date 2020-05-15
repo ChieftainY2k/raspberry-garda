@@ -373,7 +373,7 @@ watchdog()
             echo "watchdog-timeout = 15" >> /etc/watchdog.conf
             check_errors $?
             log_message "updating /etc/watchdog.conf [2]..."
-            sed -i "s/^#max-load-15[^1-9].*/max-load-15 = 20/g"  /etc/watchdog.conf
+            sed -i "s/^#max-load-15[^1-9].*/max-load-15 = 25/g"  /etc/watchdog.conf
             check_errors $?
             log_message "updating /etc/watchdog.conf [3]..."
             sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
@@ -413,7 +413,7 @@ watchdog()
             fi
 
             log_message "checking containers..."
-            dockerPsOutput=$(timeout 300 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps)
+            dockerPsOutput=$(timeout 600 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps)
             EXITCODE=$?
             if [[ ${EXITCODE} != 0 ]]
             then
