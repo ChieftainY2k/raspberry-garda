@@ -17,9 +17,6 @@ services:
             - ./configs:/service-configs:ro
         restart: unless-stopped
 #        depends_on:
-#          - kerberos
-#          - historian
-#          - swarm-watcher
 #          - configurator
 
     configurator:
@@ -33,6 +30,8 @@ services:
             - ./data/:/data-all:ro
             - /var/run/docker.sock:/var/run/docker.sock
         restart: unless-stopped
+#        depends_on:
+#            - mqtt-server
 
     mqtt-server:
         env_file:
@@ -46,6 +45,8 @@ services:
             - ./data/mqtt-server/db:/var/lib/mosquitto
             - ./configs:/service-configs
         restart: unless-stopped
+#        depends_on:
+#            - health-reporter
 
     health-reporter:
         env_file:
@@ -61,6 +62,8 @@ services:
             - ./configs:/service-configs:ro
         privileged: true
         restart: unless-stopped
+#        depends_on:
+#            - kerberos
 
     kerberos:
         env_file:
@@ -85,6 +88,8 @@ services:
         devices:
           - /dev/vcsm
           - /dev/vchiq
+#        depends_on:
+#            - email-notification
 
     email-notification:
         env_file:
@@ -99,6 +104,8 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
+#        depends_on:
+#            - swarm-watcher
 
     swarm-watcher:
         env_file:
@@ -113,6 +120,8 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
+#        depends_on:
+#            - ngrok
 
     ngrok:
         env_file:
@@ -126,6 +135,8 @@ services:
 #            - ./data/services-health-reports/ngrok:/data-services-health-reports-ngrok
             - ./data/ngrok:/mydata
         restart: unless-stopped
+#        depends_on:
+#            - thermometer
 
     thermometer:
         env_file:
@@ -140,6 +151,8 @@ services:
             - ./data/thermometer:/mydata
         restart: unless-stopped
         privileged: true
+#        depends_on:
+#            - historian
 
     historian:
         env_file:
@@ -154,6 +167,8 @@ services:
             - ./configs:/service-configs:ro
             - ./data/historian:/mydata
         restart: unless-stopped
+#        depends_on:
+#            - alpr
 
     alpr:
         env_file:
@@ -230,6 +245,7 @@ services:
     #            - /var/run/docker.sock:/var/run/docker.sock
     #            - ./data/portainer:/data
     #        restart: unless-stopped
+
 
 
 
