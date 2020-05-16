@@ -99,16 +99,16 @@ class WebInterface
 
             $output[] = "<ul>";
             $videoStreamInfo = $serviceReportPayload['video_stream'];
-            $output[] = "<watch id='kerberosVideoStream'>";
             if (!empty($videoStreamInfo)) {
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
+                $output[] = "<watch id='kerberosVideoStreamInvalid'>";
                 if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
                     $output[] = "<span class='warning'>video format is invalid</span>";
                 }
+                $output[] = "</watch>";
                 $output[] = "</li>";
             }
-            $output[] = "</watch>";
             $output[] = "<li>media files count: <b>".($serviceReportPayload['media_files_count'] ?? "???")."</b></li>";
             $output[] = "</ul>";
         } else {
@@ -185,10 +185,10 @@ class WebInterface
         $version = $payload['version'];
         $systemName = $payload['system_name'];
 
-        if (empty($payload))
-        {
+        if (empty($payload)) {
             $output[] = "<div class='warning'>EMPTY REPORT DATA</div>";
             $output[] = "<div>topic: ".$report['topic']."</div>";
+
             return join("", $output);
         }
 
