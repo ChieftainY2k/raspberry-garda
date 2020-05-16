@@ -97,7 +97,7 @@ class ReportAnalyzer
      * @param $html
      * @return string|string[]
      */
-    private function convertClassToInlineStyling($html)
+    private function replaceClassWithInlineStyles($html)
     {
         //inject inline styling
         $html = str_replace('class="reportName"', 'style="font-size:15px;"', $html);
@@ -360,7 +360,7 @@ class ReportAnalyzer
                 [
                     "recipients" => [getenv("KD_EMAIL_NOTIFICATION_RECIPIENT")],
                     "subject" => ''.getenv("KD_SYSTEM_NAME").' - swarm anomaly detected',
-                    "htmlBody" => $this->convertClassToInlineStyling($emailHtmlBody),
+                    "htmlBody" => $this->replaceClassWithInlineStyles($emailHtmlBody),
                 ]
             );
             //save email data to email queue

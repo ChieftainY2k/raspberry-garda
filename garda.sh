@@ -369,8 +369,14 @@ watchdog()
             log_message "backing up /etc/watchdog.conf..."
             cp /etc/watchdog.conf /etc/watchdog.conf.$(date '+%Y%m%d%H%M%S')
             check_errors $?
+            log_message "processing /etc/watchdog.conf..."
+            grep -v "watchdog-timeout = 15" /etc/watchdog.conf >> /tmp/watchdog.conf
+            check_errors $?
+            log_message "updating /tmp/watchdog.conf..."
+            echo "watchdog-timeout = 15" >> /tmp/watchdog.conf
+            check_errors $?
             log_message "updating /etc/watchdog.conf [1]..."
-            echo "watchdog-timeout = 15" >> /etc/watchdog.conf
+            cp -f /tmp/watchdog.conf /etc/watchdog.conf
             check_errors $?
             log_message "updating /etc/watchdog.conf [2]..."
             sed -i "s/^#max-load-15[^1-9].*/max-load-15 = 25/g"  /etc/watchdog.conf
