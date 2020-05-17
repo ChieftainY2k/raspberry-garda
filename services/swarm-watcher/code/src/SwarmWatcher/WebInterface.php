@@ -102,11 +102,9 @@ class WebInterface
             if (!empty($videoStreamInfo)) {
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
-                $output[] = "<watch id='kerberosVideoStreamInvalid'>";
                 if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
-                    $output[] = "<span class='warning'>video format is invalid</span>";
+                    $output[] = "<watch id='kerberosVideoStreamInvalid'><span class='warning'>video format is invalid</span></watch>";
                 }
-                $output[] = "</watch>";
                 $output[] = "</li>";
             }
             $output[] = "<li>media files count: <b>".($serviceReportPayload['media_files_count'] ?? "???")."</b></li>";
