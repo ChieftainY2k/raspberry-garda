@@ -370,7 +370,7 @@ watchdog()
             cp /etc/watchdog.conf /etc/watchdog.conf.$(date '+%Y%m%d%H%M%S')
             check_errors $?
             log_message "processing /etc/watchdog.conf..."
-            grep -v "watchdog-timeout = 15" /etc/watchdog.conf >> /tmp/watchdog.conf
+            grep -v "watchdog-timeout" /etc/watchdog.conf >> /tmp/watchdog.conf
             check_errors $?
             log_message "updating /tmp/watchdog.conf..."
             echo "watchdog-timeout = 15" >> /tmp/watchdog.conf
