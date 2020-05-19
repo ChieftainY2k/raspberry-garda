@@ -54,7 +54,7 @@ do
 done
 
 
-SLEEP_DELAY=${KD_THERMOMETER_PROBING_DELAY:-60}
+SLEEP_DELAY=${KD_THERMOMETER_PROBING_DELAY:-120}
 
 # run  the listener forever
 while sleep 1; do
