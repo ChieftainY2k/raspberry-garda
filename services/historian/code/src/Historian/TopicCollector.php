@@ -69,14 +69,6 @@ class TopicCollector
             throw new \Exception("Cannot execute query ".json_encode($stmt)." , error = ".json_encode($this->pdo->errorInfo()));
         }
 
-        //$stmt = "
-        //    CREATE UNIQUE INDEX IF NOT EXISTS index_timestamp
-        //    ON mqtt_events(timestamp, payload);
-        //";
-        //if ($this->pdo->exec($stmt) === false) {
-        //    throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
-        //}
-
         $stmt = "
             CREATE INDEX IF NOT EXISTS index_timestamp_order
             ON mqtt_events(timestamp);
@@ -138,25 +130,24 @@ class TopicCollector
     {
         $this->log("received topic '".$message->topic."' with payload: '".$message->payload."'");
 
-        $payload = json_decode($message->payload, true);
+        //record only */thermometer/*/reading (remote) OR thermometer/*/reading (local)
+        if (preg_match("|[^a-z0-9]?thermometer/[^/]*/reading$|i", $message->topic)) {
 
-        //event timestamp when it was originally created
-        if (empty($payload['timestamp'])) {
+            $payload = json_decode($message->payload, true);
+            if (empty($payload['timestamp'])) {
 
-            $this->log("WARNING: payload without timestamp. topic '".$message->topic."' , payload: '".$message->payload."'");
+                $this->log("WARNING: payload is missing timestamp and will not be saved. topic '".$message->topic."' , payload: '".$message->payload."'");
 
-        } else {
-
-            //record only */thermometer/*/reading (remote) OR thermometer/*/reading (local)
-            if (preg_match("|[^a-z0-9]?thermometer/[^/]*/reading$|i", $message->topic)) {
+            } else {
 
                 $topicParts = explode("/", $message->topic);
 
                 //save to db, if an event has timestamp+topic already recorded then it will replaced with new payload
                 $sql = "
-                REPLACE INTO 
-                mqtt_events(timestamp, topic, topic1, topic2, topic3, topic4, topic5,payload) 
-                values(:timestamp,:topic,:topic1,:topic2,:topic3,:topic4,:topic5,:payload)";
+                    REPLACE INTO 
+                    mqtt_events(timestamp, topic, topic1, topic2, topic3, topic4, topic5,payload) 
+                    values(:timestamp,:topic,:topic1,:topic2,:topic3,:topic4,:topic5,:payload)
+                ";
 
                 $stmt = $this->pdo->prepare($sql);
                 $result = $stmt->execute(
@@ -175,16 +166,18 @@ class TopicCollector
                     $this->log("WARNING: Cannot execute query ".json_encode($sql)." , error = ".json_encode($this->pdo->errorInfo()));
                 }
                 $this->log("successfully saved data for topic '".$message->topic."'");
-
-            } else {
-
-                $this->log("ignored topic '".$message->topic."'");
-
             }
 
+
+        } else {
+
+            $this->log("ignoring topic '".$message->topic."'");
 
         }
 
 
     }
+
+
+}
 }
