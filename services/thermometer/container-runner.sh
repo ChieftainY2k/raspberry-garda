@@ -60,7 +60,7 @@ SLEEP_DELAY=${KD_THERMOMETER_PROBING_DELAY:-30}
 while sleep 1; do
 
     php -f /code/thermo-watcher.php
-#    log_message "sleeping for ${SLEEP_DELAY} seconds..."
+    log_message "sleeping for ${SLEEP_DELAY} seconds..."
     sleep ${SLEEP_DELAY}
 done
 

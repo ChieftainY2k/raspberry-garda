@@ -7,7 +7,7 @@
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
-echo "[".date("Y-m-d H:i:s")."] starting temp sensors watcher.\n";
+echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] starting temp sensors watcher.\n";
 require(__DIR__."/bootstrap.php");
 
 
@@ -17,7 +17,7 @@ function getSensorAlias($systemRawSensorName)
     if (!empty($aliasesConfigJson)) {
         $aliasesTable = json_decode($aliasesConfigJson, true);
         if (empty($aliasesTable)) {
-            echo "WARNING: invalid sensor's aliases definition. data = ".$aliasesTable."\n";
+            echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] WARNING: invalid sensor's aliases definition. data = ".$aliasesTable."\n";
         }
     }
     $alias = $aliasesTable[$systemRawSensorName] ?? $systemRawSensorName;
@@ -126,5 +126,5 @@ function readSensors()
 
 readSensors();
 
-echo "[".date("Y-m-d H:i:s")."] finished.\n";
+echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] finished.\n";
 
