@@ -7,27 +7,27 @@
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
-echo "[" . date("Y-m-d H:i:s") . "] starting temp sensors watcher.\n";
-require(__DIR__ . "/bootstrap.php");
+echo "[".date("Y-m-d H:i:s")."] starting temp sensors watcher.\n";
+require(__DIR__."/bootstrap.php");
 
 
-function getSensorAlias($sensorName)
+function getSensorAlias($systemRawSensorName)
 {
     $aliasesConfigJson = getenv("KD_THERMOMETER_ALIASES") ?? "[]";
     if (!empty($aliasesConfigJson)) {
         $aliasesTable = json_decode($aliasesConfigJson, true);
         if (empty($aliasesTable)) {
-            echo "WARNING: invalid sensor's aliases definition. data = " . $aliasesTable . "\n";
+            echo "WARNING: invalid sensor's aliases definition. data = ".$aliasesTable."\n";
         }
     }
-    $alias = $aliasesTable[$sensorName] ?? $sensorName;
+    $alias = $aliasesTable[$systemRawSensorName] ?? $systemRawSensorName;
 
     //sanitize the name
     $alias = preg_replace('/[^a-z0-9-_]/i', "_", $alias);
 
     //if (!preg_match('/^[a-z0-9-_]+$/i', $alias)) {
-    //    echo "WARNING: invalid characters in alias name for sensor " . $sensorName . ", alias = " . $alias . "\n";
-    //    $alias = $sensorName;
+    //    echo "WARNING: invalid characters in alias name for sensor " . $systemRawSensorName . ", alias = " . $alias . "\n";
+    //    $alias = $systemRawSensorName;
     //}
 
     return $alias;
@@ -40,7 +40,7 @@ function readSensors()
     (new Dotenv\Dotenv("/service-configs", "services.conf"))->load();
 
     //mqtt client
-    $mqttClientId = basename(__FILE__) . "-" . uniqid("");
+    $mqttClientId = basename(__FILE__)."-".uniqid("");
     $mqttClient = new Mosquitto\Client($mqttClientId);
     $mqttClient->connect("mqtt-server", 1883, 60);
 
@@ -75,9 +75,9 @@ function readSensors()
             }
         }
 
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $sensorFile . " = " . json_encode($rawContent) . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] ".$sensorFile." = ".json_encode($rawContent)."\n";
 
-        $topicName = "thermometer/" . $sensorNameAlias . "/reading";
+        $topicName = "thermometer/".$sensorNameAlias."/reading";
         $messageData = [
             "system_name" => getenv("KD_SYSTEM_NAME"),
             "timestamp" => time(),
@@ -86,8 +86,8 @@ function readSensors()
             "sensor_name_original" => $sensorName,
             "sensor_reading" => [
                 "celcius" => $temperatureCelcius,
-                "raw" => $rawContent
-            ]
+                "raw" => $rawContent,
+            ],
         ];
 
         $mqttClient->publish($topicName, json_encode($messageData), 0, false);
@@ -100,8 +100,8 @@ function readSensors()
             "sensor_name_original" => $sensorName,
             "sensor_reading" => [
                 "celcius" => $temperatureCelcius,
-                "raw" => $rawContent
-            ]
+                "raw" => $rawContent,
+            ],
         ];
 
     }
@@ -113,18 +113,18 @@ function readSensors()
     $healthReportData = [
         "timestamp" => (string)time(),
         "local_time" => date("Y-m-d H:i:s"),
-        "sensors" => $sensorsList
+        "sensors" => $sensorsList,
     ];
 
-    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] saving health report to " . $healthReportFile . " , report = " . json_encode($healthReportData) . "\n";
+    echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] saving health report to ".$healthReportFile." , report = ".json_encode($healthReportData)."\n";
 
     if (!file_put_contents($healthReportFile, json_encode($healthReportData), LOCK_EX)) {
-        throw new \Exception("Cannot save data to file " . $healthReportFile);
+        throw new \Exception("Cannot save data to file ".$healthReportFile);
     }
 
 }
 
 readSensors();
 
-echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
+echo "[".date("Y-m-d H:i:s")."] finished.\n";
 
