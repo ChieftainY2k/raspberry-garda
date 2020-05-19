@@ -8,6 +8,7 @@
 
 * `KD_THERMOMETER_ENABLED=0` to disable service 
 * `KD_THERMOMETER_ENABLED=1` to enable service
+* `KD_THERMOMETER_PROBING_DELAY` to set probing delay for a given number of seconds 
 * `KD_THERMOMETER_ALIASES` - JSON key-value table for sensor human readable aliases
 
 **Service configuration examples**
