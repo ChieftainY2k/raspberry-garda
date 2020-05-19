@@ -11,7 +11,7 @@
 	</Rectangle>
 
 	<Hull>
-	    <region type="hullselection">1280,6|6,2|4,713|1280,716|1280,6</region>
+	    <region type="hullselection">1280,6|2,2|4,960|1280,960|1280,4</region>
 	</Hull>
 
 </expositors>

@@ -11,8 +11,8 @@
     </Disk>
     <Video>
         <fps type="number">20</fps>
-        <recordAfter type="number">5</recordAfter>
-        <maxDuration type="number">30</maxDuration>
+        <recordAfter type="number">10</recordAfter>
+        <maxDuration type="number">60</maxDuration>
         <extension type="number">mp4</extension>
         <codec type="number">h264</codec>
         <fileFormat type="text">timestamp_microseconds_instanceName_regionCoordinates_numberOfChanges_token</fileFormat>
