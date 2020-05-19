@@ -175,9 +175,5 @@ class TopicCollector
 
         }
 
-
     }
-
-
-}
 }
