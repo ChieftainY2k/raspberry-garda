@@ -66,7 +66,7 @@ class TopicCollector
             )
         ";
         if ($this->pdo->exec($stmt) === false) {
-            throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
+            throw new \Exception("Cannot execute query ".json_encode($stmt)." , error = ".json_encode($this->pdo->errorInfo()));
         }
 
         //$stmt = "
@@ -82,7 +82,7 @@ class TopicCollector
             ON mqtt_events(timestamp);
         ";
         if ($this->pdo->exec($stmt) === false) {
-            throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
+            throw new \Exception("Cannot execute query ".json_encode($stmt)." , error = ".json_encode($this->pdo->errorInfo()));
         }
 
         $stmt = "
@@ -90,7 +90,7 @@ class TopicCollector
             ON mqtt_events(topic,topic1,topic2,topic3,topic4,topic5);
         ";
         if ($this->pdo->exec($stmt) === false) {
-            throw new \Exception("Cannot execute query " . json_encode($stmt) . " , error = " . json_encode($this->pdo->errorInfo()));
+            throw new \Exception("Cannot execute query ".json_encode($stmt)." , error = ".json_encode($this->pdo->errorInfo()));
         }
     }
 
@@ -99,7 +99,7 @@ class TopicCollector
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__CLASS__)."] ".$msg."\n";
     }
 
     /**
@@ -136,39 +136,52 @@ class TopicCollector
      */
     function onMessage(Message $message)
     {
-        $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
+        $this->log("received topic '".$message->topic."' with payload: '".$message->payload."'");
 
         $payload = json_decode($message->payload, true);
 
         //event timestamp when it was originally created
         if (empty($payload['timestamp'])) {
 
-            $this->log("WARNING: payload without timestamp. topic '" . $message->topic . "' , payload: '" . $message->payload . "'");
+            $this->log("WARNING: payload without timestamp. topic '".$message->topic."' , payload: '".$message->payload."'");
 
         } else {
 
-            //save to db, if an event has timestamp+topic already recorded then it will replaced with new payload
-            $sql = "
+            //record only */thermometer/*/reading (remote) OR thermometer/*/reading (local)
+            if (preg_match("|[^a-z0-9]?thermometer/[^/]*/reading$|i", $message->topic)) {
+
+                $topicParts = explode("/", $message->topic);
+
+                //save to db, if an event has timestamp+topic already recorded then it will replaced with new payload
+                $sql = "
                 REPLACE INTO 
                 mqtt_events(timestamp, topic, topic1, topic2, topic3, topic4, topic5,payload) 
                 values(:timestamp,:topic,:topic1,:topic2,:topic3,:topic4,:topic5,:payload)";
 
-            $topicParts = explode("/", $message->topic);
+                $stmt = $this->pdo->prepare($sql);
+                $result = $stmt->execute(
+                    [
+                        ":timestamp" => $payload['timestamp'],
+                        ":topic" => $message->topic,
+                        ":topic1" => $topicParts[0] ?? null,
+                        ":topic2" => $topicParts[1] ?? null,
+                        ":topic3" => $topicParts[2] ?? null,
+                        ":topic4" => $topicParts[3] ?? null,
+                        ":topic5" => $topicParts[4] ?? null,
+                        ":payload" => gzcompress($message->payload, 9),
+                    ]
+                );
+                if ($result !== true) {
+                    $this->log("WARNING: Cannot execute query ".json_encode($sql)." , error = ".json_encode($this->pdo->errorInfo()));
+                }
+                $this->log("successfully saved data for topic '".$message->topic."'");
 
-            $stmt = $this->pdo->prepare($sql);
-            $result = $stmt->execute([
-                ":timestamp" => $payload['timestamp'],
-                ":topic" => $message->topic,
-                ":topic1" => $topicParts[0] ?? null,
-                ":topic2" => $topicParts[1] ?? null,
-                ":topic3" => $topicParts[2] ?? null,
-                ":topic4" => $topicParts[3] ?? null,
-                ":topic5" => $topicParts[4] ?? null,
-                ":payload" => gzcompress($message->payload, 9)
-            ]);
-            if ($result !== true) {
-                $this->log("WARNING: Cannot execute query " . json_encode($sql) . " , error = " . json_encode($this->pdo->errorInfo()));
+            } else {
+
+                $this->log("ignored topic '".$message->topic."'");
+
             }
+
 
         }
 
