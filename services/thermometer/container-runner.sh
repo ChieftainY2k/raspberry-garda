@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][thermometer]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -53,11 +53,15 @@ do
     sleep 10
 done
 
+
+SLEEP_DELAY=${KD_THERMOMETER_PROBING_DELAY:-30}
+
 # run  the listener forever
 while sleep 1; do
 
     php -f /code/thermo-watcher.php
-    sleep 30
+#    log_message "sleeping for ${SLEEP_DELAY} seconds..."
+    sleep ${SLEEP_DELAY}
 done
 
 sleep infinity
