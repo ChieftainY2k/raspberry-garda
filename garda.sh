@@ -8,9 +8,9 @@ DOCKER_PARAMS="-f docker-compose.yml -p garda"
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][garda]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
-    echo "$LOGPREFIX $MESSAGE"
+    echo -e "$LOGPREFIX $MESSAGE"
 }
 
 #check for errors
@@ -420,7 +420,7 @@ watchdog()
 
             log_message "checking containers..."
             dockerPsOutput=$(timeout 600 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps)
-            log_message "docker output: ${dockerPsOutput}"
+            log_message "docker output: \n${dockerPsOutput}"
             EXITCODE=$?
             if [[ ${EXITCODE} != 0 ]]
             then
