@@ -13,10 +13,13 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
 
 RUN apt-get install -y mosquitto mosquitto-clients
 #add custom config
-ADD ./mqtt-server.conf /etc/mosquitto/conf.d/docker.conf
+ADD ./resources/mqtt-server.conf /etc/mosquitto/conf.d/docker.conf
 
-ADD ./run.sh /run.sh
-RUN chmod a+x /run.sh
-CMD /run.sh
+ADD ./container-runner.sh /container-runner.sh
+RUN chmod a+x /container-runner.sh
+CMD /container-runner.sh
+
+HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
+    CMD /code/container-healthcheck.sh
 
 EXPOSE 1883

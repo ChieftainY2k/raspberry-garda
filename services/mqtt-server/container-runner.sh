@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][mqtt-server]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -32,6 +32,11 @@ check_errors_warning()
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 check_errors $?
 
+# fix permissions
+log_message "fixing permissions..."
+chmod u+x /code/container-healthcheck.sh
+check_errors $?
+
 #modify local config - disable logging to file
 sed -i '/^log_dest/s/^/#/g' /etc/mosquitto/mosquitto.conf
 check_errors $?
@@ -51,7 +56,7 @@ if [[ "$KD_MQTT_BRIDGE_ENABLED" == "1" ]]; then
     echo "remote_username $KD_MQTT_BRIDGE_REMOTE_USER" >> ${configFile}
     echo "remote_password $KD_MQTT_BRIDGE_REMOTE_PASSWORD" >> ${configFile}
     echo "topic # out 1 \"\" $KD_MQTT_BRIDGE_REMOTE_OUT_TOPIC_PREFIX/" >> ${configFile}
-    echo "topic # in 1" remote/ \"\">> ${configFile}
+    echo "topic # in 1 remote/ \"\"">> ${configFile}
     check_errors $?
 
 else

@@ -38,8 +38,8 @@ services:
             - configs/environment.conf
         build:
             context: ./services/mqtt-server
-            dockerfile: Dockerfile.mqtt-server
         volumes:
+            - ./services/mqtt-server/code:/code
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./data/mqtt-server/db:/var/lib/mosquitto

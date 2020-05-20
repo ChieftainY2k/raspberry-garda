@@ -420,6 +420,7 @@ watchdog()
 
             log_message "checking containers..."
             dockerPsOutput=$(timeout 600 ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps)
+            log_message "docker output: ${dockerPsOutput}"
             EXITCODE=$?
             if [[ ${EXITCODE} != 0 ]]
             then
