@@ -21,10 +21,15 @@ check_errors()
 }
 
 
-log_message "cleanup started."
+log_message "starting."
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+
+if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
+    log_message "NOTICE: service is DISABLED, exiting..."
+    exit
+fi
 
 #LOGPREFIX="$(date '+%Y-%m-%d %H:%M:%S')[autoremove]"
 imageDir=/etc/opt/kerberosio/capture/

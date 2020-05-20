@@ -1,3 +1,5 @@
 .env
 configs/services.conf
+kerberos-machinery
+kerberos-web
 

@@ -18,7 +18,7 @@ check_errors()
     fi
 }
 
-log_message "running healthcheck..."
+log_message "starting."
 
 #load services configuration
 export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')

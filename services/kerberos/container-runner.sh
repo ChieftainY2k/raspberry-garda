@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][kerberos]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
@@ -36,7 +36,7 @@ check_errors $?
 
 # fix permissions
 log_message "fixing permissions..."
-chmod u+x /code/container-healthcheck.sh
+chmod u+x /code/*.sh
 check_errors $?
 
 if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
@@ -74,20 +74,15 @@ log_message "starting nginx..."
 service nginx restart
 check_errors $?
 
-
-# Fix permissions & run the script
-chmod u+x /code/autoremoval.sh
-check_errors $?
-/code/autoremoval.sh
-check_errors $?
-
-
 # Init container health reporter flags
 touch /tmp/health-reporter-success.flag
 check_errors_warning $?
 touch /tmp/autoremove-success.flag
 check_errors_warning $?
 
+log_message "running cleanup scripts..."
+/code/autoremoval.sh
+check_errors $?
 
 # Init crontab and cron process
 log_message "starting syslog..."

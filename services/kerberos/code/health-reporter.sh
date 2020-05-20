@@ -18,6 +18,16 @@ check_errors()
     fi
 }
 
+log_message "starting."
+
+#load services configuration
+export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
+
+if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then
+    log_message "NOTICE: service is DISABLED, exiting..."
+    exit
+fi
+
 #check the health of the kerberos stream
 streamFFprobeOutput=$(ffprobe http://localhost:8889 2>&1 | tail -1)
 log_message "FFProbe output = ${streamFFprobeOutput}"
