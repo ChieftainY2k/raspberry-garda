@@ -102,7 +102,7 @@ class WebInterface
             if (!empty($videoStreamInfo)) {
                 $output[] = "<li>";
                 $output[] = "video stream: ".$videoStreamInfo;
-                if (strpos($videoStreamInfo, "Stream #0:0: Video: mjpeg") === false) {
+                if (strpos($videoStreamInfo, "Video: mjpeg") === false) {
                     $output[] = "<watch id='kerberosVideoStreamInvalid'><span class='warning'>video format is invalid</span></watch>";
                 }
                 $output[] = "</li>";
