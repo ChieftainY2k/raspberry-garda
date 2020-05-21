@@ -28,7 +28,6 @@ sed -i "s|Route::post('|Route::post('kerberos/|g" /var/www/web/routes/web.php
 sed -i "s|Route::put('|Route::put('kerberos/|g" /var/www/web/routes/web.php
 
 find /var/www/web/resources/views -type f -exec sed -i -e "s|URL::to('/|URL::to('/kerberos/|g" {} \;
-find /var/www/web/resources/views -type f -exec sed -i -e 's|_baseUrl = "http://|_baseUrl = "//|g' {} \;
 find /var/www/web/resources/views -type f -exec sed -i -e 's|url: "|url: "/kerberos|g' {} \;
 find /var/www/web/public/js -type f -exec sed -i -e 's|href="/api|href="/kerberos/api|g' {} \;
 
@@ -36,6 +35,11 @@ find /var/www/web/app/Http/Controllers -type f -exec sed -i -e "s|URL::to('/|URL
 find /var/www/web/app/Http/Controllers -type f -exec sed -i -e "s|Redirect::to('|Redirect::to('kerberos/|g" {} \;
 find /var/www/web/app/Http/Middleware -type f -exec sed -i -e "s|redirect('|redirect('kerberos|g" {} \;
 find /var/www/web/app/Http/Middleware -type f -exec sed -i -e "s|redirect('kerberos/'|redirect('kerberos/dashboard'|g" {} \;
+
+#make all links scheme-relative
+find /var/www/web/resources/views -type f -exec sed -i -e 's|_baseUrl = "http://|_baseUrl = "//|g' {} \;
+find /var/www/web/resources/views -type f -exec sed -i -e 's|src="http://|src="//|g' {} \;
+find /var/www/web/resources/views -type f -exec sed -i -e 's|href="http://|href="//|g' {} \;
 
 log_message "creating symbolic links..."
 ln -s /var/www/web/public /var/www/web/public/kerberos
