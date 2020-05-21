@@ -78,7 +78,7 @@ class WebInterface
     {
         if (!empty($serviceReportPayload['ngrok_url'])) {
             $output[] = "<ul>";
-            $output[] = "<li>url: <watch id='ngrokUrl'><a href='http://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a></watch></li>";
+            $output[] = "<li>url: <watch id='ngrokUrl'><a href='https://".$serviceReportPayload['ngrok_url']."'>".$serviceReportPayload['ngrok_url']."</a></watch></li>";
             $output[] = "</ul>";
         } else {
             $output[] = "<ul>";
@@ -237,7 +237,7 @@ class WebInterface
         $output[] = "<br>";
 
         if (!empty($payload['services']['ngrok']['report']['ngrok_url'])) {
-            $ngrokUrl = "http://".$payload['services']['ngrok']['report']['ngrok_url']."";
+            $ngrokUrl = "https://".$payload['services']['ngrok']['report']['ngrok_url']."";
             $output[] = "ngrok url: <a href='".$ngrokUrl."'>".$ngrokUrl."</a><br>";
             $videoStreamUrl = $ngrokUrl."/kerberos/stream";
             $elementId = uniqid("");
