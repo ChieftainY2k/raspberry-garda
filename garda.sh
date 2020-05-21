@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export COMPOSE_HTTP_TIMEOUT=3600
+export COMPOSE_PARALLEL_LIMIT=200
 BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
 DOCKER_COMPOSE="/usr/local/bin/docker-compose"
 DOCKER_PARAMS="-f docker-compose.yml -p garda"
