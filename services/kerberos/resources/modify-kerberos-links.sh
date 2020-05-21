@@ -37,11 +37,11 @@ find /var/www/web/app/Http/Middleware -type f -exec sed -i -e "s|redirect('|redi
 find /var/www/web/app/Http/Middleware -type f -exec sed -i -e "s|redirect('kerberos/'|redirect('kerberos/dashboard'|g" {} \;
 
 #make all links scheme-relative
-find /var/www/web/resources/views -type f -exec sed -i -e 's|_baseUrl = "http://|_baseUrl = "//|g' {} \;
-find /var/www/web/resources/views -type f -exec sed -i -e 's|src="http://|src="//|g' {} \;
-find /var/www/web/resources/views -type f -exec sed -i -e 's|href="http://|href="//|g' {} \;
+#find /var/www/web/resources/views -type f -exec sed -i -e 's|_baseUrl = "http://|_baseUrl = "//|g' {} \;
+#find /var/www/web/resources/views -type f -exec sed -i -e 's|src="http://|src="//|g' {} \;
+#find /var/www/web/resources/views -type f -exec sed -i -e 's|href="http://|href="//|g' {} \;
+#find /var/www/web/resources/views -type f -exec sed -i -e "s|{{URL::to('/kerberos/')}}|//kerberos/|g" {} \;
 
 log_message "creating symbolic links..."
 ln -s /var/www/web/public /var/www/web/public/kerberos
 check_errors $?
-
