@@ -47,6 +47,12 @@ echo "w1-therm" >> /etc/modules
 reboot
 `````
 
+**(OPTIONAL) Disable camera LED light**
+To disable the red camera LED run the following commands:  
+`````
+echo "disable_camera_led=1" >> /boot/config.txt
+reboot
+`````
 
 **(OPTIONAL) Raspberry peformance tuning**
 * Set CPU overclocking to max available value (`raspi-config -> overclock`)
