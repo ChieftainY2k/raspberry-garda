@@ -34,7 +34,8 @@ helper()
     Available options:
     ---------------------------------------------------
     $0 install - install and configure core and services
-    $0 check   - check workspace and hardware sanity
+    $0 check     - check workspace and hardware sanity
+    $0 benchmark - run benchmarks for filesystem etc.
     $0 status  - show current status of containers and applications
     $0 cleanup - clean all unnecessary data (usused images, containers, files etc.)
 
@@ -174,21 +175,27 @@ check()
     docker run --rm hypriot/armhf-hello-world
     check_errors $?
 
-    log_message "Checking the filesystem WRITE performance..."
-    sync; dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024 oflag=dsync
+    log_message "all checks completed."
+
+}
+
+
+benchmark()
+{
+    log_message "Benchmarking the filesystem WRITE performance..."
+    sync && dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024 oflag=dsync
     check_errors $?
-    log_message "Checking the filesystem READ performance..."
-    sync; echo 3 > /proc/sys/vm/drop_caches
+    log_message "Benchmarking the filesystem READ performance..."
+    sync && echo 3 > /proc/sys/vm/drop_caches
     check_errors $?
-    sync; dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024 oflag=dsync
+    sync && dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024 oflag=dsync
     check_errors $?
 
     log_message "removing temporary files..."
     rm -f /tmp/test.tmp
     check_errors $?
-    log_message "all checks completed."
-
 }
+
 
 stop()
 {
@@ -465,6 +472,7 @@ case ${ARG1} in
 #    watchdog-install) watchdog_install;;
 #    watchdog-check) watchdog_check;;
     check) check;;
+    benchmark) benchmark;;
     start)   start ${ARG2};;
     stop)    stop ${ARG2};;
     restart) restart ${ARG2};;
