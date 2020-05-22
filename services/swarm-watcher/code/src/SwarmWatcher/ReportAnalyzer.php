@@ -297,14 +297,14 @@ class ReportAnalyzer
                             </div>
                             <table border='0' cellpadding='0' cellspacing='1'>
                             <tr>
-                                <td valign='top' width='45%' align='left'>
+                                <td valign='top' width='47%' align='left'>
                                     <b style='font-size:12px;'>Previous report:</b>
                                     <div class=\"reportContainer\">".$previousReportXml."</div>
                                 </td>
-                                <td valign='top' width='20'>
-                                    <b>&raquo;</b>
+                                <td valign='top' align='center'>
+                                    <b style='font-size:20px'>&gt;&gt;</b>
                                 </td>
-                                <td valign='top' width='45%' align='left'>
+                                <td valign='top' width='47%' align='left'>
                                     <b style='font-size:12px;'>Current report:</b>
                                     <div class=\"reportContainer\">".$reportNode->saveXML()."<div>
                                 </td>
