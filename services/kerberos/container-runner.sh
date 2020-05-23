@@ -36,7 +36,7 @@ check_errors $?
 
 # fix permissions
 log_message "fixing permissions..."
-chmod u+x /code/container-healthcheck.sh
+chmod u+x /code/*.sh
 check_errors $?
 
 if [[ "${KD_KERBEROS_ENABLED}" != "1" ]]; then

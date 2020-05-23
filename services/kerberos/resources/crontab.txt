@@ -3,5 +3,5 @@
 */3 * * * * /usr/bin/flock -w 0 /tmp/autoremoval.lock /code/autoremoval.sh 2>&1 > /proc/1/fd/2
 
 # service health reporter
-*/10 * * * * /usr/bin/flock -w 0 /tmp/healthreporter.lock /code/health-reporter.sh 2>&1 > /proc/1/fd/2
+*/10 * * * * /usr/bin/flock -w 0 /tmp/healthreporter.lock /code/service-health-report.sh 2>&1 > /proc/1/fd/2
 

@@ -301,7 +301,7 @@ class ReportAnalyzer
                                     <b style='font-size:12px;'>Previous report:</b>
                                     <div class=\"reportContainer\">".$previousReportXml."</div>
                                 </td>
-                                <td valign='top' align='center'>
+                                <td valign='top' align='center' nowrap='1'>
                                     <b style='font-size:20px'>&gt;&gt;</b>
                                 </td>
                                 <td valign='top' width='47%' align='left'>
