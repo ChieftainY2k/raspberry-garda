@@ -187,14 +187,14 @@ benchmark()
     check_errors $?
 
     log_message "Benchmarking the filesystem WRITE performance with DD..."
-    sync && dd if=/dev/zero of=/tmp/test.tmp bs=8k count=50k oflag=dsync
+    sync && dd if=/dev/zero of=/tmp/test.tmp bs=8k count=50k conv=fsync
     check_errors $?
 
     log_message "Benchmarking the filesystem READ performance with DD..."
     sync && echo 3 > /proc/sys/vm/drop_caches
     check_errors $?
 
-    sync && dd if=/tmp/test.tmp of=/dev/null bs=8k count=50k oflag=dsync
+    sync && dd if=/tmp/test.tmp of=/dev/null bs=8k count=50k
     check_errors $?
 
     log_message "Benchmarking the filesystem performance with HDPARM..."
