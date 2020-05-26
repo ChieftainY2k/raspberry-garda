@@ -63,7 +63,7 @@ reboot
 * Reboot
 
 **(OPTIONAL) Configure startup scripts to send an email on each reboot**
-* Install email tools: `apt-get install -y msmtp msmtp-mta` 
+* Install email tools: `apt-get install -y mailutils msmtp msmtp-mta` 
 * Edit ssmtp config `/etc/msmtprc` with your config (gmail.com as an example below):
 `````
 defaults
