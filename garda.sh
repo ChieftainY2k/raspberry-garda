@@ -182,18 +182,29 @@ check()
 
 benchmark()
 {
-    log_message "Benchmarking the filesystem WRITE performance..."
+    log_message "Installing packages..."
+    apt-get -y install hdparm
+    check_errors $?
+
+    log_message "Benchmarking the filesystem DD WRITE performance..."
     sync && dd if=/dev/zero of=/tmp/test.tmp bs=500K count=1024 oflag=dsync
     check_errors $?
-    log_message "Benchmarking the filesystem READ performance..."
+
+    log_message "Benchmarking the filesystem DD READ performance..."
     sync && echo 3 > /proc/sys/vm/drop_caches
     check_errors $?
+
     sync && dd if=/tmp/test.tmp of=/dev/null bs=500K count=1024 oflag=dsync
+    check_errors $?
+
+    log_message "Benchmarking the filesystem performance with HDPARM..."
+    sudo hdparm -Tt /dev/mmcblk0
     check_errors $?
 
     log_message "removing temporary files..."
     rm -f /tmp/test.tmp
     check_errors $?
+
 }
 
 
