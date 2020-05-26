@@ -29,7 +29,8 @@ Enjoy! :-)
 
 **Raspberry preparation**
 
-* Grab the Raspbian Buster Lite from https://downloads.raspberrypi.org/ , install it on a SD card (8GB at least, 16GB would be nice).
+* Grab the Raspbian Buster Lite from https://downloads.raspberrypi.org/ , install it on a SD card 
+  (8GB at least, 32GB would be nice, [pick the fastest SD card you can afford](https://www.pidramble.com/wiki/benchmarks/microsd-cards)).  
 * Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 * Configure your time zone (`raspi-config -> localisation -> change timezone`)
 * Enable the camera module support (`raspi-config -> interfacing -> camera`)
@@ -57,7 +58,7 @@ reboot
 **(OPTIONAL) Raspberry peformance tuning**
 * Set CPU overclocking to max available value (`raspi-config -> overclock`)
 * Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
-* Harden against brute-force ssh password guessing attacks (`apt-get install fail2ban`)
+* Harden against brute-force ssh password guessing attacks (`apt-get-y  install fail2ban`)
 * Disable bluetooth (see https://scribles.net/disabling-bluetooth-on-raspberry-pi) 
 * Reboot
 
