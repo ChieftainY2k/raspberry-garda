@@ -445,7 +445,7 @@ watchdog()
                 log_message "cannot get containers list, docker returned a nonzero exit code (${EXITCODE}), rebooting..."
                 sleep 5
                 /sbin/shutdown -r now "rebooting because docker ps returned nonzero status"
-                sleep 60
+                sleep 120
                 systemctl --force --force reboot
             else
                 log_message "OK, got containers list"
@@ -458,7 +458,7 @@ watchdog()
                 log_message "there are ${unhealthyContainersCount} unhealthy containers, rebooting..."
                 sleep 5
                 /sbin/shutdown -r now "rebooting because there are unhealthy containers"
-                sleep 60
+                sleep 120
                 systemctl --force --force reboot
             else
                 log_message "OK, there are no unhealthy containers"
