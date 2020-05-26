@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# fake vcgencmd needed for rpi-update (vcgencmd does not work inside the docker build context)
+exit 0
+

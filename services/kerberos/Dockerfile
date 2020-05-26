@@ -15,8 +15,12 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     mosquitto-clients rpi-update cron rsyslog tmpreaper strace \
     nginx php7.0 php7.0-curl php7.0-gd php7.0-fpm php7.0-cli php7.0-opcache php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 
-#Install VideoCore libraries etc.
 
+# fake vcgencmd needed for rpi-update (vcgencmd does not work inside the docker build context)
+ADD ./resources/vcgencmd /bin/vcgencmd
+RUN chmod a+x /bin/vcgencmd
+
+#Install VideoCore libraries etc.
 RUN yes | rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 
