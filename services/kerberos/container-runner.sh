@@ -70,7 +70,7 @@ check_errors $?
 log_message "starting frontend app..."
 service php7.0-fpm restart
 check_errors $?
-log_message "starting nginx..."
+log_message "starting nginx..."re
 service nginx restart
 check_errors $?
 
@@ -97,12 +97,16 @@ log_message "starting cron..."
 cron &
 check_errors $?
 
+#sleep infinity
+
 # Init machinery
 while sleep 1; do
     log_message "starting kerberos-io machinery..."
+#    (ulimit -v 1000000; kerberosio)
     kerberosio
     log_message "kerberosio process terminated, sleeping and retrying..."
     sleep 60
 done
 
-#sleep infinity
+sleep infinity
+
