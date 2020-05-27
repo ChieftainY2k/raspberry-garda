@@ -58,7 +58,7 @@ reboot
 **(OPTIONAL) Raspberry peformance tuning**
 * Set CPU overclocking to max available value (`raspi-config -> overclock`)
 * Check filesystem on every boot (put `fsck.mode=force` at the end of line in `/boot/cmdline.txt`) 
-* Harden against brute-force ssh password guessing attacks (`apt-get-y  install fail2ban`)
+* Harden against brute-force ssh password guessing attacks (`apt-get -y install fail2ban`)
 * Disable bluetooth (see https://scribles.net/disabling-bluetooth-on-raspberry-pi) 
 * Reboot
 
