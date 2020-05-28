@@ -93,7 +93,7 @@ EXPOSE 8889
 #RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip && unzip ./ngrok-stable-linux-arm.zip && mv ngrok /sbin/ngrok
 
 # Run inside running container:
-# /usr/sbin/sshd && /sbin/ngrok authtoken AUTH_TOKEN && ngrok tcp 22
+# /usr/sbin/sshd && /sbin/ngrok authtoken $NGROK_AUTH_TOKEN && ngrok tcp 22
 #
 
 
