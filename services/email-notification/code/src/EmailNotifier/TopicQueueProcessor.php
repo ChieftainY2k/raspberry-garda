@@ -69,50 +69,50 @@ class TopicQueueProcessor
         echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] ".$msg."\n";
     }
 
-    /**
-     * @return null|string
-     */
-    function getLastHealthReportAsHtml()
-    {
-        $htmlBody = null;
-
-        //attach last health report if available
-        if (file_exists($this->lastHealthReportFile)) {
-
-            $lastHealthReportData = file_get_contents($this->lastHealthReportFile);
-            $lastHealthReportData = json_decode($lastHealthReportData, true);
-            $reportPayload = $lastHealthReportData['payload'];
-            $uptimeSeconds = $reportPayload['uptime_seconds'];
-            $htmlBody .= "
-                <ul>
-                    <li>Report time: <b>".date("Y-m-d H:i:s", $reportPayload['timestamp'])."</b></li>
-                    <li>System name: <b>".$reportPayload['system_name']."</b></li>
-                    <li>Uptime: <b>".floor($uptimeSeconds / 3600)."h ".gmdate("i", $uptimeSeconds % 3600)."m</b></li>
-                    <li>CPU: <b>".$reportPayload['cpu_temp']."'C</b> , <b>".$reportPayload['cpu_voltage']."V</b></li>
-                    <li>Disk: 
-                        <b>".number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2)." GB
-                        (".number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2)."%) </b> available ,
-                        <b>".number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2)." GB </b> 
-                        total 
-                        
-                    </li>
-                </ul>
-            ";
-            //<li>Uptime: <b>" . gmdate("H:i:s", $reportPayload['uptime_seconds']) . " (hours:minutes:seconds)</b></li>
-
-        } else {
-
-            $this->log("last health report is missing, ignored.");
-
-        }
-
-        return $htmlBody;
-    }
+    ///**
+    // * @return null|string
+    // */
+    //function getLastHealthReportAsHtml()
+    //{
+    //    $htmlBody = null;
+    //
+    //    //attach last health report if available
+    //    if (file_exists($this->lastHealthReportFile)) {
+    //
+    //        $lastHealthReportData = file_get_contents($this->lastHealthReportFile);
+    //        $lastHealthReportData = json_decode($lastHealthReportData, true);
+    //        $reportPayload = $lastHealthReportData['payload'];
+    //        $uptimeSeconds = $reportPayload['uptime_seconds'];
+    //        $htmlBody .= "
+    //            <ul>
+    //                <li>Report time: <b>".date("Y-m-d H:i:s", $reportPayload['timestamp'])."</b></li>
+    //                <li>System name: <b>".$reportPayload['system_name']."</b></li>
+    //                <li>Uptime: <b>".floor($uptimeSeconds / 3600)."h ".gmdate("i", $uptimeSeconds % 3600)."m</b></li>
+    //                <li>CPU: <b>".$reportPayload['cpu_temp']."'C</b> , <b>".$reportPayload['cpu_voltage']."V</b></li>
+    //                <li>Disk:
+    //                    <b>".number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2)." GB
+    //                    (".number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2)."%) </b> available ,
+    //                    <b>".number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2)." GB </b>
+    //                    total
+    //
+    //                </li>
+    //            </ul>
+    //        ";
+    //        //<li>Uptime: <b>" . gmdate("H:i:s", $reportPayload['uptime_seconds']) . " (hours:minutes:seconds)</b></li>
+    //
+    //    } else {
+    //
+    //        $this->log("last health report is missing, ignored.");
+    //
+    //    }
+    //
+    //    return $htmlBody;
+    //}
 
     /**
      * @throws \Exception
      */
-    function processTopicQueue()
+    function processTopicQueueForKerberosMotionDetection()
     {
 
         $queueProcessedItemsList = [];
@@ -138,29 +138,29 @@ class TopicQueueProcessor
                 throw new \Exception("Cannot get content of file ".$this->topicQueueRootPath."/".$queueItemFileName);
             }
             $this->log("content =  ".$queueItemData."");
-            $queueItemData = json_decode($queueItemData);
+            $queueItemData = json_decode($queueItemData, true);
 
             //{
-            //  "timestamp":1529315427,
-            //  "topic":"kerberos\/machinery\/detection\/motion",
-            //  "payload":{
-            //      "regionCoordinates":[
-            //          23,273,789,631
-            //          ],
-            //      "numberOfChanges":17393,
-            //      "pathToVideo":"1529315426_6-874214_kerberosInDocker_23-273-789-631_17393_386.mp4",
-            //      "name":"kerberosInDocker",
-            //      "timestamp":"1529315426",
-            //      "microseconds":"6-874367",
-            //      "token":386,
-            //      "pathToImage":"1529315426_6-874367_kerberosInDocker_23-273-789-631_17393_386.jpg"
-            //  }
+            //    "timestamp": 1590761879,
+            //    "topic": "kerberos\/motiondetected",
+            //    "payload": {
+            //        "regionCoordinates": [3, 3, 1279, 959],
+            //        "numberOfChanges": 339258,
+            //        "pathToVideo": "1590761878_6-725545_kerberos_3-3-1279-959_339258_691.mp4",
+            //        "name": "kerberos",
+            //        "timestamp": "1590761878",
+            //        "microseconds": "6-725691",
+            //        "token": 691,
+            //        "pathToImage": "1590761878_6-725691_kerberos_3-3-1279-959_339258_691.jpg"
+            //    }
+            //}
 
+            //@TODO add topic validation
             //@TODO add data validation here
             //@TODO check if media file still exists
-            if (!empty($queueItemData->payload->pathToImage)) {
+            if (!empty($queueItemData['payload']['pathToImage'])) {
 
-                $imageFileName = $queueItemData->payload->pathToImage;
+                $imageFileName = $queueItemData['payload']['pathToImage'];
                 $imageFullPath = $this->pathToCapturedImages."/".$imageFileName;
 
                 //@TODO resize images to cut the email size
@@ -191,15 +191,14 @@ class TopicQueueProcessor
         //email content
         $emailSubject = ''.getenv("KD_SYSTEM_NAME").' - motion detected.';
         $emailHtmlBody = "
-            Motion detected on <b>".getenv("KD_SYSTEM_NAME")."</b>.<br>
-            Local time: <b>".date("Y-m-d H:i:s")."</b><br>
+            Motion detected on <b>".getenv("KD_SYSTEM_NAME")."</b> at local time <b>".date("Y-m-d H:i:s")."</b><br>
         ";
 
-        //attach health report if available
-        $lastHealthReportAsHtml = $this->getLastHealthReportAsHtml();
-        if (!empty($lastHealthReportAsHtml)) {
-            $emailHtmlBody .= "Last health report: <br>".$lastHealthReportAsHtml;
-        }
+        ////attach health report if available
+        //$lastHealthReportAsHtml = $this->getLastHealthReportAsHtml();
+        //if (!empty($lastHealthReportAsHtml)) {
+        //    $emailHtmlBody .= "Last health report: <br>".$lastHealthReportAsHtml;
+        //}
 
         //create email data
         $recipient = getenv("KD_EMAIL_NOTIFICATION_RECIPIENT");

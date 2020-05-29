@@ -19,7 +19,7 @@ try {
 
     //queue processor
     $queueProcessor = new \EmailNotifier\TopicQueueProcessor($topicQueuePath, $emailQueuePath, $lastHealthReportFile, $pathToCapturedImages);
-    $queueProcessor->processTopicQueue();
+    $queueProcessor->processTopicQueueForKerberosMotionDetection();
 
     echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] finished topic queue processing.\n";
 

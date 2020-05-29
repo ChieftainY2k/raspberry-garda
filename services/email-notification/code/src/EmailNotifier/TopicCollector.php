@@ -65,7 +65,7 @@ class TopicCollector
 
         //subscribe to topics
         $this->mqttClient->subscribe('kerberos/motiondetected', 2);
-        $this->mqttClient->subscribe('healthcheck/report', 2);
+        //$this->mqttClient->subscribe('healthcheck/report', 2);
 
     }
 
@@ -124,33 +124,37 @@ class TopicCollector
 
             $this->log("saved to queue file $filePath");
 
-        } elseif ($message->topic == "healthcheck/report") {
+        //} elseif ($message->topic == "healthcheck/report") {
+        //
+        //    //health report updated
+        //
+        //    $lastHealthReportFile = "/tmp/system-last-health-report.json";
+        //    $lastHealthReportFileTmp = $lastHealthReportFile.".tmp";
+        //    //@TODO use DTO here
+        //    if (!file_put_contents(
+        //        $lastHealthReportFileTmp,
+        //        json_encode(
+        //            [
+        //                "timestamp" => time(),
+        //                "topic" => $message->topic,
+        //                "payload" => json_decode($message->payload),
+        //            ]
+        //        ),
+        //        LOCK_EX
+        //    )) {
+        //        throw new \Exception("Cannot save data to file ".$lastHealthReportFile);
+        //    }
+        //
+        //    //rename temporaty file to dest file
+        //    if (!rename($lastHealthReportFileTmp, $lastHealthReportFile)) {
+        //        throw new \Exception("Cannot rename file $lastHealthReportFile to $lastHealthReportFile");
+        //    }
+        //
+        //    $this->log("health report saved file $lastHealthReportFile");
 
-            //health report updated
+        } else {
 
-            $lastHealthReportFile = "/tmp/system-last-health-report.json";
-            $lastHealthReportFileTmp = $lastHealthReportFile.".tmp";
-            //@TODO use DTO here
-            if (!file_put_contents(
-                $lastHealthReportFileTmp,
-                json_encode(
-                    [
-                        "timestamp" => time(),
-                        "topic" => $message->topic,
-                        "payload" => json_decode($message->payload),
-                    ]
-                ),
-                LOCK_EX
-            )) {
-                throw new \Exception("Cannot save data to file ".$lastHealthReportFile);
-            }
-
-            //rename temporaty file to dest file
-            if (!rename($lastHealthReportFileTmp, $lastHealthReportFile)) {
-                throw new \Exception("Cannot rename file $lastHealthReportFile to $lastHealthReportFile");
-            }
-
-            $this->log("health report saved file $lastHealthReportFile");
+            $this->log("WARNING: unsupported topic '".$message->topic."'");
 
         }
 
