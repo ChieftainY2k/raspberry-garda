@@ -66,7 +66,7 @@ class TopicQueueProcessor
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $msg . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] ".$msg."\n";
     }
 
     /**
@@ -85,14 +85,14 @@ class TopicQueueProcessor
             $uptimeSeconds = $reportPayload['uptime_seconds'];
             $htmlBody .= "
                 <ul>
-                    <li>Report time: <b>" . date("Y-m-d H:i:s", $reportPayload['timestamp']) . "</b></li>
-                    <li>System name: <b>" . $reportPayload['system_name'] . "</b></li>
-                    <li>Uptime: <b>" . floor($uptimeSeconds / 3600) . "h " . gmdate("i", $uptimeSeconds % 3600) . "m</b></li>
-                    <li>CPU: <b>" . $reportPayload['cpu_temp'] . "'C</b> , <b>" . $reportPayload['cpu_voltage'] . "V</b></li>
+                    <li>Report time: <b>".date("Y-m-d H:i:s", $reportPayload['timestamp'])."</b></li>
+                    <li>System name: <b>".$reportPayload['system_name']."</b></li>
+                    <li>Uptime: <b>".floor($uptimeSeconds / 3600)."h ".gmdate("i", $uptimeSeconds % 3600)."m</b></li>
+                    <li>CPU: <b>".$reportPayload['cpu_temp']."'C</b> , <b>".$reportPayload['cpu_voltage']."V</b></li>
                     <li>Disk: 
-                        <b>" . number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2) . " GB
-                        (" . number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2) . "%) </b> available ,
-                        <b>" . number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2) . " GB </b> 
+                        <b>".number_format($reportPayload['disk_space_available_kb'] / 1024 / 2014, 2)." GB
+                        (".number_format(100 * ($reportPayload['disk_space_available_kb'] / $reportPayload['disk_space_total_kb']), 2)."%) </b> available ,
+                        <b>".number_format($reportPayload['disk_space_total_kb'] / 1024 / 1024, 2)." GB </b> 
                         total 
                         
                     </li>
@@ -121,7 +121,7 @@ class TopicQueueProcessor
         //scan directory for queued topics data, sort it by name, ascending
         $files = scandir($this->topicQueueRootPath, SCANDIR_SORT_ASCENDING);
         if ($files === false) {
-            throw new \Exception("Cannot open directory " . $this->topicQueueRootPath . "");
+            throw new \Exception("Cannot open directory ".$this->topicQueueRootPath."");
         }
 
         //scan all files in queue directory
@@ -133,11 +133,11 @@ class TopicQueueProcessor
 
             $this->log("processing $queueItemFileName");
 
-            $queueItemData = file_get_contents($this->topicQueueRootPath . "/" . $queueItemFileName);
+            $queueItemData = file_get_contents($this->topicQueueRootPath."/".$queueItemFileName);
             if (empty($queueItemData)) {
-                throw new \Exception("Cannot get content of file " . $this->topicQueueRootPath . "/" . $queueItemFileName);
+                throw new \Exception("Cannot get content of file ".$this->topicQueueRootPath."/".$queueItemFileName);
             }
-            $this->log("content =  " . $queueItemData . "");
+            $this->log("content =  ".$queueItemData."");
             $queueItemData = json_decode($queueItemData);
 
             //{
@@ -161,7 +161,7 @@ class TopicQueueProcessor
             if (!empty($queueItemData->payload->pathToImage)) {
 
                 $imageFileName = $queueItemData->payload->pathToImage;
-                $imageFullPath = $this->pathToCapturedImages . "/" . $imageFileName;
+                $imageFullPath = $this->pathToCapturedImages."/".$imageFileName;
 
                 //@TODO resize images to cut the email size
                 //@TODO do not include images that are created shortly one after other
@@ -189,16 +189,16 @@ class TopicQueueProcessor
         }
 
         //email content
-        $emailSubject = '' . getenv("KD_SYSTEM_NAME") . ' - motion detected.';
+        $emailSubject = ''.getenv("KD_SYSTEM_NAME").' - motion detected.';
         $emailHtmlBody = "
-            Motion detected on <b>" . getenv("KD_SYSTEM_NAME") . "</b>.<br>
-            Local time: <b>" . date("Y-m-d H:i:s") . "</b><br>
+            Motion detected on <b>".getenv("KD_SYSTEM_NAME")."</b>.<br>
+            Local time: <b>".date("Y-m-d H:i:s")."</b><br>
         ";
 
         //attach health report if available
         $lastHealthReportAsHtml = $this->getLastHealthReportAsHtml();
         if (!empty($lastHealthReportAsHtml)) {
-            $emailHtmlBody .= "Last health report: <br>" . $lastHealthReportAsHtml;
+            $emailHtmlBody .= "Last health report: <br>".$lastHealthReportAsHtml;
         }
 
         //create email data
@@ -206,21 +206,21 @@ class TopicQueueProcessor
         //@TODO use DTO here
         $emailData = [
             "recipients" => [
-                $recipient
+                $recipient,
             ],
             "subject" => $emailSubject,
             "htmlBody" => $emailHtmlBody,
-            "attachments" => $fileListToAttach
+            "attachments" => $fileListToAttach,
         ];
 
         //print_r($emailData);
         //exit;
 
         //save email data to temporary JSON file
-        $filePath = $this->emailQueueRootPath . "/" . (microtime(true)) . ".json";
-        $filePathTmp = $filePath . ".tmp";
+        $filePath = $this->emailQueueRootPath."/".(microtime(true)).".json";
+        $filePathTmp = $filePath.".tmp";
         if (!file_put_contents($filePathTmp, json_encode($emailData), LOCK_EX)) {
-            throw new \Exception("Cannot save data to file " . $filePath);
+            throw new \Exception("Cannot save data to file ".$filePath);
         }
 
         //rename temporaty file to dest file
@@ -231,12 +231,12 @@ class TopicQueueProcessor
         //remove the processed topic items
         if (!empty($queueProcessedItemsList)) {
 
-            $this->log("removing processed " . count($queueProcessedItemsList) . " item(s) from queue.");
+            $this->log("removing processed ".count($queueProcessedItemsList)." item(s) from queue.");
 
             foreach ($queueProcessedItemsList as $queueItemFileName) {
                 //remote the file
-                if (!unlink($this->topicQueueRootPath . "/" . $queueItemFileName)) {
-                    throw new \Exception("Cannot remove file " . $this->topicQueueRootPath . "/" . $queueItemFileName . "");
+                if (!unlink($this->topicQueueRootPath."/".$queueItemFileName)) {
+                    throw new \Exception("Cannot remove file ".$this->topicQueueRootPath."/".$queueItemFileName."");
                 }
             }
         }
