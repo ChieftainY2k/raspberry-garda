@@ -7,22 +7,22 @@
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
-echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] Starting topics collector.\n";
-require(__DIR__ . "/bootstrap.php");
+echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] Starting topics collector.\n";
+require(__DIR__."/bootstrap.php");
 
 //init mqtt client
-$clientId = basename(__FILE__) . "-" . uniqid("");
-echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] starting the mqtt client, clientId = $clientId\n";
+$clientId = basename(__FILE__)."-".uniqid("");
+echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] starting the mqtt client, clientId = $clientId\n";
 $client = new Mosquitto\Client($clientId);
 
 //queue root path
 $topicQueuePath = "/mydata/email-queues";
 
 //init topics collector with the mqtt client
-$topicsCollector = new \EmailNotifier\TopicCollector($client,$topicQueuePath);
+$topicsCollector = new \EmailNotifier\TopicCollector($client, $topicQueuePath);
 
 //connect to the mqtt server, listen for topics
 $client->connect("mqtt-server", 1883, 60);
 $client->loopForever();
 
-echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] finished.\n";
+echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] finished.\n";

@@ -44,7 +44,7 @@ class TopicCollector
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $msg . "\n";
+        echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] ".$msg."\n";
     }
 
     /**
@@ -83,7 +83,7 @@ class TopicCollector
      */
     function onMessage(Message $message)
     {
-        $this->log("received topic '" . $message->topic . "' with payload: '" . $message->payload . "'");
+        $this->log("received topic '".$message->topic."' with payload: '".$message->payload."'");
 
         //@TODO make it as construcor params or SPL file/dir for better testing
         $localQueueDirName = "/mydata/topics-queue";
@@ -100,15 +100,21 @@ class TopicCollector
 
             //@FIXME save queue files in a 1-2 level deep dir structure for faster processing ?
             //save message to local queue, repack it
-            $filePath = $localQueueDirName . "/" . (microtime(true)) . ".json";
-            $filePathTmp = $filePath . ".tmp";
+            $filePath = $localQueueDirName."/".(microtime(true)).".json";
+            $filePathTmp = $filePath.".tmp";
             //@TODO use DTO here
-            if (!file_put_contents($filePathTmp, json_encode([
-                "timestamp" => time(),
-                "topic" => $message->topic,
-                "payload" => json_decode($message->payload),
-            ]), LOCK_EX)) {
-                throw new \Exception("Cannot save data to file " . $filePath);
+            if (!file_put_contents(
+                $filePathTmp,
+                json_encode(
+                    [
+                        "timestamp" => time(),
+                        "topic" => $message->topic,
+                        "payload" => json_decode($message->payload),
+                    ]
+                ),
+                LOCK_EX
+            )) {
+                throw new \Exception("Cannot save data to file ".$filePath);
             }
 
             //rename temporaty file to dest file
@@ -123,14 +129,20 @@ class TopicCollector
             //health report updated
 
             $lastHealthReportFile = "/tmp/system-last-health-report.json";
-            $lastHealthReportFileTmp = $lastHealthReportFile . ".tmp";
+            $lastHealthReportFileTmp = $lastHealthReportFile.".tmp";
             //@TODO use DTO here
-            if (!file_put_contents($lastHealthReportFileTmp, json_encode([
-                "timestamp" => time(),
-                "topic" => $message->topic,
-                "payload" => json_decode($message->payload),
-            ]), LOCK_EX)) {
-                throw new \Exception("Cannot save data to file " . $lastHealthReportFile);
+            if (!file_put_contents(
+                $lastHealthReportFileTmp,
+                json_encode(
+                    [
+                        "timestamp" => time(),
+                        "topic" => $message->topic,
+                        "payload" => json_decode($message->payload),
+                    ]
+                ),
+                LOCK_EX
+            )) {
+                throw new \Exception("Cannot save data to file ".$lastHealthReportFile);
             }
 
             //rename temporaty file to dest file
