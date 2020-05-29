@@ -11,7 +11,7 @@ require('vendor/autoload.php');
 
 //check environment params
 if (intval(getenv("KD_EMAIL_NOTIFICATION_ENABLED")) != 1) {
-    echo "[" . date("Y-m-d H:i:s") . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] WARNING: Email notification service is DISABLED, sleeping and exiting.\n";
     sleep(60 * 15);
     exit;
 }
@@ -28,7 +28,7 @@ if (
     or empty(getenv("KD_EMAIL_NOTIFICATION_RECIPIENT"))
     or empty(getenv("KD_SYSTEM_NAME"))
 ) {
-    echo "[" . date("Y-m-d H:i:s") . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] ERROR: some of the required environment params are empty, sleeping and exiting.\n";
     sleep(60 * 15);
     exit;
 }

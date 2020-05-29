@@ -44,7 +44,7 @@ class TopicCollector
      */
     function log($msg)
     {
-        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__CLASS__) . "] " . $msg . "\n";
+        echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] " . $msg . "\n";
     }
 
     /**

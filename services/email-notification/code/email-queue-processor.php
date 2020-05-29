@@ -12,7 +12,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 try {
 
     //init
-    echo "[" . date("Y-m-d H:i:s") . "] starting email queue processing.\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] starting email queue processing.\n";
     require(__DIR__ . "/bootstrap.php");
 
     //@TODO use DI/Config here
@@ -43,11 +43,11 @@ try {
     //clean up
     $mqttClient->disconnect();
 
-    echo "[" . date("Y-m-d H:i:s") . "] finished email queue processing.\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] finished email queue processing.\n";
 
 } catch (Exception $e) {
 
-    echo "[" . date("Y-m-d H:i:s") . "] EXCEPTION: " . $e . ".\n\nSleeping for a while...\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] EXCEPTION: " . $e . ".\n\nSleeping for a while...\n";
     sleep(60 * 10);
 
 }

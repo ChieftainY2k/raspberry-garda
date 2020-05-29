@@ -8,7 +8,7 @@
 try {
 
     //init
-    echo "[" . date("Y-m-d H:i:s") . "] starting topic queue processing.\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] starting topic queue processing.\n";
     require(__DIR__ . "/bootstrap.php");
 
     //queue root path
@@ -21,11 +21,11 @@ try {
     $queueProcessor = new \EmailNotifier\TopicQueueProcessor($topicQueuePath, $emailQueuePath, $lastHealthReportFile, $pathToCapturedImages);
     $queueProcessor->processTopicQueue();
 
-    echo "[" . date("Y-m-d H:i:s") . "] finished topic queue processing.\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] finished topic queue processing.\n";
 
 } catch (Exception $e) {
 
-    echo "[" . date("Y-m-d H:i:s") . "] EXCEPTION: " . $e . ". \n\nSleeping for a while...\n";
+    echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] EXCEPTION: " . $e . ". \n\nSleeping for a while...\n";
     sleep(60 * 10);
 
 }

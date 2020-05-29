@@ -7,12 +7,12 @@
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
-echo "[" . date("Y-m-d H:i:s") . "] Starting topics collector.\n";
+echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] Starting topics collector.\n";
 require(__DIR__ . "/bootstrap.php");
 
 //init mqtt client
 $clientId = basename(__FILE__) . "-" . uniqid("");
-echo "[" . date("Y-m-d H:i:s") . "] starting the mqtt client, clientId = $clientId\n";
+echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] starting the mqtt client, clientId = $clientId\n";
 $client = new Mosquitto\Client($clientId);
 
 //queue root path
@@ -25,4 +25,4 @@ $topicsCollector = new \EmailNotifier\TopicCollector($client,$topicQueuePath);
 $client->connect("mqtt-server", 1883, 60);
 $client->loopForever();
 
-echo "[" . date("Y-m-d H:i:s") . "] finished.\n";
+echo "[" . date("Y-m-d H:i:s") . "][" . basename(__FILE__) . "] finished.\n";

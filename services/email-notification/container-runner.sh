@@ -3,7 +3,7 @@
 #helper function
 log_message()
 {
-    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][email-notification]"
+    LOGPREFIX="[$(date '+%Y-%m-%d %H:%M:%S')][$(basename $0)]"
     MESSAGE=$1
     echo "$LOGPREFIX $MESSAGE"
 }
