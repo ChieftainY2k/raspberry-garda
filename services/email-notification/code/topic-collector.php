@@ -7,7 +7,7 @@
  * @TODO this is just MVP/PoC, refactor it , use DI!
  */
 
-echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] Starting topics collector.\n";
+echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] starting topics collector.\n";
 require(__DIR__."/bootstrap.php");
 
 //init mqtt client

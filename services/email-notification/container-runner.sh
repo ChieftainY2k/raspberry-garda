@@ -27,6 +27,24 @@ check_errors_warning()
     fi
 }
 
+send_test_email()
+{
+    # prepare JSON message
+    messageJson=$(cat <<EOF
+    {
+        "recipients":["${KD_EMAIL_NOTIFICATION_RECIPIENT}"],
+        "subject":"${KD_SYSTEM_NAME} email-notification service started",
+        "htmlBody":"<b>${KD_SYSTEM_NAME}</b>: <b>email-notification</b> service started at local time <b>${localTime}</b>",
+        "attachments":[]
+    }
+EOF
+    )
+    messageJson=$(echo ${messageJson} | sed -z 's/\n/ /g' | sed -z 's/"/\"/g')
+    log_message "Creating new email in queue , content = ${messageJson}"
+    echo "${messageJson}" > /mydata/email-queues/default/health-reporter-startup.json
+
+}
+
 log_message "starting service..."
 
 # Workaround: preserve the environment for cron process
@@ -37,7 +55,7 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 check_errors $?
 
 # fix permissions
-chmod u+x /code/container-healthcheck.sh
+chmod u+x /code/*.sh
 check_errors $?
 
 if [[ "${KD_EMAIL_NOTIFICATION_ENABLED}" != "1" ]]; then
@@ -46,12 +64,8 @@ if [[ "${KD_EMAIL_NOTIFICATION_ENABLED}" != "1" ]]; then
     exit
 fi
 
-chmod u+x /code/queue-test-email.sh
-check_errors $?
-
-#send test email
-/code/queue-test-email.sh
-check_errors $?
+# send test email on service start
+send_test_email
 
 # Init crontab and cron process
 #rsyslogd &
@@ -68,17 +82,17 @@ check_errors $?
 until nc -z -w30 mqtt-server 1883
 do
     log_message "waiting for the mqtt server to be accessible... "
-    sleep 10
+    sleep 15
 done
 
 # run  the listener forever
 while sleep 1; do
 
-    echo "Starting the MQTT topics collector."
+    log_message "starting the MQTT topics collector."
     php -f /code/topic-collector.php
     check_errors_warning $?
 
-    echo "MQTT topics collector terminated, restarting..."
+    log_message "MQTT topics collector terminated, restarting..."
     sleep 60
 
 done

@@ -48,7 +48,7 @@ try {
 } catch (Exception $e) {
 
     echo "[".date("Y-m-d H:i:s")."][".basename(__FILE__)."] EXCEPTION: ".$e.".\n\nSleeping for a while...\n";
-    sleep(60 * 10);
+    sleep(60 * 15);
 
 }
 
