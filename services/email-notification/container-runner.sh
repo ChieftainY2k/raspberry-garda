@@ -34,7 +34,7 @@ send_test_email()
     {
         "recipients":["${KD_EMAIL_NOTIFICATION_RECIPIENT}"],
         "subject":"${KD_SYSTEM_NAME} email-notification service started",
-        "htmlBody":"<b>${KD_SYSTEM_NAME}</b>: <b>email-notification</b> service started at local time <b>${localTime}</b>",
+        "htmlBody":"<b>${KD_SYSTEM_NAME}</b>: <b>email-notification</b> service started at local time <b>$(date '+%Y-%m-%d %H:%M:%S')</b>",
         "attachments":[]
     }
 EOF

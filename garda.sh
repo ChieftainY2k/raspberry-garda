@@ -158,7 +158,7 @@ check()
     #@FIXME move this check to the service ?
     if [[ "${KD_KERBEROS_ENABLED}" == "1" ]]; then
         log_message "Checking if camera module is enabled and taking sample picture (if you get errors here make sure your camera is not used by any other application)..."
-        raspistill -o /tmp/$(date +%s).jpg
+        timeout 30 raspistill -o /tmp/$(date +%s).jpg
         check_errors $?
     fi
 

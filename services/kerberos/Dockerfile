@@ -1,12 +1,10 @@
 FROM resin/rpi-raspbian:stretch
 
-ARG RASPBERRY_PLATFORM_FOR_KERBEROS=2
 
 MAINTAINER "ChieftainY2k@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN echo "RASPBERRY_PLATFORM_FOR_KERBEROS = ${RASPBERRY_PLATFORM_FOR_KERBEROS}"
 
 RUN echo "deb http://mirrordirector.raspbian.org/raspbian/ stretch main contrib non-free rpi" | tee --append /etc/apt/sources.list
 RUN apt-get update && apt-get -y upgrade && apt-get install -y \
@@ -25,10 +23,14 @@ RUN yes | rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
-RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-2.8.0.deb -O /tmp/kerberos.deb
+ARG RASPBERRY_PLATFORM_FOR_KERBEROS="2"
+ARG KERBEROS_MACHINERY_VERSION="2.8.0"
+RUN echo "RASPBERRY_PLATFORM_FOR_KERBEROS = ${RASPBERRY_PLATFORM_FOR_KERBEROS} , KERBEROS_MACHINERY_VERSION  = ${KERBEROS_MACHINERY_VERSION}"
+RUN wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-${KERBEROS_MACHINERY_VERSION}.deb -O /tmp/kerberos.deb
 RUN dpkg -i /tmp/kerberos.deb
-RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 -O /usr/lib/arm-linux-gnueabihf/libx264.so.148
-RUN wget https://github.com/kerberos-io/machinery/releases/download/v2.8.0/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160
+
+RUN if [ "${KERBEROS_MACHINERY_VERSION}" = "2.8.0" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 -O /usr/lib/arm-linux-gnueabihf/libx264.so.148 ; fi
+RUN if [ "${KERBEROS_MACHINERY_VERSION}" = "2.8.0" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160 ; fi
 
 #Install WEB
 RUN rm -f /etc/nginx/sites-enabled/default
