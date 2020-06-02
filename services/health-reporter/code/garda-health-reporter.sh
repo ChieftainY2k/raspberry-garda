@@ -25,14 +25,14 @@ function convert_to_MHz {
     echo "$value"
 }
 
-function calculate_overvolts {
-    # We can safely ignore the integer
-    # part of the decimal argument
-    # since it's not realistic to run the Pi
-    # at voltages higher than 1.99 V
-    let overvolts=${1#*.}-20
-    echo "$overvolts"
-}
+#function calculate_overvolts {
+#    # We can safely ignore the integer
+#    # part of the decimal argument
+#    # since it's not realistic to run the Pi
+#    # at voltages higher than 1.99 V
+#    let overvolts=${1#*.}-20
+#    echo "$overvolts"
+#}
 
 
 #load services configuration
@@ -44,9 +44,9 @@ temp=${temp:5:4}
 volts=$(vcgencmd measure_volts)
 volts=${volts:5:4}
 
-if [[ ${volts} != "1.20" ]]; then
-    overvolts=$(calculate_overvolts ${volts})
-fi
+#if [[ ${volts} != "1.20" ]]; then
+#    overvolts=$(calculate_overvolts ${volts})
+#fi
 
 #TODO change to vcgencmd ?
 minFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
