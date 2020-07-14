@@ -364,52 +364,37 @@ watchdog()
             log_message "OK, cron table successfully updated, run 'crontab -l' to check it out."
             ;;
         installhardware)
-            log_message "installing watchdog kernel module..."
-            modprobe bcm2835_wdt
+
+            log_message "backing up /boot/config.txt..."
+            cp /boot/config.txt /boot/config.txt.$(date '+%Y%m%d%H%M%S')
             check_errors $?
-            log_message "creating temporary file for modules..."
-            cat /etc/modules | grep -v "bcm2835_wdt" > /tmp/modules
+            log_message "removing old configuration..."
+            grep -v "dtparam=watchdog=on" /boot/config.txt > /tmp/bootconfig.txt
             check_errors $?
-            log_message "inserting watchdog kernel module into temporary file..."
-            echo "bcm2835_wdt" >> /tmp/modules
+            log_message "updating configuration..."
+            echo "dtparam=watchdog=on" >> /tmp/bootconfig.txt
             check_errors $?
-            log_message "backing up /etc/modules..."
-            cp /etc/modules /etc/modules.$(date '+%Y%m%d%H%M%S')
+            log_message "replacing config file..."
+            cp -f /tmp/bootconfig.txt /boot/config.txt
             check_errors $?
-            log_message "replacing /ect/modules with temporary file..."
-            mv /tmp/modules /etc/modules
+
+            log_message "backing up /etc/systemd/system.conf..."
+            cp /etc/systemd/system.conf /etc/systemd/system.conf.$(date '+%Y%m%d%H%M%S')
             check_errors $?
-            log_message "installing watchdog package..."
-            apt-get -y install watchdog
+            log_message "removing old configuration (1)..."
+            egrep -v "RuntimeWatchdogSec|ShutdownWatchdogSec" /etc/systemd/system.conf > /tmp/systemconf.txt
             check_errors $?
-            log_message "configuring rc scripts..."
-            update-rc.d watchdog defaults
+            log_message "updating configuration (1)..."
+            echo "RuntimeWatchdogSec=10" >> /tmp/systemconf.txt
             check_errors $?
-            log_message "backing up /etc/watchdog.conf..."
-            cp /etc/watchdog.conf /etc/watchdog.conf.$(date '+%Y%m%d%H%M%S')
+            log_message "updating configuration (1)..."
+            echo "ShutdownWatchdogSec=10min" >> /tmp/systemconf.txt
             check_errors $?
-            log_message "processing /etc/watchdog.conf..."
-            grep -v "watchdog-timeout" /etc/watchdog.conf >> /tmp/watchdog.conf
+            log_message "replacing config file..."
+            cp -f /tmp/systemconf.txt /etc/systemd/system.conf
             check_errors $?
-            log_message "updating /tmp/watchdog.conf..."
-            echo "watchdog-timeout = 15" >> /tmp/watchdog.conf
-            check_errors $?
-            log_message "updating /etc/watchdog.conf [1]..."
-            cp -f /tmp/watchdog.conf /etc/watchdog.conf
-            check_errors $?
-            log_message "updating /etc/watchdog.conf [2]..."
-            sed -i "s/^#max-load-15[^1-9].*/max-load-15 = 25/g"  /etc/watchdog.conf
-            check_errors $?
-            log_message "updating /etc/watchdog.conf [3]..."
-            sed -i "s|^#watchdog-device.*|watchdog-device = /dev/watchdog|g"  /etc/watchdog.conf
-            check_errors $?
-            log_message "starting watchdog service..."
-            service watchdog start
-            check_errors $?
-            log_message "probing watchdog service status..."
-            service watchdog status
-            check_errors $?
-            log_message "OK, hardware watchdog successfully installed"
+
+            log_message "OK, hardware watchdog successfully installed, reboot to activate it."
             ;;
         run)
             log_message "checking internet connection..."
