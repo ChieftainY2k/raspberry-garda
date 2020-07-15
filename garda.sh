@@ -318,7 +318,7 @@ status()
     crontab -l | grep watchdog
 
     log_message "checking hardware watchdog service..."
-    service watchdog status
+    dmesg | grep -i watchdog
 }
 
 shell()
