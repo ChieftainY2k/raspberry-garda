@@ -33,6 +33,7 @@ Enjoy! :-)
   (8GB at least, 32GB would be nice, [pick the fastest SD card you can afford](https://www.pidramble.com/wiki/benchmarks/microsd-cards)).  
 * Update packages: `sudo apt-get -y update && sudo apt-get -y upgrade` 
 * Configure your time zone (`raspi-config -> localisation -> change timezone`)
+* Configure your host name (`raspi-config -> networking -> hostname`)
 * Enable the camera module support (`raspi-config -> interfacing -> camera`)
 * If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
 * If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
@@ -94,7 +95,7 @@ echo "$BODY" | mail -s "$SUBJECT" YOUR_GMAIL_USER@gmail.com
 
 **Garda Installation**
 
-1. Clone this repository to a directory of your choice (preferably `$HOME/raspberry-garda/`)
+1. Clone this repository to a directory of your choice (preferably `$HOME/raspberry-garda/`):  `apt-get -y install git && git clone https://github.com/ChieftainY2k/raspberry-garda.git`
 1. Rename the file `configs/services.conf.template` to `configs/services.conf` then edit it and update with your configuration (like SMTP host/password etc.)
 1. Run `sudo ./garda.sh install` to install everything needed
 1. Run `sudo ./garda.sh check` to check environment and hardware
