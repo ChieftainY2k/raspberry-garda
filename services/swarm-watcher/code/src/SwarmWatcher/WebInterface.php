@@ -217,7 +217,7 @@ class WebInterface
         $output[] = "<br>";
 
         //Boot times
-        $output[] = "<watch id='bootTime'>";
+        //$output[] = "<watch id='bootTime'>"; //@BUG: https://superuser.com/questions/1247713/why-isnt-uptime-s-output-constant
         $output[] = "started at: ";
         if (!empty($payload['uptime_boot_local_time'])) {
             $output[] = "<b>".$payload['uptime_boot_local_time']."</b> (local time)";
@@ -225,7 +225,7 @@ class WebInterface
             $output[] = "<span class='notice'>unknown boot time</span>";
         }
         $output[] = "<br>";
-        $output[] = "</watch>";
+        //$output[] = "</watch>";
 
         $output[] = "uptime: <b>".(floor($payload['uptime_seconds'] / (3600 * 24)))." days</b><br>";
 
