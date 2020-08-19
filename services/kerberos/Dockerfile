@@ -1,4 +1,4 @@
-FROM resin/rpi-raspbian:stretch
+FROM resin/rpi-raspbian:stretch@sha256:e4938fd283abc60021efa24f8ebbde9d3b0135849dd1297093b06a18578963b4
 
 
 MAINTAINER "ChieftainY2k@gmail.com"
@@ -97,5 +97,3 @@ EXPOSE 8889
 # Run inside running container:
 # /usr/sbin/sshd && /sbin/ngrok authtoken $NGROK_AUTH_TOKEN && ngrok tcp 22
 #
-
-
