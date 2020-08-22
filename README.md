@@ -175,7 +175,7 @@ Example:
 
 **Troubleshooting**
 
-  * Raspberry loses ipv4 connection after docker container starts. Solution: add `ipv6.disable=1` do `/boot//boot/cmdline.txt` then reboot. 
+  * Raspberry loses ipv4 connection after docker container starts. Solution: add `ipv6.disable=1` do `/boot/cmdline.txt` then reboot. 
     
 
 
