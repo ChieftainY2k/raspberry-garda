@@ -172,3 +172,11 @@ Example:
 * Use Fail2Ban 
 * Put your IoT device behind second NAT/router 
 
+
+**Troubleshooting**
+
+  * Raspberry loses ipv4 connection after docker container starts. Solution: add `ipv6.disable=1` do `/boot//boot/cmdline.txt` then reboot. 
+    
+
+
+
