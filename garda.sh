@@ -176,6 +176,10 @@ check()
     docker run --rm hypriot/armhf-hello-world
     check_errors $?
 
+    log_message "Checking docker-compose version..."
+    docker-compose -v
+    check_errors $?
+
     log_message "all checks completed."
 
 }
