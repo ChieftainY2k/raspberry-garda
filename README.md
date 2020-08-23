@@ -191,5 +191,16 @@ Example:
      RestartSec=15
      `````
      then reboot
+     
+   * **When starting a container docker says: "failed: port is already allocated"**
+   
+     Solution:
+     
+     ``````
+     # sudo service docker stop
+     # rm -f /var/lib/docker/network/files/local-kv.db
+     # sudo service docker start
+     ``````
+
   
     
