@@ -15,12 +15,12 @@ RUN apt-get update && apt-get -y upgrade && apt-get install -y \
 
 
 # fake vcgencmd needed for rpi-update (vcgencmd does not work inside the docker build context)
-#ADD ./resources/vcgencmd /bin/vcgencmd
-#RUN chmod a+x /bin/vcgencmd
+ADD ./resources/vcgencmd /bin/vcgencmd
+RUN chmod a+x /bin/vcgencmd
 
 #Install VideoCore libraries etc.
-#RUN yes | rpi-update
-#RUN cp -r /opt/vc/lib/* /usr/lib/
+RUN yes | rpi-update
+RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
 ARG RASPBERRY_PLATFORM_FOR_KERBEROS="2"
