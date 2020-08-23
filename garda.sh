@@ -147,6 +147,7 @@ check()
 
     log_message "Probing for available disk space..."
     pydf | grep -v overlay
+    check_errors $?
 
     log_message "Checking configs/services.conf..."
     stat ./configs/services.conf > /dev/null
@@ -310,6 +311,7 @@ status()
 
     log_message "Probing for available disk space..."
     pydf | grep -v overlay
+    check_errors $?
 
     log_message "Probing for container status..."
     ${DOCKER_COMPOSE} ${DOCKER_PARAMS} ps
