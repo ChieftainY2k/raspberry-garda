@@ -175,8 +175,21 @@ Example:
 
 **Troubleshooting**
 
-  * Raspberry loses ipv4 connection after docker container starts. Solution: add `ipv6.disable=1` do `/boot/cmdline.txt` then reboot. 
+   * **Raspberry loses ipv4 connection after docker container starts.** 
+     
+     Solution:
+     
+     Add `ipv6.disable=1` do `/boot/cmdline.txt` then reboot.
+     
+   * **Raspberry loses wlan0 connection after docker container starts.**
     
-
-
-
+     Solution:
+     
+     Edit `/etc/systemd/system/dhcpcd.service.d/wait.conf` , add:
+     `````
+     Restart=always
+     RestartSec=15
+     `````
+     then reboot
+  
+    
