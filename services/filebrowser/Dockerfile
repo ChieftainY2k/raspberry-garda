@@ -4,8 +4,7 @@ MAINTAINER "ChieftainY2k@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y \
+RUN apt-get update && apt-get -y upgrade && apt-get install -y \
     mc joe multitail curl wget unzip \
     php7.0-cli php-zip php-iconv php-fileinfo php-mbstring
 
