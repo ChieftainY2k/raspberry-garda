@@ -48,7 +48,7 @@ log_message "starting service..."
 # run the simple PHP process to act as web interface
 while sleep 1; do
     log_message "starting the web server..."
-    php -S 0.0.0.0:80 /code/tinyfilemanager-2.4.3/tinyfilemanager.php
+    cd /code/tinyfilemanager-2.4.3 && php -S 0.0.0.0:80 ./tinyfilemanager.php
     log_message "server stopped, sleeping and starting again..."
     sleep 60
 done
