@@ -34,59 +34,25 @@ export $(grep -v '^#' /service-configs/services.conf | xargs -d '\n')
 printenv | grep -v "no_proxy" >> /etc/environment
 
 # fix permissions
-chmod a+x /code/container-healthcheck.sh
-check_errors $?
+#chmod a+x /code/container-healthcheck.sh
+#check_errors $?
 
-if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
-    log_message "NOTICE: service is DISABLED, going to sleep..."
-    sleep infinity
-    exit
-fi
+#if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
+#    log_message "NOTICE: service is DISABLED, going to sleep..."
+#    sleep infinity
+#    exit
+#fi
 
 log_message "starting service..."
 
-## Install external libraries
-#cd /code
-#check_errors $?
-#composer install
-#check_errors $?
-#
-#
-## Init crontab and cron process
-#rsyslogd &
-#check_errors $?
-#cron &
-#check_errors $?
-#
-## Init container health reporter flags
-#touch /tmp/health-reporter-success.flag
-#check_errors_warning $?
-#touch /tmp/garbage-collector-success.flag
-#check_errors_warning $?
-#
-## Init web interface
-#log_message "starting web interface... "
-#php -S 0.0.0.0:80 /code/web-interface.php &
-#check_errors $?
-#
-##wait for external service
-#until nc -z -w30 mqtt-server 1883
-#do
-#    log_message "waiting for the mqtt server to be accessible... "
-#    sleep 10
-#done
-#
-## run  the listener forever
-#while sleep 1; do
-#
-#    log_message "starting the MQTT topics collector."
-#    php /code/topic-collector.php
-#    check_errors_warning $?
-#
-#    log_message "MQTT topics collector terminated, restarting..."
-#    sleep 60
-#
-#done
+# run the simple PHP process to act as web interface
+while sleep 1; do
+    log_message "starting the web server..."
+    php -S 0.0.0.0:80 /code/tinyfilemanager-2.4.3/tinyfilemanager.php
+    log_message "server stopped, sleeping and starting again..."
+    sleep 60
+done
+
 
 sleep infinity
 

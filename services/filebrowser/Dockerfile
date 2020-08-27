@@ -6,12 +6,14 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && apt-get -y upgrade
 RUN apt-get install -y \
-    mc joe multitail curl wget \
-    php7.0-cli php-zip php-iconv php-fileinfo php-tar php-mbstring
+    mc joe multitail curl wget unzip \
+    php7.0-cli php-zip php-iconv php-fileinfo php-mbstring
 
 # Install code
 RUN mkdir /code/
-RUN wget https://codeload.github.com/prasathmani/tinyfilemanager/zip/2.4.3 -O /tmp/filemanager.zip
+RUN wget https://codeload.github.com/prasathmani/tinyfilemanager/zip/2.4.3 -O /code/filemanager.zip
+RUN cd /code/ && unzip ./filemanager.zip && rm -f ./filemanager.zip
+COPY resources/config.php /code/tinyfilemanager-2.4.3/config.php
 
 # Startup scripts
 ADD ./container-runner.sh /container-runner.sh
