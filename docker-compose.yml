@@ -187,6 +187,20 @@ services:
         restart: unless-stopped
 
 
+    filebrowser:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/filebrowser
+        volumes:
+#            - ./services/filebrowser/code:/code
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+            - ./data/kerberos/capture:/data-kerberosio-capture
+        restart: unless-stopped
+
+
     #  streamer-rtsp:
     #    build:
     #      context: ./services/streamer-rtsp
