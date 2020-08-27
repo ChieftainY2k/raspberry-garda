@@ -11,13 +11,13 @@ or
 #################################################################################################################
 */
 
-define('FM_EMBED', true);
+//define('FM_EMBED', true);
 define("FM_SELF_URL", "/filebrowser");
 
 // Auth with login/password
 // set true/false to enable/disable it
 // Is independent from IP white- and blacklisting
-$use_auth = false;
+$use_auth = true;
 
 // Login user name and password
 // Users: array('Username' => 'Password', 'Username2' => 'Password2', ...)
@@ -66,7 +66,7 @@ $http_host = $_SERVER['HTTP_HOST'];
 // user specific directories
 // array('Username' => 'Directory path', 'Username2' => 'Directory path', ...)
 $directories_users = [
-
+    "root" => "/data-kerberosio-capture",
 ];
 
 // input encoding for iconv
