@@ -37,11 +37,11 @@ printenv | grep -v "no_proxy" >> /etc/environment
 #chmod a+x /code/container-healthcheck.sh
 #check_errors $?
 
-#if [[ "${KD_HISTORIAN_ENABLED}" != "1" ]]; then
-#    log_message "NOTICE: service is DISABLED, going to sleep..."
-#    sleep infinity
-#    exit
-#fi
+if [[ "${KD_FILEBROWSER_ENABLED}" != "1" ]]; then
+    log_message "NOTICE: service is DISABLED, going to sleep..."
+    sleep infinity
+    exit
+fi
 
 log_message "starting service..."
 
@@ -55,5 +55,3 @@ done
 
 
 sleep infinity
-
-

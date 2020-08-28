@@ -68,3 +68,7 @@ KD_THERMOMETER_ALIASES={"28-0516a03222ff":"sensor_1","28-0516a038b5ff":"sensor_2
 # Historian service
 
 KD_HISTORIAN_ENABLED=1
+
+# file browser service
+
+KD_FILEBROWSER_ENABLED=1
