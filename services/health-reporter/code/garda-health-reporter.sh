@@ -133,7 +133,8 @@ messageJson=$(cat <<EOF
         "thermometer":{"is_enabled":"${KD_THERMOMETER_ENABLED}","report":$(get_container_health_report thermometer)},
         "historian":{"is_enabled":"${KD_HISTORIAN_ENABLED}","report":$(get_container_health_report historian)},
         "health-reporter":{"is_enabled":"1","report":$(get_container_health_report health-reporter)},
-        "swarm-watcher":{"is_enabled":"${KD_SWARM_WATCHER_ENABLED}","report":$(get_container_health_report swarm-watcher)}
+        "swarm-watcher":{"is_enabled":"${KD_SWARM_WATCHER_ENABLED}","report":$(get_container_health_report swarm-watcher)},
+        "file-browser":{"is_enabled":"${KD_FILEBROWSER_ENABLED}"}
     }
 }
 EOF

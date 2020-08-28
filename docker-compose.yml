@@ -210,6 +210,7 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
+            - ./data/health-reporter/:/data-health-reporter
 #            - ./data/kerberos/capture:/data-kerberosio-capture
         restart: unless-stopped
 
