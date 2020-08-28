@@ -200,6 +200,19 @@ services:
             - ./data/kerberos/capture:/data-kerberosio-capture
         restart: unless-stopped
 
+    dashboard:
+        env_file:
+            - configs/environment.conf
+        build:
+            context: ./services/dashboard
+        volumes:
+            - ./services/dashboard/code:/code
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./configs:/service-configs:ro
+#            - ./data/kerberos/capture:/data-kerberosio-capture
+        restart: unless-stopped
+
 
     #  streamer-rtsp:
     #    build:
