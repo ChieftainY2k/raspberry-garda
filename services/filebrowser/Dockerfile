@@ -13,13 +13,5 @@ ADD ./container-runner.sh /container-runner.sh
 RUN chmod a+x /container-runner.sh
 CMD /container-runner.sh
 
-# Install code
-RUN mkdir /code/
-RUN wget https://codeload.github.com/prasathmani/tinyfilemanager/zip/2.4.3 -O /code/filemanager.zip
-RUN cd /code/ && unzip ./filemanager.zip && rm -f ./filemanager.zip
-COPY resources/config.php /code/tinyfilemanager-2.4.3/config.php
-
-
-#HEALTHCHECK --start-period=10m --interval=5m --timeout=1m \
-#    CMD /code/container-healthcheck.sh
+WORKDIR /code
 

@@ -193,7 +193,7 @@ services:
         build:
             context: ./services/filebrowser
         volumes:
-#            - ./services/filebrowser/code:/code
+            - ./services/filebrowser/code:/code
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
