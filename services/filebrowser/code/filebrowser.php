@@ -4,15 +4,18 @@
  * @TODO this is MVP/PoC only!
  */
 
+$baseDir = "/data-kerberosio-capture";
+
 if (!empty($_GET['filename'])) {
+
+    //stream file content
 
     if (!preg_match("/^[.a-z0-9_-]+$/i", $_GET['filename'])) {
         throw new InvalidArgumentException("Malformed file name");
     }
 
-    //stream file content
-    header("content-type: ".mime_content_type("/data-kerberosio-capture/".$_GET['filename'].""));
-    readfile("/data-kerberosio-capture/".$_GET['filename']);
+    header("content-type: ".mime_content_type($baseDir."/".$_GET['filename'].""));
+    readfile($baseDir."/".$_GET['filename']);
 
 
 } else {
@@ -25,10 +28,11 @@ if (!empty($_GET['filename'])) {
         </head>
         <body>
     ";
-    $filesList = glob("/data-kerberosio-capture/*");
+    $filesList = glob($baseDir."/*");
     sort($filesList);
+    $idx = 1;
     foreach ($filesList as $filename) {
-        echo "<a href='?filename=".htmlspecialchars(basename($filename))."'>".basename($filename)."</a><br>";
+        echo ($idx++).". [".date("Y-m-d H:i:s", filemtime($baseDir."/".basename($filename)))."] <a href='?filename=".htmlspecialchars(basename($filename))."'>".basename($filename)."</a><br>";
     }
     echo "
         </body>
