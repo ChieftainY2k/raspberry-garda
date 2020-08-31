@@ -197,7 +197,7 @@ services:
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
-            - ./data/kerberos/capture:/data-kerberosio-capture
+            - ./data/kerberos/capture:/data-kerberosio-capture:ro
         restart: unless-stopped
 
     dashboard:
@@ -273,7 +273,5 @@ services:
     #            - /var/run/docker.sock:/var/run/docker.sock
     #            - ./data/portainer:/data
     #        restart: unless-stopped
-
-
 
 
