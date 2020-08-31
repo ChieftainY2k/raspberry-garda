@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @TODO this is MVP/PoC only!
+ */
+
 if (!empty($_GET['filename'])) {
 
     if (!preg_match("/^[.a-z0-9_-]+$/i", $_GET['filename'])) {
@@ -17,7 +21,7 @@ if (!empty($_GET['filename'])) {
     echo "
         <html>
         <head>
-            <title>Filebrowser (" . htmlspecialchars(getenv("KD_SYSTEM_NAME")) . ")</title>
+            <title>Filebrowser (".htmlspecialchars(getenv("KD_SYSTEM_NAME")).")</title>
         </head>
         <body>
     ";
