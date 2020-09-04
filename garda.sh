@@ -3,8 +3,9 @@
 export COMPOSE_HTTP_TIMEOUT=3600
 export COMPOSE_PARALLEL_LIMIT=200
 BASEDIR=$( dirname $( readlink -f ${BASH_SOURCE[0]} ) )
+GARDA_ENVIRONMENT=${GARDA_ENVIRONMENT:-"dev"}
 DOCKER_COMPOSE="/usr/local/bin/docker-compose"
-DOCKER_PARAMS="-f docker-compose.yml -p garda"
+DOCKER_PARAMS="-f docker-compose.${GARDA_ENVIRONMENT}.yml -p garda"
 
 #helper function
 log_message()
@@ -155,6 +156,7 @@ install()
 
 check()
 {
+    log_message "Garda environment: ${GARDA_ENVIRONMENT}"
     log_message "Hardware: $(get_raspberry_hardware)"
     log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
@@ -322,6 +324,7 @@ log()
 
 status()
 {
+    log_message "Garda environment: ${GARDA_ENVIRONMENT}"
     log_message "Hardware: $(get_raspberry_hardware)"
     log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
