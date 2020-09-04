@@ -67,22 +67,37 @@ get_raspberry_hardware()
     echo ${raspberryHardware};
 }
 
+get_raspberry_hardware_major_version()
+{
+    raspberryHardware=$(get_raspberry_hardware)
+    if [[ "$raspberryHardware" =~ "Raspberry Pi 4" ]]; then
+        echo "4"
+    elif [[ "$raspberryHardware" =~ "Raspberry Pi 3" ]]; then
+        echo "3"
+    elif [[ "$raspberryHardware" =~ "Raspberry Pi 2" ]]; then
+        echo "2"
+    else
+        echo "1"
+    fi
+}
+
 get_raspberry_version_for_kerberos_build()
 {
-    local raspberryHardware=$(get_raspberry_hardware)
-    if [[ "$raspberryHardware" =~ "Raspberry Pi 4 Model" ]]; then
+    local raspberryHardwareMajorVersion=$(get_raspberry_hardware_major_version)
+    if [[ "$raspberryHardwareMajorVersion" = "4" ]]; then
         echo "4"
-    elif [[ "$raspberryHardware" =~ "Raspberry Pi 3 Model" ]]; then
+    elif [[ "$raspberryHardwareMajorVersion" =~ "3" ]]; then
         echo "3"
     else
         echo "2"
     fi
 }
 
+
 get_available_disk_space()
 {
     availableDiskSpaceKb=$(df / | grep /dev/root | awk '{print $4/1}')
-    echo ${availableDiskSpaceKb}
+    echo "${availableDiskSpaceKb}"
 }
 
 get_ip_address()
@@ -310,7 +325,8 @@ status()
     log_message "Hardware: $(get_raspberry_hardware)"
     log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
-    #log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
+    log_message "Raspberry hardware major version: $(get_raspberry_hardware_major_version)"
+    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $(get_ip_address)"
 
     log_message "Probing for available disk space..."
