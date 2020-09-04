@@ -37,7 +37,7 @@ Enjoy! :-)
 * Enable the camera module support (`raspi-config -> interfacing -> camera`)
 * If RAM is less than 500MB set video memory to 8MB (`raspi-config -> advanced -> memory split`)
 * If camera will be used set video memory to 128MB (`raspi-config -> advanced -> memory split`)
-* If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=500`)
+* If RAM is less than 500MB increase the swap space (edit the `/etc/dphys-swapfile` , set `CONF_SWAPSIZE=700`)
 * Reboot
 
 **(OPTIONAL): Enable support for 1-Wire**

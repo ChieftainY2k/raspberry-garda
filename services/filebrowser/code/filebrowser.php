@@ -30,9 +30,17 @@ if (!empty($_GET['filename'])) {
     ";
     $filesList = glob($baseDir."/*");
     sort($filesList);
+
     $idx = 1;
+    $prevDay = null;
     foreach ($filesList as $filename) {
-        echo ($idx++).". [".date("Y-m-d H:i:s", filemtime($baseDir."/".basename($filename)))."] <a href='?filename=".htmlspecialchars(basename($filename))."'>".basename($filename)."</a><br>";
+        $fimeModTime = filemtime($baseDir."/".basename($filename));
+        $day = date("d", $fimeModTime);
+        if ($prevDay != $day) {
+            echo "<hr>";
+        }
+        echo ($idx++).". [".date("Y-m-d H:i:s", $fimeModTime)."] <a href='?filename=".htmlspecialchars(basename($filename))."'>".basename($filename)."</a><br>";
+        $prevDay = $day;
     }
     echo "
         </body>
@@ -40,4 +48,5 @@ if (!empty($_GET['filename'])) {
     ";
 
 }
+
 
