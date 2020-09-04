@@ -86,7 +86,7 @@ get_raspberry_version_for_kerberos_build()
     local raspberryHardwareMajorVersion=$(get_raspberry_hardware_major_version)
     if [[ "$raspberryHardwareMajorVersion" = "4" ]]; then
         echo "4"
-    elif [[ "$raspberryHardwareMajorVersion" =~ "3" ]]; then
+    elif [[ "$raspberryHardwareMajorVersion" = "3" ]]; then
         echo "3"
     else
         echo "2"
@@ -295,10 +295,10 @@ build()
 {
     local SERVICE=${1}
 
-    local RASPBERRY_PLATFORM_FOR_KERBEROS=$(get_raspberry_version_for_kerberos_build)
+    local RASPBERRY_HARDWARE_MAJOR_VERSION=$(get_raspberry_hardware_major_version)
     log_message "Building images..."
     ${DOCKER_COMPOSE} ${DOCKER_PARAMS} build \
-        --build-arg RASPBERRY_PLATFORM_FOR_KERBEROS=${RASPBERRY_PLATFORM_FOR_KERBEROS} \
+        --build-arg RASPBERRY_HARDWARE_MAJOR_VERSION=${RASPBERRY_HARDWARE_MAJOR_VERSION} \
         ${SERVICE}
     check_errors $?
 }

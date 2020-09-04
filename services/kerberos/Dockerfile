@@ -23,14 +23,17 @@ RUN yes | rpi-update
 RUN cp -r /opt/vc/lib/* /usr/lib/
 
 #Install MACHINERY
-ARG RASPBERRY_PLATFORM_FOR_KERBEROS="2"
 ARG KERBEROS_MACHINERY_VERSION="2.8.0"
-RUN echo "RASPBERRY_PLATFORM_FOR_KERBEROS = ${RASPBERRY_PLATFORM_FOR_KERBEROS} , KERBEROS_MACHINERY_VERSION  = ${KERBEROS_MACHINERY_VERSION}"
-RUN wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-machinery-kerberosio-armhf-${KERBEROS_MACHINERY_VERSION}.deb -O /tmp/kerberos.deb
+ARG RASPBERRY_HARDWARE_MAJOR_VERSION="1"
+#@FIXME run proper script to pick proper version for build
+RUN if [ "${RASPBERRY_HARDWARE_MAJOR_VERSION}" = "1" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi2-machinery-kerberosio-armhf-${KERBEROS_MACHINERY_VERSION}.deb -O /tmp/kerberos.deb ; fi
+RUN if [ "${RASPBERRY_HARDWARE_MAJOR_VERSION}" = "2" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi2-machinery-kerberosio-armhf-${KERBEROS_MACHINERY_VERSION}.deb -O /tmp/kerberos.deb ; fi
+RUN if [ "${RASPBERRY_HARDWARE_MAJOR_VERSION}" = "3" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi3-machinery-kerberosio-armhf-${KERBEROS_MACHINERY_VERSION}.deb -O /tmp/kerberos.deb ; fi
+RUN if [ "${RASPBERRY_HARDWARE_MAJOR_VERSION}" = "4" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi4-machinery-kerberosio-armhf-${KERBEROS_MACHINERY_VERSION}.deb -O /tmp/kerberos.deb ; fi
 RUN dpkg -i /tmp/kerberos.deb
 
-RUN if [ "${KERBEROS_MACHINERY_VERSION}" = "2.8.0" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx264.so.148 -O /usr/lib/arm-linux-gnueabihf/libx264.so.148 ; fi
-RUN if [ "${KERBEROS_MACHINERY_VERSION}" = "2.8.0" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_PLATFORM_FOR_KERBEROS}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160 ; fi
+RUN if [ "${KERBEROS_MACHINERY_VERSION}" = "2.8.0" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_HARDWARE_MAJOR_VERSION}-libx264.so.148 -O /usr/lib/arm-linux-gnueabihf/libx264.so.148 ; fi
+RUN if [ "${KERBEROS_MACHINERY_VERSION}" = "2.8.0" ] ; then wget https://github.com/kerberos-io/machinery/releases/download/v${KERBEROS_MACHINERY_VERSION}/rpi${RASPBERRY_HARDWARE_MAJOR_VERSION}-libx265.so.160 -O /usr/lib/arm-linux-gnueabihf/libx265.so.160 ; fi
 
 #Install WEB
 RUN rm -f /etc/nginx/sites-enabled/default
