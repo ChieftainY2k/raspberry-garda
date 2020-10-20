@@ -175,6 +175,14 @@ Example:
 
 **Troubleshooting**
 
+   * I'm on Windows and I don't know the IP of my raspberry 
+   
+     Solution: Scan your network for all IPs, for example (whne you're on the `192.168.1.*` network):
+     `````
+     for i in $(seq 1 254); do ping -n 1 192.168.1.$i ; done | grep TTL
+     `````
+     
+
    * **Raspberry loses ipv4 connection after docker container starts.** 
      
      Solution:

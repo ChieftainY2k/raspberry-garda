@@ -82,17 +82,17 @@ get_raspberry_hardware_major_version()
     fi
 }
 
-get_raspberry_version_for_kerberos_build()
-{
-    local raspberryHardwareMajorVersion=$(get_raspberry_hardware_major_version)
-    if [[ "$raspberryHardwareMajorVersion" = "4" ]]; then
-        echo "4"
-    elif [[ "$raspberryHardwareMajorVersion" = "3" ]]; then
-        echo "3"
-    else
-        echo "2"
-    fi
-}
+#get_raspberry_version_for_kerberos_build()
+#{
+#    local raspberryHardwareMajorVersion=$(get_raspberry_hardware_major_version)
+#    if [[ "$raspberryHardwareMajorVersion" = "4" ]]; then
+#        echo "4"
+#    elif [[ "$raspberryHardwareMajorVersion" = "3" ]]; then
+#        echo "3"
+#    else
+#        echo "2"
+#    fi
+#}
 
 
 get_available_disk_space()
@@ -329,7 +329,7 @@ status()
     log_message "Kernel: $(uname -a)"
     log_message "OS: $(cat /etc/os-release | grep PRETTY_NAME)"
     log_message "Raspberry hardware major version: $(get_raspberry_hardware_major_version)"
-    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
+#    log_message "Raspberry version for kerberos: $(get_raspberry_version_for_kerberos_build)"
     log_message "IP address: $(get_ip_address)"
 
     log_message "Probing for available disk space..."
