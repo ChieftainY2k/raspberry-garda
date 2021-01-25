@@ -187,7 +187,7 @@ Example:
      
      Solution:
      
-     Add `ipv6.disable=1` do `/boot/cmdline.txt` then reboot.
+     Add `ipv6.disable=1` at the end of the first line in `/boot/cmdline.txt` then reboot.
      
    * **Raspberry loses wlan0 connection after docker container starts.**
     
