@@ -175,9 +175,9 @@ Example:
 
 **Troubleshooting**
 
-   * I'm on Windows and I don't know the IP of my raspberry 
+   * **I'm on Windows and I don't know the IP of my raspberry** 
    
-     Solution: Scan your network for all IPs, for example (whne you're on the `192.168.1.*` network):
+     Solution: Scan your network for all IPs, for example (when you're on the `192.168.1.*` network):
      `````
      for i in $(seq 1 254); do ping -n 1 192.168.1.$i ; done | grep TTL
      `````
