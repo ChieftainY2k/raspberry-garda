@@ -175,6 +175,13 @@ Example:
 
 **Troubleshooting**
 
+   * **There's something wrong with the SD card** 
+   
+     Solution: run badblocks check
+     `````
+     sudo badblocks -nfsv /dev/mmcblk0
+     `````
+     
    * **I'm on Windows and I don't know the IP of my raspberry** 
    
      Solution: Scan your network for all IPs, for example (when you're on the `192.168.1.*` network):
