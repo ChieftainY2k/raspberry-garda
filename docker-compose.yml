@@ -85,9 +85,10 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - ./configs:/service-configs:ro
         restart: unless-stopped
-        devices:
-          - /dev/vcsm
-          - /dev/vchiq
+        privileged: true
+#        devices:
+#          - /dev/vcsm
+#          - /dev/vchiq
 #        depends_on:
 #            - email-notification
 
