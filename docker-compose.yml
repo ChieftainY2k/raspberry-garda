@@ -215,6 +215,16 @@ services:
 #            - ./data/kerberos/capture:/data-kerberosio-capture
         restart: unless-stopped
 
+    yolo:
+        image: besn0847/arm-tiny-yolo
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./data/kerberos/capture:/data-kerberosio-capture:ro
+        ports:
+        -   "5000:5000"
+
 
     #  streamer-rtsp:
     #    build:
